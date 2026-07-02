@@ -1,4 +1,4 @@
-package mx.edu.utez.Canciones2026.controller;
+package mx.edu.utez.DesarrolloAcademico.controller;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;

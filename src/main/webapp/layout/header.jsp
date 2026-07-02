@@ -6,8 +6,8 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link href="assets/css/bootstrap.css" rel="stylesheet">
-    <link href="assets/css/bi/bootstrap-icons.min.css" rel="stylesheet">
+    <link href="" rel="stylesheet">
+    <link href="" rel="stylesheet">
 </head>
 <body class="d-flex flex-column min-vh-100">
 <!-- barra de navegación -->

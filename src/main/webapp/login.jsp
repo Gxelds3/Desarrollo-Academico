@@ -1,5 +1,4 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <!doctype html>
 <html lang="es">
 <head>
@@ -10,81 +9,91 @@
     <title>Iniciar sesión</title>
     <link rel="stylesheet" href="assets/css/bootstrap.css">
     <link rel="stylesheet" href="assets/css/bi/bootstrap-icons.css">
-    <style>
-        body {background-color: #f8f9fa;}
-    </style>
 </head>
-<body class="d-flex align-items-center justify-content-center vh-100">
+<body class="d-flex align-items-center justify-content-center vh-100 bg-white" style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
 
 <div class="container">
     <div class="row justify-content-center">
-        <div class="col-12 col-md-6 col-lg-4">
+        <div class="col-12 col-sm-10 col-md-6 col-lg-4">
 
-            <div class="card shadow border-0 rounded-3">
-                <div class="card-body p-5">
+            <div class="p-4">
 
-                    <div class="text-center mb-4">
-                        <div class="display-4 text-primary mb-2">
-                            <i class="bi bi-person-circle"></i>
+                <div class="text-center mb-4">
+                    <img src="assets/img/login_logo.png" alt="Bienvenido" class="mb-2" style="width: 120px; height: 120px; object-fit: contain;">
+                    <h2 class="fw-bold fs-1" style="color: #49B2B0;">Bienvenido</h2>
+                </div>
+
+                <c:if test="${not empty error}">
+                    <div class="alert alert-danger d-flex align-items-center py-2 rounded-3" role="alert">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                        <div class="small">${error}</div>
+                    </div>
+                </c:if>
+
+                <c:if test="${not empty mensaje}">
+                    <div class="alert alert-info d-flex align-items-center py-2 rounded-3" role="alert">
+                        <i class="bi bi-info-circle-fill me-2"></i>
+                        <div class="small">${mensaje}</div>
+                    </div>
+                </c:if>
+
+                <form action="login" method="post">
+
+                    <div class="mb-3">
+                        <label for="txtUsuario" class="form-label fw-bold mb-1 small" style="color: #2B1818;">Correo institucional:</label>
+                        <div class="position-relative">
+                            <i class="bi bi-person-fill position-absolute text-secondary fs-5" style="left: 15px; top: 50%; transform: translateY(-50%);"></i>
+                            <input type="text" class="form-control rounded-3" id="txtUsuario" name="email" placeholder="Correo institucional" required
+                                   style="padding: 0.6rem 1rem 0.6rem 2.8rem; border: 1.5px solid #6C5555; background-color: rgba(255, 255, 255, 0.6);">
                         </div>
-                        <h2 class="fw-bold h4 text-dark">Bienvenido</h2>
-                        <p class="text-muted small">Ingresa tus credenciales para acceder</p>
                     </div>
 
-                    <c:if test="${not empty error}">
-                        <div class="alert alert-danger d-flex align-items-center py-2" role="alert">
-                            <i class="bi bi-exclamation-triangle-fill me-2"></i>
-                            <div class="small">
-                                ${error}
-                            </div>
+                    <div class="mb-4">
+                        <label for="txtPassword" class="form-label fw-bold mb-1 small" style="color: #2B1818;">Contraseña:</label>
+                        <div class="position-relative">
+                            <i class="bi bi-lock-fill position-absolute text-secondary fs-5" style="left: 15px; top: 50%; transform: translateY(-50%);"></i>
+
+                            <input type="password" class="form-control rounded-3" id="txtPassword" name="contra" placeholder="Contraseña" required
+                                   style="padding: 0.6rem 2.8rem 0.6rem 2.8rem; border: 1.5px solid #6C5555; background-color: rgba(255, 255, 255, 0.6);">
+
+                            <i class="bi bi-eye-fill position-absolute fs-5" id="togglePassword" style="right: 15px; top: 50%; transform: translateY(-50%); color: #513955; cursor: pointer;"></i>
                         </div>
-                    </c:if>
+                    </div>
 
-                    <c:if test="${not empty mensaje}">
-                        <div class="alert alert-info d-flex align-items-center py-2" role="alert">
-                            <i class="bi bi-info-circle-fill me-2"></i>
-                            <div class="small">
-                                    ${mensaje}
-                            </div>
+                    <button class="btn w-100 mb-3 text-white rounded-3 fw-medium" type="submit"
+                            style="background-color: #49B2B0; padding: 0.6rem; font-size: 1.1rem;"
+                            onmouseover="this.style.backgroundColor='#3AA19F'"
+                            onmouseout="this.style.backgroundColor='#49B2B0'">
+                        Iniciar
+                    </button>
+
+                    <div class="text-center small">
+                        <div class="mb-1">
+                            <span class="text-dark">¿No tienes cuenta?</span>
+                            <a href="registro.jsp" class="fw-semibold text-decoration-none" style="color: #5B7FFF;" onmouseover="this.className='fw-semibold text-decoration-underline'" onmouseout="this.className='fw-semibold text-decoration-none'">Regístrate</a>
                         </div>
-                    </c:if>
-
-                    <form action="login" method="post">
-
-                        <div class="form-floating mb-3">
-                            <input type="text" class="form-control" id="txtUsuario" name="email" placeholder="Usuario" required>
-                            <label for="txtUsuario">
-                                <i class="bi bi-person me-1"></i> Email
-                            </label>
+                        <div>
+                            <a href="recuperar-contra.jsp" class="text-decoration-none" style="color: #5B7FFF;" onmouseover="this.className='text-decoration-underline'" onmouseout="this.className='text-decoration-none'">Olvidé mi contraseña</a>
                         </div>
+                    </div>
+                </form>
 
-                        <div class="form-floating mb-3">
-                            <input type="password" class="form-control" id="txtPassword" name="contra" placeholder="Contraseña" required>
-                            <label for="txtPassword">
-                                <i class="bi bi-lock me-1"></i> Contraseña
-                            </label>
-                        </div>
-
-                        <button class="btn btn-primary w-100 py-2 fw-semibold shadow-sm" type="submit">
-                            <i class="bi bi-box-arrow-in-right me-2"></i> Iniciar Sesión
-                        </button>
-
-                        <div class="d-flex flex-column align-items-center gap-2 small mt-2">
-                            <div>
-                                <span class="text-muted">¿No tienes cuenta?</span>
-                                <a href="registro.jsp" class="text-decoration-none fw-medium">Regístrate</a>
-                            </div>
-                            <div>
-                                <a href="recuperar-contra.jsp" class="text-decoration-none text-muted">Olvidé mi contraseña</a>
-                            </div>
-                        </div>
-                    </form>
-                </div>
             </div>
         </div>
     </div>
 </div>
 
 <script src="assets/js/bootstrap.js"></script>
+<script>
+    const togglePassword = document.querySelector('#togglePassword');
+    const password = document.querySelector('#txtPassword');
+
+    togglePassword.addEventListener('click', function () {
+        const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+        password.setAttribute('type', type);
+        this.classList.toggle('bi-eye-fill');
+        this.classList.toggle('bi-eye-slash-fill');
+    });
+</script>
 </body>
 </html>
