@@ -36,15 +36,15 @@
                     <div class="row g-2 mb-3">
                         <div class="col-6">
                             <label for="nombre" class="form-label label-custom">Nombre(s):</label>
-                            <div class="position-relative">
-                                <i class="bi bi-person-fill position-absolute input-icon"></i>
+                            <div class="input-group">
+                                <span class="input-group-text icon-prepend"><i class="bi bi-person-fill"></i></span>
                                 <input type="text" class="form-control input-custom" id="nombre" name="nombre" placeholder="Nombre(s)" required>
                             </div>
                         </div>
                         <div class="col-6">
                             <label for="apellidos" class="form-label label-custom">Apellidos:</label>
-                            <div class="position-relative">
-                                <i class="bi bi-person-vcard position-absolute input-icon"></i>
+                            <div class="input-group">
+                                <span class="input-group-text icon-prepend"><i class="bi bi-person-vcard"></i></span>
                                 <input type="text" class="form-control input-custom" id="apellidos" name="apellidos" placeholder="Apellidos" required>
                             </div>
                         </div>
@@ -52,24 +52,29 @@
 
                     <div class="mb-3">
                         <label for="NumeroEmpleado" class="form-label label-custom">Número de Empleado:</label>
-                        <div class="position-relative">
-                            <i class="bi bi-person-badge-fill position-absolute input-icon"></i>
+                        <div class="input-group">
+                            <span class="input-group-text icon-prepend">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor">
+                                    <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4zm2-1a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4a1 1 0 0 0-1-1H2z"/>
+                                    <path d="M3 6.5A1.5 1.5 0 0 1 4.5 5h1A1.5 1.5 0 0 1 7 6.5v1A1.5 1.5 0 0 1 5.5 9h-1A1.5 1.5 0 0 1 3 7.5v-1zM9 6.25a.75.75 0 0 1 .75-.75h3.5a.75.75 0 0 1 0 1.5h-3.5A.75.75 0 0 1 9 6.25zM9 9.25a.75.75 0 0 1 .75-.75h3.5a.75.75 0 0 1 0 1.5h-3.5A.75.75 0 0 1 9 9.25zM3.75 11a.75.75 0 0 0 0 1.5h3.5a.75.75 0 0 0 0-1.5h-3.5z"/>
+                                </svg>
+                            </span>
                             <input type="text" class="form-control input-custom" id="NumeroEmpleado" name="numeroEmpleado" placeholder="Número de Empleado" required>
                         </div>
                     </div>
 
                     <div class="mb-3">
                         <label for="correoInstitucional" class="form-label label-custom">Correo institucional:</label>
-                        <div class="position-relative">
-                            <i class="bi bi-envelope position-absolute input-icon"></i>
+                        <div class="input-group">
+                            <span class="input-group-text icon-prepend"><i class="bi bi-envelope"></i></span>
                             <input type="email" class="form-control input-custom" id="correoInstitucional" name="correoInstitucional" placeholder="Correo institucional" required>
                         </div>
                     </div>
 
                     <div class="mb-3">
                         <label for="telefono" class="form-label label-custom">Teléfono:</label>
-                        <div class="position-relative">
-                            <i class="bi bi-telephone position-absolute input-icon"></i>
+                        <div class="input-group">
+                            <span class="input-group-text icon-prepend"><i class="bi bi-telephone"></i></span>
                             <input type="tel" class="form-control input-custom" id="telefono" name="telefono" placeholder="Teléfono" required>
                         </div>
                     </div>
@@ -88,8 +93,8 @@
                             <label for="txtPassword" class="form-label label-custom mb-1">Contraseña:</label>
                             <i class="bi bi-eye toggle-password-icon" id="togglePassword"></i>
                         </div>
-                        <div class="position-relative">
-                            <i class="bi bi-lock-fill position-absolute input-icon"></i>
+                        <div class="input-group">
+                            <span class="input-group-text icon-prepend"><i class="bi bi-lock-fill"></i></span>
                             <input type="password" class="form-control input-custom" id="txtPassword" name="contra" placeholder="Contraseña" required>
                         </div>
                     </div>
@@ -99,8 +104,8 @@
                             <label for="txtConfirmPassword" class="form-label label-custom mb-1">Confirmar contraseña:</label>
                             <i class="bi bi-eye toggle-password-icon" id="toggleConfirmPassword"></i>
                         </div>
-                        <div class="position-relative">
-                            <i class="bi bi-lock-fill position-absolute input-icon"></i>
+                        <div class="input-group">
+                            <span class="input-group-text icon-prepend"><i class="bi bi-lock-fill"></i></span>
                             <input type="password" class="form-control input-custom" id="txtConfirmPassword" name="confirmContra" placeholder="Confirmar contraseña" required>
                         </div>
                     </div>

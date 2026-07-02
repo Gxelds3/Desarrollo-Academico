@@ -13,18 +13,13 @@
 .input-custom {
     padding-top: 0.55rem !important;
     padding-bottom: 0.55rem !important;
-    padding-left: 2.8rem !important;
+    padding-left: 3.5rem !important;
     border: 1.5px solid #6c757d !important;
-    border-radius: 0.5rem !important;
-    width: 100%;
-}
-.input-password-custom {
-    padding-top: 0.55rem !important;
-    padding-bottom: 0.55rem !important;
-    padding-left: 2.8rem !important;
-    padding-right: 2.8rem !important;
-    border: 1.5px solid #6c757d !important;
-    border-radius: 0.5rem !important;
+    border-left: none !important;
+    border-top-left-radius: 0 !important;
+    border-bottom-left-radius: 0 !important;
+    border-top-right-radius: 0.5rem !important;
+    border-bottom-right-radius: 0.5rem !important;
     width: 100%;
 }
 .select-custom {
@@ -37,22 +32,31 @@
     width: 100%;
 }
 
+/* Ícono a la izquierda, integrado como parte del input-group */
+.icon-prepend {
+    background-color: #ffffff !important;
+    color: #6c757d !important;
+    border: 1.5px solid #6c757d !important;
+    border-right: none !important;
+    border-top-left-radius: 0.5rem !important;
+    border-bottom-left-radius: 0.5rem !important;
+    padding-left: 1rem !important;
+    padding-right: 3.2rem !important;
+    font-size: 1.05rem !important;
+}
+
+.icon-prepend svg {
+    vertical-align: -0.125em;
+}
+
 /* Foco con el color de marca en vez del azul de Bootstrap */
 .input-custom:focus,
-.input-password-custom:focus,
 .select-custom:focus {
     border-color: #51B9B7 !important;
     box-shadow: 0 0 0 0.2rem rgba(81, 185, 183, 0.25) !important;
 }
-.input-icon {
-    position: absolute !important;
-    left: 12px !important;
-    top: 50% !important;
-    transform: translateY(-50%) !important;
-    color: #6c757d !important;
-    font-size: 1.2rem !important;
-    z-index: 5 !important;
-    pointer-events: none;
+.input-group:focus-within .icon-prepend {
+    border-color: #51B9B7 !important;
 }
 .toggle-password-icon {
     color: #495057 !important;
