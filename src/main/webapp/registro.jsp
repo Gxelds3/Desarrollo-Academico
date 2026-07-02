@@ -49,16 +49,16 @@
           </c:if>
 
           <form action="register" method="post">
-
+//N
             <div class="row">
-              <div class="col-md-6">
-                <div class="form-floating mb-3">
-                  <input value="${param.nombre}" type="text" class="form-control" id="txtNombre" name="nombre" placeholder="Nombre" required>
-                  <label for="txtNombre">
-                    <i class="bi bi-person me-1"></i> Nombre
-                  </label>
-                </div>
+              <div class="col-md-6 mb-3">
+                <label for="txtNombre" class="form-label fw-bold mb-1">
+                  <i class="bi bi-person me-1"></i> Nombre:
+                </label>
+                <input value="${param.nombre}" type="text" class="form-control" id="txtNombre" name="nombre" placeholder="Nombre" required>
               </div>
+            </div>
+
               <div class="col-md-6">
                 <div class="form-floating mb-3">
                   <input value="${param.apellidos}" type="text" class="form-control" id="txtApellidos" name="apellidos" placeholder="Apellidos" required>

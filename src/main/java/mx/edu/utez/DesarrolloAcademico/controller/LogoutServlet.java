@@ -1,4 +1,4 @@
-package mx.edu.utez.Canciones2026.controller;
+package mx.edu.utez.DesarrolloAcademico.controller;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -21,6 +21,6 @@ public class LogoutServlet extends HttpServlet {
             session.removeAttribute("usuario");
             session.invalidate();
         }
-        response.sendRedirect("login.jsp");
+        response.sendRedirect("registro.jsp");
     }
 }
