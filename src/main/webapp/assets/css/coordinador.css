@@ -1,0 +1,380 @@
+:root {
+    --teal-main: #00847b;
+    --teal-dark: #004d40;
+    --teal-light: #26a69a;
+    --bg-light: #f3f4f6;
+}
+body {
+    background-color: var(--bg-light);
+    font-family: 'Segoe UI', sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+/* ===== barra de a lado ===== */
+.sidebar-hover {
+    width: 85px;
+    background-color: var(--teal-main);
+    min-height: 100vh;
+    border-top-right-radius: 20px;
+    border-bottom-right-radius: 20px;
+    transition: width 0.3s ease;
+    overflow: hidden;
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 1050;
+    display: flex;
+    flex-direction: column;
+    padding: 30px 0;
+    box-shadow: 4px 0 15px rgba(0,0,0,0.1);
+}
+
+.sidebar-hover:hover,
+.sidebar-hover.locked {
+    width: 280px;
+}
+
+/* contenedor icono usario */
+.sidebar-avatar-container {
+    padding: 0 20px;
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    height: 120px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.sidebar-avatar {
+    width: 65px;
+    height: 65px;
+    min-width: 65px;
+    background-color: var(--teal-light);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.sidebar-info {
+    margin-top: 12px;
+    margin-left: 0;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    white-space: nowrap;
+    text-align: center;
+}
+
+.sidebar-hover:hover .sidebar-info,
+.sidebar-hover.locked .sidebar-info {
+    opacity: 1;
+}
+
+/* base para los items  */
+.sidebar-item {
+    display: flex;
+    align-items: center;
+    height: 45px;
+    margin: 10px 20px;
+    padding: 0;
+    border-radius: 25px;
+    transition: all 0.2s ease;
+    background-color: transparent;
+    color: white;
+    text-decoration: none;
+    box-sizing: border-box;
+    white-space: nowrap;
+}
+
+.sidebar-icon {
+    width: 45px;
+    height: 45px;
+    min-width: 45px;
+    background-color: white;
+    color: var(--teal-main);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    transition: all 0.2s ease;
+}
+
+/* Estado cerrado: Opción actual activa */
+.sidebar-item.active .sidebar-icon {
+    background-color: var(--teal-light);
+    color: white;
+}
+
+.sidebar-text {
+    margin-left: 15px;
+    font-weight: 600;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.sidebar-hover:hover .sidebar-text {
+    opacity: 1;
+}
+
+/* ===== Estilos para cuando la barra de al lado está abierta ===== */
+.sidebar-hover:hover .sidebar-item,
+.sidebar-hover.locked .sidebar-item {
+    background-color: white;
+    color: var(--teal-main);
+}
+.sidebar-hover:hover .sidebar-item .sidebar-icon,
+.sidebar-hover.locked .sidebar-item .sidebar-icon {
+    background-color: transparent;
+    color: var(--teal-main);
+}
+
+.sidebar-hover:hover .sidebar-item:hover,
+.sidebar-hover.locked .sidebar-item:hover {
+    background-color: var(--teal-main);
+    color: white;
+}
+.sidebar-hover:hover .sidebar-item:hover .sidebar-icon,
+.sidebar-hover.locked .sidebar-item:hover .sidebar-icon {
+    color: white;
+}
+
+.sidebar-hover:hover .sidebar-item.active,
+.sidebar-hover.locked .sidebar-item.active {
+    background-color: var(--teal-light);
+    color: white;
+}
+.sidebar-hover:hover .sidebar-item.active .sidebar-icon,
+.sidebar-hover.locked .sidebar-item.active .sidebar-icon {
+    color: white;
+}
+
+/* ===== Contenedor principal del resto de la página ===== */
+.main-content {
+    margin-left: 85px;
+    padding: 40px;
+    min-height: 100vh;
+}
+
+.page-title {
+    color: var(--teal-main);
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+}
+
+/* ===== Menú Horizontal  ===== */
+.nav-pill {
+    text-decoration: none;
+    color: var(--teal-main);
+    font-weight: 600;
+    font-size: 0.85rem;
+    padding: 6px 18px;
+    border-radius: 8px;
+    border: 1.5px solid var(--teal-main);
+    transition: all 0.2s;
+}
+.nav-pill:hover {
+    background-color: rgba(0, 132, 123, 0.1);
+}
+.nav-pill.active {
+    background-color: var(--teal-main);
+    color: white;
+}
+.nav-pill.active:hover {
+    background-color: var(--teal-dark);
+    border-color: var(--teal-dark);
+}
+
+/* ===== Caja blanca gigante para agrupar contenido ===== */
+.data-card {
+    background-color: white;
+    border-radius: 12px;
+    padding: 30px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+}
+
+/* ===== Buscador Interno ===== */
+.search-box {
+    position: relative;
+    width: 100%;
+    margin-bottom: 20px;
+}
+.search-box input {
+    width: 100%;
+    padding: 10px 16px 10px 40px;
+    border-radius: 25px;
+    border: 1px solid var(--teal-main);
+    outline: none;
+    font-size: 0.95rem;
+}
+.search-box input:focus {
+    box-shadow: 0 0 0 2px rgba(0, 132, 123, 0.2);
+}
+.search-box i {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #888;
+}
+
+/* ===== Tarjetas de Estadísticas ===== */
+.stat-card {
+    background: white;
+    border: 1px solid #ccc;
+    border-radius: 12px;
+    padding: 16px 24px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+}
+.stat-icon {
+    width: 55px;
+    height: 55px;
+    border-radius: 50%;
+    background-color: var(--teal-main);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+}
+
+/* ===== Tarjetas de Eventos ===== */
+.event-card {
+    background: white;
+    border: 1px solid #ccc;
+    border-radius: 12px;
+    padding: 20px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+}
+
+/* ===== Tabla ===== */
+.table-custom {
+    width: 100%;
+    margin-bottom: 20px;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+.table-custom th {
+    background-color: var(--teal-main);
+    color: white;
+    padding: 12px 16px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-align: left;
+}
+.table-custom th:first-child {
+    border-top-left-radius: 8px;
+    border-bottom-left-radius: 8px;
+}
+.table-custom th:last-child {
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
+}
+.table-custom td {
+    padding: 16px;
+    vertical-align: middle;
+    font-size: 0.85rem;
+    color: #333;
+    border-bottom: 1px solid #eee;
+}
+
+.action-btn {
+    background: transparent;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    width: 32px;
+    height: 32px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--teal-main);
+    text-decoration: none;
+    margin-right: 4px;
+    transition: all 0.2s;
+}
+.action-btn:hover {
+    background-color: var(--teal-main);
+    color: white;
+    border-color: var(--teal-main);
+}
+.action-btn.delete {
+    color: #d32f2f;
+}
+.action-btn.delete:hover {
+    background-color: #d32f2f;
+    color: white;
+    border-color: #d32f2f;
+}
+
+/* ===== Paginación los numeros de página y la parte de hasta abajo ===== */
+.pagination-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    margin-top: 30px;
+}
+.page-btn {
+    border: 1px solid #ccc;
+    background: white;
+    color: #333;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    text-decoration: none;
+    font-size: 0.85rem;
+}
+.page-btn.active {
+    background-color: var(--teal-main);
+    color: white;
+    border-color: var(--teal-main);
+}
+.page-btn:hover:not(.active):not(.dots) {
+    background-color: #f0f0f0;
+}
+.page-btn.dots {
+    border: none;
+    background: transparent;
+}
+
+.bottom-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: -32px; /* Pull up to align with pagination if needed, or just keep normal flow */
+}
+
+/* ===== Botones ===== */
+.btn-teal {
+    background-color: var(--teal-main);
+    color: white;
+    border-radius: 8px;
+    padding: 10px 24px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-decoration: none;
+    border: none;
+    transition: background-color 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+.btn-teal:hover {
+    background-color: #00736c;
+    color: white;
+}
