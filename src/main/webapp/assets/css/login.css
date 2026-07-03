@@ -13,13 +13,9 @@
 .input-custom {
     padding-top: 0.55rem !important;
     padding-bottom: 0.55rem !important;
-    padding-left: 3.5rem !important;
+    padding-left: 2.6rem !important;
     border: 1.5px solid #6c757d !important;
-    border-left: none !important;
-    border-top-left-radius: 0 !important;
-    border-bottom-left-radius: 0 !important;
-    border-top-right-radius: 0.5rem !important;
-    border-bottom-right-radius: 0.5rem !important;
+    border-radius: 0.5rem !important;
     width: 100%;
 }
 .select-custom {
@@ -32,17 +28,25 @@
     width: 100%;
 }
 
-/* Ícono a la izquierda, integrado como parte del input-group */
+/* Ícono a la izquierda, sin recuadro, flotando dentro del input */
 .icon-prepend {
-    background-color: #ffffff !important;
+    background-color: transparent !important;
     color: #6c757d !important;
-    border: 1.5px solid #6c757d !important;
-    border-right: none !important;
-    border-top-left-radius: 0.5rem !important;
-    border-bottom-left-radius: 0.5rem !important;
-    padding-left: 1rem !important;
-    padding-right: 3.2rem !important;
+    border: none !important;
+    padding-left: 0.9rem !important;
+    padding-right: 0.5rem !important;
     font-size: 1.05rem !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    position: absolute !important;
+    z-index: 5 !important;
+    height: 100%;
+    pointer-events: none;
+}
+
+.input-group {
+    position: relative !important;
 }
 
 .icon-prepend svg {
@@ -54,9 +58,6 @@
 .select-custom:focus {
     border-color: #51B9B7 !important;
     box-shadow: 0 0 0 0.2rem rgba(81, 185, 183, 0.25) !important;
-}
-.input-group:focus-within .icon-prepend {
-    border-color: #51B9B7 !important;
 }
 .toggle-password-icon {
     color: #495057 !important;

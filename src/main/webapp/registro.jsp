@@ -8,7 +8,7 @@
     <title>Crear Cuenta</title>
     <link rel="stylesheet" href="assets/css/bootstrap.css">
     <link rel="stylesheet" href="assets/css/bi/bootstrap-icons.css">
-    <link rel="stylesheet" href="assets/css/registro.css">
+    <link rel="stylesheet" href="assets/css/login.css">
 </head>
 <body class="d-flex align-items-center justify-content-center min-vh-100 body-registro">
 
@@ -37,7 +37,7 @@
                         <div class="col-6">
                             <label for="nombre" class="form-label label-custom">Nombre(s):</label>
                             <div class="input-group">
-                                <span class="input-group-text icon-prepend"><i class="bi bi-person-fill"></i></span>
+                                <span class="input-group-text icon-prepend"><i class="bi bi-person"></i></span>
                                 <input type="text" class="form-control input-custom" id="nombre" name="nombre" placeholder="Nombre(s)" required>
                             </div>
                         </div>
@@ -94,7 +94,7 @@
                             <i class="bi bi-eye toggle-password-icon" id="togglePassword"></i>
                         </div>
                         <div class="input-group">
-                            <span class="input-group-text icon-prepend"><i class="bi bi-lock-fill"></i></span>
+                            <span class="input-group-text icon-prepend"><i class="bi bi-lock"></i></span>
                             <input type="password" class="form-control input-custom" id="txtPassword" name="contra" placeholder="Contraseña" required>
                         </div>
                     </div>
@@ -105,7 +105,7 @@
                             <i class="bi bi-eye toggle-password-icon" id="toggleConfirmPassword"></i>
                         </div>
                         <div class="input-group">
-                            <span class="input-group-text icon-prepend"><i class="bi bi-lock-fill"></i></span>
+                            <span class="input-group-text icon-prepend"><i class="bi bi-lock"></i></span>
                             <input type="password" class="form-control input-custom" id="txtConfirmPassword" name="confirmContra" placeholder="Confirmar contraseña" required>
                         </div>
                     </div>
