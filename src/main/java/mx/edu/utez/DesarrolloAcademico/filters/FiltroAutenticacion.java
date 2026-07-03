@@ -43,7 +43,7 @@ public class FiltroAutenticacion extends HttpFilter {
             // SI TIENE SESIÓN:
             if (loginRequest) {
                 // Si ya está logueado e intenta ir al login, lo mandamos al index
-                response.sendRedirect(request.getContextPath() + "/index.jsp");
+                response.sendRedirect(request.getContextPath() + "/registro.jsp");
             } else {
                 // Si va a cualquier otra página, lo dejamos pasar
                 chain.doFilter(request, response);
@@ -55,7 +55,7 @@ public class FiltroAutenticacion extends HttpFilter {
                 chain.doFilter(request, response);
             } else {
                 // Si intenta entrar a una página protegida sin sesión, va para el login
-                response.sendRedirect(request.getContextPath() + "/login.jsp");
+                response.sendRedirect(request.getContextPath() + "/registro.jsp");
             }
         }
     }

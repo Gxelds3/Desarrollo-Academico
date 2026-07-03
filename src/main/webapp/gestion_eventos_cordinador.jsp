@@ -13,7 +13,7 @@
 
 
 <nav class="sidebar-hover">
-    
+
     <div class="sidebar-avatar-container">
         <div class="sidebar-avatar">
         </div>
@@ -50,11 +50,11 @@
         </div>
         <span class="sidebar-text">Mi Cuenta</span>
     </a>
-    
+
 </nav>
 
 <main class="main-content">
-    
+
     <h3 class="page-title">GESTION DE EVENTOS</h3>
 
     <div class="d-flex gap-2 mb-4 flex-wrap">
@@ -75,82 +75,82 @@
         <div class="table-responsive">
             <table class="table-custom" id="eventsTable">
                 <thead>
-                    <tr>
-                        <th>Titulo</th>
-                        <th>Tipo</th>
-                        <th>Institución</th>
-                        <th>Fecha</th>
-                        <th>Acciones</th>
-                    </tr>
+                <tr>
+                    <th>Titulo</th>
+                    <th>Tipo</th>
+                    <th>Institución</th>
+                    <th>Fecha</th>
+                    <th>Acciones</th>
+                </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>
-                            <div>Luis Gerardo</div>
-                            <div>Barron Flores</div>
-                        </td>
-                        <td>
-                            <div>ejemplo@gmail.</div>
-                            <div>com</div>
-                        </td>
-                        <td>
-                            <div>ejemplo@gmail.</div>
-                            <div>com</div>
-                        </td>
-                        <td class="text-success fw-semibold">Activo</td>
-                        <td>
-                            <a href="#" class="action-btn delete" title="Eliminar"><i class="bi bi-trash"></i></a>
-                            <a href="#" class="action-btn" title="Editar"><i class="bi bi-pencil"></i></a>
-                            <a href="#" class="action-btn" title="Ver"><i class="bi bi-eye"></i></a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <div>Luis Gerardo</div>
-                            <div>Barron Flores</div>
-                        </td>
-                        <td>
-                            <div>ejemplo@gmail.</div>
-                            <div>com</div>
-                        </td>
-                        <td>
-                            <div>ejemplo@gmail.</div>
-                            <div>com</div>
-                        </td>
-                        <td class="text-success fw-semibold">Activo</td>
-                        <td>
-                            <a href="#" class="action-btn delete" title="Eliminar"><i class="bi bi-trash"></i></a>
-                            <a href="#" class="action-btn" title="Editar"><i class="bi bi-pencil"></i></a>
-                            <a href="#" class="action-btn" title="Ver"><i class="bi bi-eye"></i></a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <div>Luis Gerardo</div>
-                            <div>Barron Flores</div>
-                        </td>
-                        <td>
-                            <div>ejemplo@gmail.</div>
-                            <div>com</div>
-                        </td>
-                        <td>
-                            <div>ejemplo@gmail.</div>
-                            <div>com</div>
-                        </td>
-                        <td class="text-success fw-semibold">Activo</td>
-                        <td>
-                            <a href="#" class="action-btn delete" title="Eliminar"><i class="bi bi-trash"></i></a>
-                            <a href="#" class="action-btn" title="Editar"><i class="bi bi-pencil"></i></a>
-                            <a href="#" class="action-btn" title="Ver"><i class="bi bi-eye"></i></a>
-                        </td>
-                    </tr>
+                <tr>
+                    <td>
+                        <div>Luis Gerardo</div>
+                        <div>Barron Flores</div>
+                    </td>
+                    <td>
+                        <div>ejemplo@gmail.</div>
+                        <div>com</div>
+                    </td>
+                    <td>
+                        <div>ejemplo@gmail.</div>
+                        <div>com</div>
+                    </td>
+                    <td class="text-success fw-semibold">Activo</td>
+                    <td>
+                        <a href="#" class="action-btn delete" title="Eliminar"><i class="bi bi-trash"></i></a>
+                        <a href="#" class="action-btn" title="Editar"><i class="bi bi-pencil"></i></a>
+                        <a href="#" class="action-btn" title="Ver"><i class="bi bi-eye"></i></a>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div>Luis Gerardo</div>
+                        <div>Barron Flores</div>
+                    </td>
+                    <td>
+                        <div>ejemplo@gmail.</div>
+                        <div>com</div>
+                    </td>
+                    <td>
+                        <div>ejemplo@gmail.</div>
+                        <div>com</div>
+                    </td>
+                    <td class="text-success fw-semibold">Activo</td>
+                    <td>
+                        <a href="#" class="action-btn delete" title="Eliminar"><i class="bi bi-trash"></i></a>
+                        <a href="#" class="action-btn" title="Editar"><i class="bi bi-pencil"></i></a>
+                        <a href="#" class="action-btn" title="Ver"><i class="bi bi-eye"></i></a>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div>Luis Gerardo</div>
+                        <div>Barron Flores</div>
+                    </td>
+                    <td>
+                        <div>ejemplo@gmail.</div>
+                        <div>com</div>
+                    </td>
+                    <td>
+                        <div>ejemplo@gmail.</div>
+                        <div>com</div>
+                    </td>
+                    <td class="text-success fw-semibold">Activo</td>
+                    <td>
+                        <a href="#" class="action-btn delete" title="Eliminar"><i class="bi bi-trash"></i></a>
+                        <a href="#" class="action-btn" title="Editar"><i class="bi bi-pencil"></i></a>
+                        <a href="#" class="action-btn" title="Ver"><i class="bi bi-eye"></i></a>
+                    </td>
+                </tr>
                 </tbody>
             </table>
         </div>
 
         <div class="d-flex justify-content-between align-items-center mt-2 flex-wrap gap-3">
             <div style="width: 150px;"></div>
-            
+
             <div class="pagination-container mt-0 mx-auto">
                 <a href="#" class="page-btn"><i class="bi bi-chevron-left"></i></a>
                 <a href="#" class="page-btn active">1</a>

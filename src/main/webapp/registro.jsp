@@ -2,118 +2,145 @@
 <!doctype html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport"
-        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>Registro</title>
-  <link rel="stylesheet" href="assets/css/bootstrap.css">
-  <link rel="stylesheet" href="assets/css/bi/bootstrap-icons.css">
-  <style>
-    body {background-color: #f8f9fa;}
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Crear Cuenta</title>
+    <link rel="stylesheet" href="assets/css/bootstrap.css">
+    <link rel="stylesheet" href="assets/css/bi/bootstrap-icons.css">
+    <link rel="stylesheet" href="assets/css/login.css">
 </head>
-<body class="d-flex align-items-center justify-content-center min-vh-100 py-4">
+<body class="d-flex align-items-center justify-content-center min-vh-100 body-registro">
 
-<div class="container">
-  <div class="row justify-content-center">
-    <div class="col-12 col-md-8 col-lg-5">
+<div class="container my-4">
+    <div class="row justify-content-center">
+        <div class="col-12 col-sm-10 col-md-6 col-lg-4">
+            <div class="p-2">
 
-      <div class="card shadow border-0 rounded-3">
-        <div class="card-body p-5">
-
-          <div class="text-center mb-4">
-            <div class="display-4 text-primary mb-2">
-              <i class="bi bi-person-plus-fill"></i>
-            </div>
-            <h2 class="fw-bold h4 text-dark">Crear Cuenta</h2>
-            <p class="text-muted small">Completa tus datos para registrarte</p>
-          </div>
-
-          <c:if test="${not empty error}">
-            <div class="alert alert-danger d-flex align-items-center py-2" role="alert">
-              <i class="bi bi-exclamation-triangle-fill me-2"></i>
-              <div class="small">
-                  ${error}
-              </div>
-            </div>
-          </c:if>
-
-          <c:if test="${not empty mensaje}">
-            <div class="alert alert-info d-flex align-items-center py-2" role="alert">
-              <i class="bi bi-info-circle-fill me-2"></i>
-              <div class="small">
-                  ${mensaje}
-              </div>
-            </div>
-          </c:if>
-
-          <form action="register" method="post">
-
-            <div class="row">
-              <div class="col-md-6">
-                <div class="form-floating mb-3">
-                  <input value="${param.nombre}" type="text" class="form-control" id="txtNombre" name="nombre" placeholder="Nombre" required>
-                  <label for="txtNombre">
-                    <i class="bi bi-person me-1"></i> Nombre
-                  </label>
+                <div class="text-center mb-4">
+                    <div class="mb-2">
+                        <i class="bi bi-person-fill-add" style="font-size: 5.5rem; color: #51B9B7;"></i>
+                    </div>
+                    <h2 class="fw-bold fs-2 texto-primario">Crear Cuenta</h2>
                 </div>
-              </div>
-              <div class="col-md-6">
-                <div class="form-floating mb-3">
-                  <input value="${param.apellidos}" type="text" class="form-control" id="txtApellidos" name="apellidos" placeholder="Apellidos" required>
-                  <label for="txtApellidos">
-                    <i class="bi bi-person-lines-fill me-1"></i> Apellidos
-                  </label>
-                </div>
-              </div>
-            </div>
 
-            <div class="form-floating mb-3">
-              <input value="${param.email1}" type="email" class="form-control" id="txtCorreo" name="email1" placeholder="Correo electrónico" required>
-              <label for="txtCorreo">
-                <i class="bi bi-envelope me-1"></i> Correo electrónico
-              </label>
-            </div>
+                <%-- Alertas de error --%>
+                <c:if test="${not empty error}">
+                    <div class="alert alert-danger py-2 rounded-3" role="alert">
+                        <div class="small"><i class="bi bi-exclamation-triangle-fill me-2"></i>${error}</div>
+                    </div>
+                </c:if>
 
-            <div class="form-floating mb-3">
-              <input value="${param.email2}" type="email" class="form-control" id="txtCorreo" name="email2" placeholder="Correo electrónico" required>
-              <label for="txtCorreo">
-                <i class="bi bi-envelope me-1"></i> Repite tu Correo electrónico
-              </label>
-            </div>
+                <form action="registro" method="post">
 
-            <div class="form-floating mb-4">
-              <input type="password" class="form-control" id="txtPassword" name="contra1" placeholder="Contraseña" required>
-              <label for="txtPassword">
-                <i class="bi bi-lock me-1"></i> Contraseña
-              </label>
-            </div>
+                    <div class="row g-2 mb-3">
+                        <div class="col-6">
+                            <label for="nombre" class="form-label label-custom">Nombre(s):</label>
+                            <div class="input-group">
+                                <span class="input-group-text icon-prepend"><i class="bi bi-person"></i></span>
+                                <input type="text" class="form-control input-custom" id="nombre" name="nombre" placeholder="Nombre(s)" required>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <label for="apellidos" class="form-label label-custom">Apellidos:</label>
+                            <div class="input-group">
+                                <span class="input-group-text icon-prepend"><i class="bi bi-person-vcard"></i></span>
+                                <input type="text" class="form-control input-custom" id="apellidos" name="apellidos" placeholder="Apellidos" required>
+                            </div>
+                        </div>
+                    </div>
 
-            <div class="form-floating mb-4">
-              <input type="password" class="form-control" id="txtPassword" name="contra2" placeholder="Contraseña" required>
-              <label for="txtPassword">
-                <i class="bi bi-lock me-1"></i> Repite tu Contraseña
-              </label>
-            </div>
+                    <div class="mb-3">
+                        <label for="NumeroEmpleado" class="form-label label-custom">Número de Empleado:</label>
+                        <div class="input-group">
+                            <span class="input-group-text icon-prepend">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor">
+                                    <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4zm2-1a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4a1 1 0 0 0-1-1H2z"/>
+                                    <path d="M3 6.5A1.5 1.5 0 0 1 4.5 5h1A1.5 1.5 0 0 1 7 6.5v1A1.5 1.5 0 0 1 5.5 9h-1A1.5 1.5 0 0 1 3 7.5v-1zM9 6.25a.75.75 0 0 1 .75-.75h3.5a.75.75 0 0 1 0 1.5h-3.5A.75.75 0 0 1 9 6.25zM9 9.25a.75.75 0 0 1 .75-.75h3.5a.75.75 0 0 1 0 1.5h-3.5A.75.75 0 0 1 9 9.25zM3.75 11a.75.75 0 0 0 0 1.5h3.5a.75.75 0 0 0 0-1.5h-3.5z"/>
+                                </svg>
+                            </span>
+                            <input type="text" class="form-control input-custom" id="NumeroEmpleado" name="numeroEmpleado" placeholder="Número de Empleado" required>
+                        </div>
+                    </div>
 
-            <button class="btn btn-primary w-100 py-2 fw-semibold shadow-sm" type="submit">
-              <i class="bi bi-check-circle me-2"></i> Registrarme
-            </button>
+                    <div class="mb-3">
+                        <label for="correoInstitucional" class="form-label label-custom">Correo institucional:</label>
+                        <div class="input-group">
+                            <span class="input-group-text icon-prepend"><i class="bi bi-envelope"></i></span>
+                            <input type="email" class="form-control input-custom" id="correoInstitucional" name="correoInstitucional" placeholder="Correo institucional" required>
+                        </div>
+                    </div>
 
-            <div class="d-flex flex-column align-items-center gap-2 small mt-4">
-              <div>
-                <span class="text-muted">¿Ya tienes una cuenta?</span>
-                <a href="login.jsp" class="text-decoration-none fw-medium">Inicia sesión aquí</a>
-              </div>
+                    <div class="mb-3">
+                        <label for="telefono" class="form-label label-custom">Teléfono:</label>
+                        <div class="input-group">
+                            <span class="input-group-text icon-prepend"><i class="bi bi-telephone"></i></span>
+                            <input type="tel" class="form-control input-custom" id="telefono" name="telefono" placeholder="Teléfono" required>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="division" class="form-label label-custom">División:</label>
+                        <select class="form-select select-custom text-muted" id="division" name="division" required>
+                            <option value="" disabled selected hidden>División</option>
+                            <option value="1">DATID</option>
+                            <option value="2">DATEFI</option>
+                            <option value="2">DACEA</option>
+                            <option value="2">DAMI</option>
+
+
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <label for="txtPassword" class="form-label label-custom mb-1">Contraseña:</label>
+                            <i class="bi bi-eye toggle-password-icon" id="togglePassword"></i>
+                        </div>
+                        <div class="input-group">
+                            <span class="input-group-text icon-prepend"><i class="bi bi-lock"></i></span>
+                            <input type="password" class="form-control input-custom" id="txtPassword" name="contra" placeholder="Contraseña" required>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <label for="txtConfirmPassword" class="form-label label-custom mb-1">Confirmar contraseña:</label>
+                            <i class="bi bi-eye toggle-password-icon" id="toggleConfirmPassword"></i>
+                        </div>
+                        <div class="input-group">
+                            <span class="input-group-text icon-prepend"><i class="bi bi-lock"></i></span>
+                            <input type="password" class="form-control input-custom" id="txtConfirmPassword" name="confirmContra" placeholder="Confirmar contraseña" required>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-center gap-4 mb-4">
+                        <div class="form-check">
+                            <input class="form-check-input checkbox-border" type="checkbox" value="coordinador" id="chkCordinador" name="roles" checked>
+                            <label class="form-check-label fw-bold text-dark small" for="chkCordinador">Cordinador</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input checkbox-border" type="checkbox" value="desarrollo" id="chkDesarrollo" name="roles">
+                            <label class="form-check-label fw-bold text-dark small" for="chkDesarrollo">Desarrollo Academico</label>
+                        </div>
+                    </div>
+
+                    <button class="btn w-100 mb-3 fw-bold btn-registrarme" type="submit">
+                        Registrarme
+                    </button>
+
+                    <div class="text-center small">
+                        <span class="text-dark">¿Ya te acordaste de tu cuenta? </span>
+                        <a href="login.jsp" class="text-decoration-none enlace-login">Inicia sesión aquí</a>
+                    </div>
+                </form>
+
             </div>
-          </form>
         </div>
-      </div>
     </div>
-  </div>
 </div>
 
 <script src="assets/js/bootstrap.js"></script>
+<script src="assets/js/login.js"></script>
 </body>
 </html>

@@ -1,0 +1,110 @@
+.body-registro {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #ffffff;
+}
+.texto-primario { color: #1E8887 !important; }
+.label-custom {
+    font-size: 0.95rem;
+    font-weight: 700 !important;
+    color: #000000 !important;
+    margin-bottom: 0.3rem;
+    display: block;
+}
+.input-custom {
+    padding-top: 0.55rem !important;
+    padding-bottom: 0.55rem !important;
+    padding-left: 2.6rem !important;
+    border: 1.5px solid #6c757d !important;
+    border-radius: 0.5rem !important;
+    width: 100%;
+}
+.select-custom {
+    padding-top: 0.55rem !important;
+    padding-bottom: 0.55rem !important;
+    padding-left: 1rem !important;
+    padding-right: 2.5rem !important; /* deja espacio para la flecha nativa */
+    border: 1.5px solid #6c757d !important;
+    border-radius: 0.5rem !important;
+    width: 100%;
+}
+
+/* Ícono a la izquierda, sin recuadro, flotando dentro del input */
+.icon-prepend {
+    background-color: transparent !important;
+    color: #6c757d !important;
+    border: none !important;
+    padding-left: 0.9rem !important;
+    padding-right: 0.5rem !important;
+    font-size: 1.05rem !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    position: absolute !important;
+    z-index: 5 !important;
+    height: 100%;
+    pointer-events: none;
+}
+
+.input-group {
+    position: relative !important;
+}
+
+.icon-prepend svg {
+    vertical-align: -0.125em;
+}
+
+/* Foco con el color de marca en vez del azul de Bootstrap */
+.input-custom:focus,
+.select-custom:focus {
+    border-color: #51B9B7 !important;
+    box-shadow: 0 0 0 0.2rem rgba(81, 185, 183, 0.25) !important;
+}
+.toggle-password-icon {
+    color: #495057 !important;
+    font-size: 1.1rem !important;
+    cursor: pointer !important;
+    position: absolute !important;
+    right: 0.9rem !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    z-index: 5 !important;
+}
+.toggle-password-icon:hover {
+    color: #1E8887 !important;
+}
+.input-group:has(.toggle-password-icon) .input-custom {
+    padding-right: 2.5rem !important;
+}
+/* Checkboxes alineados verticalmente con su etiqueta */
+.form-check {
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.5rem;
+    padding-left: 0 !important;
+}
+.checkbox-border {
+    width: 1.15em !important;
+    height: 1.15em !important;
+    margin: 0 !important;
+    float: none !important;
+    border: 2px solid #000000 !important;
+    border-radius: 4px !important;
+}
+.checkbox-border:checked {
+    background-color: #000000 !important;
+    border-color: #000000 !important;
+}
+.form-check-label {
+    margin-bottom: 0;
+    cursor: pointer;
+}
+.btn-registrarme {
+    background-color: #51B9B7 !important;
+    color: #ffffff !important;
+    padding: 0.65rem !important;
+    font-size: 1.1rem !important;
+    border: none !important;
+    border-radius: 0.5rem !important;
+}
+.btn-registrarme:hover { background-color: #3AA19F !important; }
+.enlace-login { color: #5B7FFF !important; font-weight: 600; }
