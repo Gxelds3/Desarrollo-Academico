@@ -83,8 +83,12 @@
                         <label for="division" class="form-label label-custom">División:</label>
                         <select class="form-select select-custom text-muted" id="division" name="division" required>
                             <option value="" disabled selected hidden>División</option>
-                            <option value="1">División Académica 1</option>
-                            <option value="2">División Académica 2</option>
+                            <option value="1">DATID</option>
+                            <option value="2">DATEFI</option>
+                            <option value="2">DACEA</option>
+                            <option value="2">DAMI</option>
+
+
                         </select>
                     </div>
 
