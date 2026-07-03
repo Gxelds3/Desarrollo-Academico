@@ -54,9 +54,7 @@
                             <i class="bi bi-lock-fill position-absolute text-secondary fs-5" style="left: 15px; top: 50%; transform: translateY(-50%);"></i>
 
                             <input type="password" class="form-control rounded-3" id="txtPassword" name="contra" placeholder="Contraseña" required
-                                   style="padding: 0.6rem 2.8rem 0.6rem 2.8rem; border: 1.5px solid #6C5555; background-color: rgba(255, 255, 255, 0.6);">
-
-                            <i class="bi bi-eye-fill position-absolute fs-5" id="togglePassword" style="right: 15px; top: 50%; transform: translateY(-50%); color: #513955; cursor: pointer;"></i>
+                                   style="padding: 0.6rem 1rem 0.6rem 2.8rem; border: 1.5px solid #6C5555; background-color: rgba(255, 255, 255, 0.6);">
                         </div>
                     </div>
 
@@ -84,16 +82,6 @@
 </div>
 
 <script src="assets/js/bootstrap.js"></script>
-<script>
-    const togglePassword = document.querySelector('#togglePassword');
-    const password = document.querySelector('#txtPassword');
 
-    togglePassword.addEventListener('click', function () {
-        const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
-        password.setAttribute('type', type);
-        this.classList.toggle('bi-eye-fill');
-        this.classList.toggle('bi-eye-slash-fill');
-    });
-</script>
 </body>
 </html>
