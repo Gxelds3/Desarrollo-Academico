@@ -63,9 +63,17 @@
     color: #495057 !important;
     font-size: 1.1rem !important;
     cursor: pointer !important;
+    position: absolute !important;
+    right: 0.9rem !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    z-index: 5 !important;
 }
 .toggle-password-icon:hover {
     color: #1E8887 !important;
+}
+.input-group:has(.toggle-password-icon) .input-custom {
+    padding-right: 2.5rem !important;
 }
 /* Checkboxes alineados verticalmente con su etiqueta */
 .form-check {
