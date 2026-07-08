@@ -34,8 +34,19 @@ public class FiltroAutenticacion extends HttpFilter {
                         requestURI.endsWith("/register") ||
                         requestURI.endsWith("recuperar-contra.jsp") ||
                         requestURI.endsWith("/reset") ||
-                        requestURI.endsWith("vista_general_cordinador.jsp") ||
-                        requestURI.endsWith("gestion_eventos_cordinador.jsp")
+                        requestURI.endsWith("vista_general_coordinador.jsp") ||
+                        requestURI.endsWith("gestion_evento.jsp") ||
+                        requestURI.endsWith("agregar_docente.jsp") ||
+                        requestURI.endsWith("agregar_evento.jsp") ||
+                        requestURI.endsWith("archivo_subido.jsp") ||
+                        requestURI.endsWith("cargar_archivo.jsp") ||
+                        requestURI.endsWith("editar_docente.jsp") ||
+                        requestURI.endsWith("editar_evento.jsp") ||
+                        requestURI.endsWith("gestion_docente.jsp") ||
+                        requestURI.endsWith("historial_evento.jsp") ||
+                        requestURI.endsWith("mi_cuenta.jsp") ||
+                        requestURI.endsWith("mi_evento.jsp") ||
+                        requestURI.endsWith("ver_mas_evento.jsp")
                 ;
         boolean isResource = requestURI.contains("/assets/") || requestURI.contains("/layout/");
 

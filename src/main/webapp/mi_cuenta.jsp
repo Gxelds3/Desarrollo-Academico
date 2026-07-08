@@ -1,0 +1,99 @@
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Cuenta</title>
+    <link rel="stylesheet" href="assets/css/bootstrap.css">
+    <link rel="stylesheet" href="assets/css/bi/bootstrap-icons.css">
+    <link rel="stylesheet" href="assets/css/coordinador.css">
+    <style>
+        .form-control[readonly] {
+            background-color: #e9ecef;
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+
+<jsp:include page="sidebar.jsp">
+    <jsp:param name="active" value="mi_cuenta" />
+</jsp:include>
+
+<main class="main-content">
+    <div class="d-flex align-items-center mb-4" style="color: var(--teal-main);">
+        <i class="bi bi-info-circle me-2 fs-5"></i>
+        <h3 class="page-title mb-0">COORDINADOR</h3>
+    </div>
+
+    <form>
+        <div class="row mb-4">
+            <div class="col-md-4">
+                <label class="form-label text-muted">Nombre(s):</label>
+                <input type="text" class="form-control" value="Luis Gerardo" readonly>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label text-muted">Apellido Paterno :</label>
+                <input type="text" class="form-control" value="Barron" readonly>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label text-muted">Apellido Materno :</label>
+                <input type="text" class="form-control" value="Flores" readonly>
+            </div>
+        </div>
+
+        <div class="row mb-4">
+            <div class="col-md-4">
+                <label class="form-label text-muted">Division Academica :</label>
+                <input type="text" class="form-control" value="DATID" readonly>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label text-muted">Número de Empleado:</label>
+                <input type="text" class="form-control" value="Número de Empleado" readonly>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label text-muted">Teléfono:</label>
+                <input type="text" class="form-control" value="7771234512" readonly>
+            </div>
+        </div>
+
+        <div class="row mb-5">
+            <div class="col-md-4">
+                <label class="form-label text-muted">Correo Institucional :</label>
+                <input type="text" class="form-control" value="30353ds076@gmail.com" readonly>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label text-muted">Contraseña :</label>
+                <div class="password-container">
+                    <input type="password" class="form-control" value="password123" id="pass1" readonly>
+                    <i class="bi bi-eye-fill" onclick="togglePassword('pass1')"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="d-flex justify-content-end">
+            <a href="vista_general_coordinador.jsp" class="btn-teal">Volver</a>
+        </div>
+    </form>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="assets/js/coordinador.js"></script>
+<script>
+    function togglePassword(inputId) {
+        const input = document.getElementById(inputId);
+        const icon = input.nextElementSibling;
+        if (input.type === "password") {
+            input.type = "text";
+            icon.classList.remove("bi-eye-fill");
+            icon.classList.add("bi-eye-slash-fill");
+        } else {
+            input.type = "password";
+            icon.classList.remove("bi-eye-slash-fill");
+            icon.classList.add("bi-eye-fill");
+        }
+    }
+</script>
+</body>
+</html>

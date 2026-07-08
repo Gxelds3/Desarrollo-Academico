@@ -12,58 +12,14 @@
 <body>
 
 
-<nav class="sidebar-hover">
-    
-    <div class="sidebar-avatar-container">
-        <div class="sidebar-avatar">
-
-        </div>
-        <div class="sidebar-info text-white">
-            <div class="fw-semibold mb-1">Luis Gerardo Barron Flores</div>
-            <div class="small" style="color: rgba(255,255,255,0.85);">Coordinador Academico</div>
-        </div>
-    </div>
-
-    <a href="vista_general_cordinador.jsp" class="sidebar-item active">
-        <div class="sidebar-icon">
-            <i class="bi bi-calendar-event"></i>
-        </div>
-        <span class="sidebar-text">Eventos Proximo</span>
-    </a>
-
-    <a href="gestion_eventos_cordinador.jsp" class="sidebar-item">
-        <div class="sidebar-icon">
-            <i class="bi bi-calendar2-check"></i>
-        </div>
-        <span class="sidebar-text">Gestion de Eventos</span>
-    </a>
-
-    <a href="#" class="sidebar-item">
-        <div class="sidebar-icon">
-            <i class="bi bi-person-badge"></i>
-        </div>
-        <span class="sidebar-text">Gestion de Docentes</span>
-    </a>
-
-    <a href="#" class="sidebar-item">
-        <div class="sidebar-icon">
-            <i class="bi bi-person"></i>
-        </div>
-        <span class="sidebar-text">Mi Cuenta</span>
-    </a>
-    
-</nav>
+<jsp:include page="sidebar.jsp">
+    <jsp:param name="active" value="eventos_proximo" />
+</jsp:include>
 
 
 <main class="main-content">
     
-
-    <div class="search-box mb-5">
-        <i class="bi bi-search"></i>
-        <input type="text" id="searchInput" placeholder="Buscar evento...">
-    </div>
-
-    <div class="row mb-5 gx-4">
+    <div class="row mb-5 gx-4 mt-3">
         <div class="col-md-6 col-lg-5 mb-3">
             <div class="stat-card">
                 <div class="stat-icon">
@@ -119,14 +75,5 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 <script src="assets/js/coordinador.js"></script>
-<script>
-    document.getElementById('searchInput').addEventListener('input', function () {
-        const query = this.value.toLowerCase();
-        document.querySelectorAll('#eventsList .event-card').forEach(function (card) {
-            const title = card.querySelector('.fw-bold').textContent.toLowerCase();
-            card.style.display = title.includes(query) ? 'flex' : 'none';
-        });
-    });
-</script>
 </body>
 </html>
