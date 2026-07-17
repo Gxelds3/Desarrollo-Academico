@@ -33,6 +33,7 @@ public class FiltroAutenticacion extends HttpFilter {
                         requestURI.endsWith("registro.jsp") ||
                         requestURI.endsWith("/register") ||
                         requestURI.endsWith("recuperar-contra.jsp") ||
+                        requestURI.endsWith("/recuperar") ||
                         requestURI.endsWith("/reset") ||
                         requestURI.endsWith("vista_general_coordinador.jsp") ||
                         requestURI.endsWith("gestion_evento.jsp") ||

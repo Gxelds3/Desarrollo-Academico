@@ -65,6 +65,13 @@
                         Iniciar
                     </button>
 
+                    <% String exito = (String) request.getAttribute("mensajeExito");
+                        if (exito != null) { %>
+                    <div class="alert alert-success d-flex align-items-center py-2 rounded-3" role="alert">
+                        <i class="bi bi-check-circle-fill me-2"></i>
+                        <div class="small"><%= exito %></div>
+                    </div>
+                    <% } %>
                     <div class="text-center small">
                         <div class="mb-1">
                             <span class="text-dark">¿No tienes cuenta?</span>
