@@ -79,7 +79,7 @@ public class UsuarioDao {
         try (Connection con = DatabaseConnection.getConnection();
              PreparedStatement ps = con.prepareStatement(query)) {
              
-            ps.setString(1, nuevaPassword); // Nota: En producción, usar hash (Bcrypt)
+            ps.setString(1, nuevaPassword);
             ps.setInt(2, idUsuario);
             
             return ps.executeUpdate() > 0;

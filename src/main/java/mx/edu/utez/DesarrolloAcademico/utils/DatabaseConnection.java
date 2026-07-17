@@ -21,27 +21,27 @@ public class DatabaseConnection {
                     }
                 }
 
-                // Leer de variables de entorno (prioridad alta)
+
                 String dbUser = System.getenv("DB_USER") != null ? System.getenv("DB_USER") : props.getProperty("db.user");
                 String dbPass = System.getenv("DB_PASS") != null ? System.getenv("DB_PASS") : props.getProperty("db.password");
                 
-                // Obtener ruta absoluta del wallet dinámicamente desde resources
+
                 java.net.URL walletUrl = DatabaseConnection.class.getClassLoader().getResource("wallet");
                 String walletPath = "";
                 if (walletUrl != null) {
                     walletPath = new java.io.File(walletUrl.toURI()).getAbsolutePath();
                 }
                 
-                // Configurar propiedades de conexión
+
                 Properties info = new Properties();
                 info.put("user", dbUser);
                 info.put("password", dbPass);
                 info.put("oracle.net.tns_admin", walletPath);
 
-                // Cargar el driver
+
                 Class.forName("oracle.jdbc.OracleDriver");
 
-                // Conectar usando solo el alias y pasando las propiedades
+
                 String dbUrl = "jdbc:oracle:thin:@desarrolloacademico_medium";
                 connection = DriverManager.getConnection(dbUrl, info);
                 System.out.println("Conexión a Oracle exitosa!");

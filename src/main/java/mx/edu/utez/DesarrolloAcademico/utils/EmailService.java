@@ -11,11 +11,11 @@ public class EmailService {
     private String password;
 
     public EmailService() {
-        // Leer primero de variables de entorno
+
         this.user = System.getenv("MAIL_USER");
         this.password = System.getenv("MAIL_PASSWORD");
 
-        // Si no hay variables de entorno, leer del archivo
+
         if (this.user == null || this.password == null) {
             try (InputStream in = getClass().getClassLoader().getResourceAsStream("credentials.properties")) {
                 Properties props = new Properties();

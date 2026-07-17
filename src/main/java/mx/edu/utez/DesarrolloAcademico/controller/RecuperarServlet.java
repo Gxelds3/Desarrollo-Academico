@@ -40,24 +40,20 @@ public class RecuperarServlet extends HttpServlet {
     }
 
     private void solicitarCodigo(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String dato = request.getParameter("dato"); // Email o Username
+        String dato = request.getParameter("dato");
 
         Usuario usuario = usuarioDao.buscarPorEmailOUsername(dato);
 
         if (usuario != null) {
-            // Paso 3.1: Generar código random
             String codigo = generarCodigo(6);
             
-            // Paso 3.2: Guardar en BD
             boolean guardado = usuarioDao.guardarCodigoRecuperacion(usuario.getId(), codigo);
             
             if (guardado) {
-                // Paso 3.3: Enviar correo
                 emailService.enviarCodigoRecuperacion(usuario.getEmail(), codigo);
             }
         }
         
-        // Paso 2: Mensaje estándar sin importar si existe o no
         request.setAttribute("mensajeInfo", "Si el email o UN se encuentra registrado, te llegará un correo electrónico con instrucciones.");
         request.setAttribute("step", "verificar");
         request.getRequestDispatcher("recuperar-contra.jsp").forward(request, response);
@@ -66,11 +62,9 @@ public class RecuperarServlet extends HttpServlet {
     private void verificarCodigo(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String codigo = request.getParameter("codigo");
         
-        // Paso 4: Revisar que el código exista
         Usuario usuario = usuarioDao.verificarCodigo(codigo);
         
         if (usuario != null) {
-            // Paso 4.2: Código correcto
             HttpSession session = request.getSession();
             session.setAttribute("idUsuarioRecuperacion", usuario.getId());
             session.setAttribute("emailUsuarioRecuperacion", usuario.getEmail());
@@ -78,7 +72,6 @@ public class RecuperarServlet extends HttpServlet {
             request.setAttribute("step", "cambiar");
             request.getRequestDispatcher("recuperar-contra.jsp").forward(request, response);
         } else {
-            // Paso 4.1: Código incorrecto
             request.setAttribute("mensajeError", "Código incorrecto o expirado, intenta de nuevo.");
             request.setAttribute("step", "verificar");
             request.getRequestDispatcher("recuperar-contra.jsp").forward(request, response);
@@ -98,16 +91,12 @@ public class RecuperarServlet extends HttpServlet {
         String pass1 = request.getParameter("pass1");
         String pass2 = request.getParameter("pass2");
 
-        // Paso 5: Validar que coincidan
         if (pass1 != null && pass1.equals(pass2) && !pass1.trim().isEmpty()) {
-            // Paso 6: Actualizar BD y limpiar código
             boolean actualizado = usuarioDao.actualizarPasswordLimpiaCodigo(idUsuario, pass1);
             
             if (actualizado) {
-                // Paso 7: Enviar correo de confirmación
                 emailService.enviarConfirmacionCambio(email);
                 
-                // Limpiar sesión
                 session.removeAttribute("idUsuarioRecuperacion");
                 session.removeAttribute("emailUsuarioRecuperacion");
                 
