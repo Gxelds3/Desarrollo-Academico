@@ -63,17 +63,31 @@
                 <label class="form-label text-muted">Correo Institucional :</label>
                 <input type="text" class="form-control" value="30353ds076@gmail.com" readonly>
             </div>
+        </div>
+
+        <div class="bg-teal text-white p-2 mb-4 fs-5" style="background-color: var(--teal-main);">
+            Cambio de contraseña
+        </div>
+
+        <div class="row mb-5">
             <div class="col-md-4">
-                <label class="form-label text-muted">Contraseña :</label>
-                <div class="password-container">
-                    <input type="password" class="form-control" value="password123" id="pass1" readonly>
-                    <i class="bi bi-eye-fill" onclick="togglePassword('pass1')"></i>
-                </div>
+                <label class="form-label text-muted">Contraseña Actual:</label>
+                <input type="password" class="form-control bg-white">
+            </div>
+            <div class="col-md-4">
+                <label class="form-label text-muted">Nueva Contraseña:</label>
+                <input type="password" class="form-control bg-white">
+            </div>
+            <div class="col-md-4">
+                <label class="form-label text-muted">Confirmar Contraseña:</label>
+                <input type="password" class="form-control bg-white">
             </div>
         </div>
 
         <div class="d-flex justify-content-end">
-            <a href="vista_general_coordinador.jsp" class="btn-teal">Volver</a>
+            <a href="vista_general_coordinador_co.jsp" class="btn btn-outline-teal px-4 py-2 fw-semibold d-flex align-items-center" style="border: 2px solid var(--teal-main); color: var(--teal-main); border-radius: 6px;">
+                <i class="bi bi-chevron-left me-2"></i> Volver
+            </a>
         </div>
     </form>
 </main>

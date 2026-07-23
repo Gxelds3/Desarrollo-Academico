@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mis Eventos</title>
+    <title>Historial de Eventos</title>
     <link rel="stylesheet" href="assets/css/bootstrap.css">
     <link rel="stylesheet" href="assets/css/bi/bootstrap-icons.css">
     <link rel="stylesheet" href="assets/css/coordinador.css">
@@ -12,27 +12,42 @@
 <body>
 
 <jsp:include page="sidebar.jsp">
-    <jsp:param name="active" value="eventos_proximo" />
+    <jsp:param name="active" value="gestion_evento" />
 </jsp:include>
 
 <main class="main-content">
-    <h3 class="page-title mb-4">MIS EVENTOS</h3>
+    <h3 class="page-title mb-4">HISTORIAL EVENTOS</h3>
 
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <div class="search-box mb-0" style="max-width: 600px; flex-grow: 1; margin-right: 20px;">
-            <i class="bi bi-search"></i>
-            <input type="text" placeholder="Buscar Evento por nombre ...">
-        </div>
-        <a href="historial_evento.jsp" class="btn-teal-outline">Ver historial de Eventos</a>
+    <div class="d-flex flex-wrap gap-2 mb-4">
+        <a href="#" class="nav-pill active">Todos</a>
+        <a href="#" class="nav-pill">Diplomado</a>
+        <a href="#" class="nav-pill">Conferencia</a>
+        <a href="#" class="nav-pill">Taller</a>
+        <a href="#" class="nav-pill">Curso</a>
+        <a href="#" class="nav-pill">Certificacion</a>
+    </div>
+
+    <div class="search-box mb-4">
+        <i class="bi bi-search"></i>
+        <input type="text" placeholder="Buscar Evento por nombre ...">
     </div>
 
     <div class="data-card p-0 mb-4" style="overflow: hidden;">
-        <table class="table-custom mb-0 text-center">
+        <table class="table-custom mb-0">
+            <colgroup>
+                <col style="width: 26%;">
+                <col style="width: 13%;">
+                <col style="width: 20%;">
+                <col style="width: 12%;">
+                <col style="width: 20%;">
+                <col style="width: 9%;">
+            </colgroup>
             <thead>
                 <tr>
-                    <th class="text-center">Titulo</th>
+                    <th>Titulo</th>
                     <th>Tipo</th>
                     <th>Institución</th>
+                    <th>Modalidad</th>
                     <th>Fecha</th>
                     <th>Acciones</th>
                 </tr>
@@ -48,10 +63,10 @@
                         <div>Centro de</div>
                         <div class="small text-muted">Capacitacion</div>
                     </td>
+                    <td>Virtual</td>
                     <td>02/02/26 - 30/03/26</td>
                     <td>
                         <a href="ver_mas_evento.jsp" class="action-btn"><i class="bi bi-eye"></i></a>
-                        <a href="cargar_archivo.jsp" class="action-btn"><i class="bi bi-cloud-upload"></i></a>
                     </td>
                 </tr>
                 <tr>
@@ -64,10 +79,10 @@
                         <div>Centro de</div>
                         <div class="small text-muted">Capacitacion</div>
                     </td>
+                    <td>Virtual</td>
                     <td>02/02/26 - 30/03/26</td>
                     <td>
                         <a href="ver_mas_evento.jsp" class="action-btn"><i class="bi bi-eye"></i></a>
-                        <a href="cargar_archivo.jsp" class="action-btn"><i class="bi bi-cloud-upload"></i></a>
                     </td>
                 </tr>
                 <tr>
@@ -80,10 +95,10 @@
                         <div>Centro de</div>
                         <div class="small text-muted">Capacitacion</div>
                     </td>
+                    <td>Virtual</td>
                     <td>02/02/26 - 30/03/26</td>
                     <td>
                         <a href="ver_mas_evento.jsp" class="action-btn"><i class="bi bi-eye"></i></a>
-                        <a href="cargar_archivo.jsp" class="action-btn"><i class="bi bi-cloud-upload"></i></a>
                     </td>
                 </tr>
                 <tr>
@@ -96,10 +111,26 @@
                         <div>Centro de</div>
                         <div class="small text-muted">Capacitacion</div>
                     </td>
+                    <td>Virtual</td>
                     <td>02/02/26 - 30/03/26</td>
                     <td>
                         <a href="ver_mas_evento.jsp" class="action-btn"><i class="bi bi-eye"></i></a>
-                        <a href="cargar_archivo.jsp" class="action-btn"><i class="bi bi-cloud-upload"></i></a>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="fw-semibold">Fundamentos de redes</div>
+                        <div class="small text-muted">cisco paket tracer</div>
+                    </td>
+                    <td>Certificacion</td>
+                    <td>
+                        <div>Centro de</div>
+                        <div class="small text-muted">Capacitacion</div>
+                    </td>
+                    <td>Virtual</td>
+                    <td>02/02/26 - 30/03/26</td>
+                    <td>
+                        <a href="ver_mas_evento.jsp" class="action-btn"><i class="bi bi-eye"></i></a>
                     </td>
                 </tr>
             </tbody>

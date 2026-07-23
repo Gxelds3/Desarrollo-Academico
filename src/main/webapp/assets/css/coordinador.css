@@ -79,7 +79,7 @@ body {
 .sidebar-item {
     display: flex;
     align-items: center;
-    height: 45px;
+    min-height: 45px;
     margin: 10px 20px;
     padding: 0;
     border-radius: 25px;
@@ -89,6 +89,7 @@ body {
     text-decoration: none;
     box-sizing: border-box;
     white-space: nowrap;
+    overflow: hidden;
 }
 
 .sidebar-icon {
@@ -112,13 +113,17 @@ body {
 }
 
 .sidebar-text {
-    margin-left: 15px;
+    margin-left: 12px;
     font-weight: 600;
     opacity: 0;
     transition: opacity 0.3s ease;
+    line-height: 1.25;
+    font-size: 0.88rem;
+    max-width: 185px;
 }
 
-.sidebar-hover:hover .sidebar-text {
+.sidebar-hover:hover .sidebar-text,
+.sidebar-hover.locked .sidebar-text {
     opacity: 1;
 }
 
@@ -127,6 +132,10 @@ body {
 .sidebar-hover.locked .sidebar-item {
     background-color: white;
     color: var(--teal-main);
+    min-height: 48px;
+    height: auto;
+    align-items: center;
+    padding: 6px 0;
 }
 .sidebar-hover:hover .sidebar-item .sidebar-icon,
 .sidebar-hover.locked .sidebar-item .sidebar-icon {
@@ -177,6 +186,7 @@ body {
     font-size: 0.85rem;
     padding: 6px 18px;
     border-radius: 8px;
+    background-color: white;
     border: 1.5px solid var(--teal-main);
     transition: all 0.2s;
 }
@@ -267,6 +277,7 @@ body {
     margin-bottom: 20px;
     border-collapse: separate;
     border-spacing: 0;
+    table-layout: fixed;
 }
 .table-custom th {
     background-color: var(--teal-main);
@@ -285,11 +296,22 @@ body {
     border-bottom-right-radius: 8px;
 }
 .table-custom td {
-    padding: 16px;
+    padding: 12px 16px;
     vertical-align: middle;
     font-size: 0.85rem;
     color: #333;
     border-bottom: 1px solid #eee;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 0;
+    text-align: left;
+}
+.table-custom td > div,
+.table-custom td > span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .action-btn {

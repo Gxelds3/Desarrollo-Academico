@@ -8,35 +8,35 @@
         </div>
     </div>
 
-    <a href="vista_general_coordinador.jsp" class="sidebar-item ${param.active == 'eventos_proximo' ? 'active' : ''}">
+    <a href="vista_general_coordinador_co.jsp" class="sidebar-item ${param.active == 'eventos_proximo' ? 'active' : ''}">
         <div class="sidebar-icon">
             <i class="bi bi-calendar-event"></i>
         </div>
         <span class="sidebar-text">Eventos Proximo</span>
     </a>
 
-    <a href="gestion_evento.jsp" class="sidebar-item ${param.active == 'gestion_evento' ? 'active' : ''}">
+    <a href="gestion_evento_co.jsp" class="sidebar-item ${param.active == 'gestion_evento' ? 'active' : ''}">
         <div class="sidebar-icon">
             <i class="bi bi-calendar2-check"></i>
         </div>
         <span class="sidebar-text">Gestion de Eventos</span>
     </a>
 
-    <a href="gestion_docente.jsp" class="sidebar-item ${param.active == 'gestion_docente' ? 'active' : ''}">
+    <a href="gestion_docente_co.jsp" class="sidebar-item ${param.active == 'gestion_docente' ? 'active' : ''}">
         <div class="sidebar-icon">
             <i class="bi bi-person-badge"></i>
         </div>
-        <span class="sidebar-text">Gestion de Docentes</span>
+        <span class="sidebar-text">Gestión de Docentes /<br>Coordinadores</span>
     </a>
 
-    <a href="mi_evento.jsp" class="sidebar-item ${param.active == 'mi_evento' ? 'active' : ''}">
+    <a href="mi_evento_co.jsp" class="sidebar-item ${param.active == 'mi_evento' ? 'active' : ''}">
         <div class="sidebar-icon">
             <i class="bi bi-calendar-heart"></i>
         </div>
         <span class="sidebar-text">Mis eventos</span>
     </a>
 
-    <a href="mi_cuenta.jsp" class="sidebar-item ${param.active == 'mi_cuenta' ? 'active' : ''}">
+    <a href="mi_cuenta_co.jsp" class="sidebar-item ${param.active == 'mi_cuenta' ? 'active' : ''}">
         <div class="sidebar-icon">
             <i class="bi bi-person"></i>
         </div>

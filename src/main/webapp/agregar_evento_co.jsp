@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="assets/css/bootstrap.css">
     <link rel="stylesheet" href="assets/css/bi/bootstrap-icons.css">
     <link rel="stylesheet" href="assets/css/coordinador.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
 
@@ -18,7 +19,7 @@
 <main class="main-content">
     <h3 class="page-title">AGREGAR EVENTO</h3>
 
-    <form action="#" method="POST">
+    <form id="formAgregarEvento" method="POST">
         <div class="row mb-3">
             <div class="col-md-4">
                 <label class="form-label">Nombre del evento <span class="text-danger">*</span></label>
@@ -151,13 +152,34 @@
         </div>
 
         <div class="d-flex justify-content-end gap-3 mb-5">
-            <a href="gestion_evento.jsp" class="btn-teal">Volver</a>
-            <button type="submit" class="btn-teal"><i class="bi bi-save"></i> Guardar Evento</button>
+            <a href="gestion_evento_co.jsp" class="btn btn-outline-teal px-4 py-2 fw-semibold d-flex align-items-center" style="border: 2px solid var(--teal-main); color: var(--teal-main); border-radius: 6px;">
+                <i class="bi bi-chevron-left me-2"></i> Volver
+            </a>
+            <button type="submit" class="btn-teal px-4 py-2" style="border-radius: 6px;">
+                <i class="bi bi-save me-2"></i> Guardar Evento
+            </button>
         </div>
     </form>
 </main>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="assets/js/coordinador.js"></script>
+<script>
+    document.getElementById('formAgregarEvento').addEventListener('submit', function(e) {
+        e.preventDefault();
+        Swal.fire({
+            icon: 'success',
+            title: '¡Evento Registrado con Éxito!',
+            text: 'el evento se ha guardado correctamente',
+            confirmButtonColor: '#00847b',
+            confirmButtonText: 'Aceptar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Aquí iría el envío real del formulario (this.submit())
+                window.location.href = 'gestion_evento_co.jsp';
+            }
+        });
+    });
+</script>
 </body>
 </html>

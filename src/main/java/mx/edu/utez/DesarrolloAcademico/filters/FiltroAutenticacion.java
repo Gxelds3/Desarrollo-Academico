@@ -30,19 +30,19 @@ public class FiltroAutenticacion extends HttpFilter {
                         requestURI.endsWith("recuperar-contra.jsp") ||
                         requestURI.endsWith("/recuperar") ||
                         requestURI.endsWith("/reset") ||
-                        requestURI.endsWith("vista_general_coordinador.jsp") ||
-                        requestURI.endsWith("gestion_evento.jsp") ||
-                        requestURI.endsWith("agregar_docente.jsp") ||
-                        requestURI.endsWith("agregar_evento.jsp") ||
-                        requestURI.endsWith("archivo_subido.jsp") ||
-                        requestURI.endsWith("cargar_archivo.jsp") ||
-                        requestURI.endsWith("editar_docente.jsp") ||
-                        requestURI.endsWith("editar_evento.jsp") ||
-                        requestURI.endsWith("gestion_docente.jsp") ||
-                        requestURI.endsWith("historial_evento.jsp") ||
-                        requestURI.endsWith("mi_cuenta.jsp") ||
-                        requestURI.endsWith("mi_evento.jsp") ||
-                        requestURI.endsWith("ver_mas_evento.jsp")
+                        requestURI.endsWith("vista_general_coordinador_co.jsp") ||
+                        requestURI.endsWith("gestion_evento_co.jsp") ||
+                        requestURI.endsWith("agregar_docente_co.jsp") ||
+                        requestURI.endsWith("agregar_evento_co.jsp") ||
+                        requestURI.endsWith("archivo_subido_co.jsp") ||
+                        requestURI.endsWith("cargar_archivo_co.jsp") ||
+                        requestURI.endsWith("editar_docente_co.jsp") ||
+                        requestURI.endsWith("editar_evento_co.jsp") ||
+                        requestURI.endsWith("gestion_docente_co.jsp") ||
+                        requestURI.endsWith("historial_evento_co.jsp") ||
+                        requestURI.endsWith("mi_cuenta_co.jsp") ||
+                        requestURI.endsWith("mi_evento_co.jsp") ||
+                        requestURI.endsWith("ver_mas_evento_co.jsp")
                 ;
         boolean isResource = requestURI.contains("/assets/") || requestURI.contains("/layout/");
 

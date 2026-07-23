@@ -151,8 +151,12 @@
         </div>
 
         <div class="d-flex justify-content-end gap-3 mb-5">
-            <a href="gestion_evento.jsp" class="btn-teal">Volver</a>
-            <button type="submit" class="btn-teal"><i class="bi bi-save"></i> Confirmar</button>
+            <a href="gestion_evento_co.jsp" class="btn btn-outline-teal px-4 py-2 fw-semibold d-flex align-items-center" style="border: 2px solid var(--teal-main); color: var(--teal-main); border-radius: 6px;">
+                <i class="bi bi-chevron-left me-2"></i> Volver
+            </a>
+            <button type="submit" class="btn-teal px-4 py-2" style="border-radius: 6px;">
+                <i class="bi bi-save me-2"></i> Confirmar
+            </button>
         </div>
     </form>
 </main>

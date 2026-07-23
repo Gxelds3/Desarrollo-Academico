@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestión de Eventos</title>
+    <title>Mis Eventos</title>
     <link rel="stylesheet" href="assets/css/bootstrap.css">
     <link rel="stylesheet" href="assets/css/bi/bootstrap-icons.css">
     <link rel="stylesheet" href="assets/css/coordinador.css">
@@ -12,36 +12,31 @@
 <body>
 
 <jsp:include page="sidebar.jsp">
-    <jsp:param name="active" value="gestion_evento" />
+    <jsp:param name="active" value="eventos_proximo" />
 </jsp:include>
 
 <main class="main-content">
-    <h3 class="page-title mb-4">GESTION DE EVENTOS</h3>
-
-    <div class="d-flex flex-wrap gap-2 mb-4">
-        <a href="#" class="nav-pill active">Todos</a>
-        <a href="#" class="nav-pill">Diplomado</a>
-        <a href="#" class="nav-pill">Conferencia</a>
-        <a href="#" class="nav-pill">Taller</a>
-        <a href="#" class="nav-pill">Curso</a>
-        <a href="#" class="nav-pill">Certificacion</a>
-    </div>
+    <h3 class="page-title mb-4">MIS EVENTOS</h3>
 
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <div class="search-box mb-0" style="max-width: 600px; flex-grow: 1; margin-right: 20px;">
+        <div class="search-box mb-0" style="max-width: 600px; flex-grow: 1;">
             <i class="bi bi-search"></i>
             <input type="text" placeholder="Buscar Evento por nombre ...">
         </div>
-        <a href="agregar_evento.jsp" class="btn-teal">
-            <i class="bi bi-calendar-plus"></i> Agregar Evento
-        </a>
     </div>
 
     <div class="data-card p-0 mb-4" style="overflow: hidden;">
-        <table class="table-custom mb-0 text-center">
+        <table class="table-custom mb-0">
+            <colgroup>
+                <col style="width: 35%;">
+                <col style="width: 15%;">
+                <col style="width: 22%;">
+                <col style="width: 18%;">
+                <col style="width: 10%;">
+            </colgroup>
             <thead>
                 <tr>
-                    <th class="text-center">Titulo</th>
+                    <th>Titulo</th>
                     <th>Tipo</th>
                     <th>Institución</th>
                     <th>Fecha</th>
@@ -61,9 +56,8 @@
                     </td>
                     <td>02/02/26 - 30/03/26</td>
                     <td>
-                        <a href="editar_evento.jsp" class="action-btn"><i class="bi bi-pencil"></i></a>
                         <a href="ver_mas_evento.jsp" class="action-btn"><i class="bi bi-eye"></i></a>
-                        <a href="#" class="action-btn delete"><i class="bi bi-trash"></i></a>
+                        <a href="cargar_archivo.jsp" class="action-btn"><i class="bi bi-cloud-upload"></i></a>
                     </td>
                 </tr>
                 <tr>
@@ -78,9 +72,8 @@
                     </td>
                     <td>02/02/26 - 30/03/26</td>
                     <td>
-                        <a href="editar_evento.jsp" class="action-btn"><i class="bi bi-pencil"></i></a>
                         <a href="ver_mas_evento.jsp" class="action-btn"><i class="bi bi-eye"></i></a>
-                        <a href="#" class="action-btn delete"><i class="bi bi-trash"></i></a>
+                        <a href="cargar_archivo.jsp" class="action-btn"><i class="bi bi-cloud-upload"></i></a>
                     </td>
                 </tr>
                 <tr>
@@ -95,9 +88,8 @@
                     </td>
                     <td>02/02/26 - 30/03/26</td>
                     <td>
-                        <a href="editar_evento.jsp" class="action-btn"><i class="bi bi-pencil"></i></a>
                         <a href="ver_mas_evento.jsp" class="action-btn"><i class="bi bi-eye"></i></a>
-                        <a href="#" class="action-btn delete"><i class="bi bi-trash"></i></a>
+                        <a href="cargar_archivo.jsp" class="action-btn"><i class="bi bi-cloud-upload"></i></a>
                     </td>
                 </tr>
                 <tr>
@@ -112,9 +104,8 @@
                     </td>
                     <td>02/02/26 - 30/03/26</td>
                     <td>
-                        <a href="editar_evento.jsp" class="action-btn"><i class="bi bi-pencil"></i></a>
                         <a href="ver_mas_evento.jsp" class="action-btn"><i class="bi bi-eye"></i></a>
-                        <a href="#" class="action-btn delete"><i class="bi bi-trash"></i></a>
+                        <a href="cargar_archivo.jsp" class="action-btn"><i class="bi bi-cloud-upload"></i></a>
                     </td>
                 </tr>
             </tbody>
