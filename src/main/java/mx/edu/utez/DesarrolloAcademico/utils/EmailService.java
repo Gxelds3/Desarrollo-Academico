@@ -50,7 +50,6 @@ public class EmailService {
         });
     }
 
-    // Cambiado a String codigo y método NO estático para poder acceder a getSession() y user
     public boolean enviarCodigoRecuperacion(String destEmail, String codigo) {
         try {
             Message message = new MimeMessage(getSession());
