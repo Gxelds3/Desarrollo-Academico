@@ -28,7 +28,7 @@ public class ListarDocente extends HttpServlet {
         PrintWriter out = response.getWriter();
 
         UsuarioListaDao dao = new UsuarioListaDao();
-        List<Usuario> docentes = dao.listarPorRoles("docente");
+        List<Usuario> docentes = dao.listarPorRoles("docente", "coordinador");
 
         StringBuilder json = new StringBuilder("[");
         for (int i = 0; i < docentes.size(); i++) {
@@ -43,6 +43,7 @@ public class ListarDocente extends HttpServlet {
                     .append("\"numeroEmpleado\":\"").append(escapar(u.getNumeroEmpleado())).append("\",")
                     .append("\"telefono\":\"").append(escapar(u.getTelefono())).append("\",")
                     .append("\"correo\":\"").append(escapar(u.getCorreoInstitucional())).append("\",")
+                    .append("\"rol\":\"").append(escapar(u.getRol())).append("\",")
                     .append("\"activo\":").append(u.getActivo())
                     .append("}");
         }

@@ -159,10 +159,7 @@ function aplicarFiltros() {
 }
 
 function cargarEventos() {
-    let url = contextPath + '/ListarEventosServlet';
-    if (window.idPersona) {
-        url += '?idPersona=' + encodeURIComponent(window.idPersona);
-    }
+    let url = contextPath + '/ListarMisEventosServlet';
 
     fetch(url)
         .then(function (response) {

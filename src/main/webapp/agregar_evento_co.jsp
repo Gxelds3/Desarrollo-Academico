@@ -53,8 +53,8 @@
                 </select>
             </div>
             <div class="col-md-8">
-                <label class="form-label">Descripción del evento</label>
-                <input type="text" class="form-control" name="descripcion">
+                <label class="form-label text-muted">Descripción del evento:</label>
+                <textarea class="form-control" id="campoDescripcion" name="descripcion" rows="3" style="resize: vertical;"></textarea>
             </div>
         </div>
 

@@ -162,10 +162,7 @@ function guardarCambios(e) {
 
     // 2. VALIDACIÓN DE CONTRASEÑA (SOLO SI SE ESCRIBE UNA NUEVA CONTRASEÑA)
     if (passNuevaVal !== '') {
-        if (passActualVal === '') {
-            mostrarAlerta('Contraseña actual requerida', 'Debes ingresar tu contraseña actual para autorizar el cambio de contraseña.');
-            return;
-        }
+
 
         if (passNuevaVal.length < 12 || passNuevaVal.length > 15) {
             mostrarAlerta('Contraseña inválida', 'La nueva contraseña debe tener entre 12 y 15 caracteres.');

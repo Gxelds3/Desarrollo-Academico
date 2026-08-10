@@ -35,11 +35,20 @@ public class ListarUsuariosServlet extends HttpServlet {
 
         String rol = request.getParameter("rol");
         List<Usuario> usuarios;
-        if (rol != null && !rol.isEmpty()) {
-            usuarios = dao.listarPorRoles(rol);
+        
+        if (idDivision != null) {
+            if (rol != null && !rol.isEmpty()) {
+                usuarios = dao.listarPorRolesYDivision(idDivision, rol);
+            } else {
+                usuarios = dao.listarPorRolesYDivision(idDivision, "docente", "coordinador");
+            }
         } else {
-            // Pass only the role strings
-            usuarios = dao.listarPorRoles("docente", "coordinador");
+            if (rol != null && !rol.isEmpty()) {
+                usuarios = dao.listarPorRoles(rol);
+            } else {
+                // Pass only the role strings
+                usuarios = dao.listarPorRoles("docente", "coordinador");
+            }
         }
 
         StringBuilder json = new StringBuilder("[");

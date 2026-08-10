@@ -17,8 +17,8 @@
 </head>
 <body>
 
-<jsp:include page="sidebar_co.jsp">
-    <jsp:param name="active" value="gestion_evento" />
+<jsp:include page="sidebar_de.jsp">
+    <jsp:param name="active" value="gestion_eventos_de" />
 </jsp:include>
 
 <main class="main-content">
@@ -46,7 +46,7 @@
         </div>
         <div class="col-md-8">
             <label class="form-label text-muted">Descripción del evento:</label>
-            <input type="text" class="form-control" id="campoDescripcion" value="" readonly>
+            <textarea  class="form-control" rows="3" id="campoDescripcion" value="" readonly></textarea>
         </div>
     </div>
 
@@ -109,7 +109,7 @@
     </div>
 
     <div class="d-flex justify-content-end">
-        <a href="gestion_evento_co.jsp" class="btn-teal">Volver</a>
+        <a href="gestion_eventos_de.jsp" class="btn-teal">Volver</a>
     </div>
 </main>
 

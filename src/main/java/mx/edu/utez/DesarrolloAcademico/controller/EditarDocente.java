@@ -97,8 +97,8 @@ public class EditarDocente extends HttpServlet {
 
             // Validar cambio opcional de contraseña
             if (contrasena != null && !contrasena.trim().isEmpty()) {
-                if (contrasena.trim().length() < 8) {
-                    out.write("{\"success\": false, \"message\": \"La contraseña debe tener al menos 8 caracteres.\"}");
+                if (contrasena.trim().length() < 12 || contrasena.trim().length() > 15) {
+                    out.write("{\"success\": false, \"message\": \"La contraseña debe tener entre 12 y 15 caracteres.\"}");
                     return;
                 }
                 if (!contrasena.trim().equals(confirmarContrasena != null ? confirmarContrasena.trim() : "")) {

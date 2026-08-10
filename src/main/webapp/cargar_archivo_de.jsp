@@ -49,8 +49,8 @@
 </head>
 <body>
 
-<jsp:include page="sidebar_co.jsp">
-    <jsp:param name="active" value="gestion_evento" />
+<jsp:include page="sidebar_de.jsp">
+    <jsp:param name="active" value="gestion_eventos_de" />
 </jsp:include>
 
 <main class="main-content">
@@ -128,6 +128,7 @@
     <!-- Formulario para Cargar Archivo (Oculto por defecto) -->
     <form id="formCargaArchivo" style="display:none;">
         <input type="hidden" name="idEvento" id="hiddenIdEvento" value="">
+        <input type="hidden" name="idUsuarioTarget" id="hiddenIdUsuarioTarget" value="">
 
         <div class="data-card mb-5" style="padding: 25px;">
             <h4 class="fw-bold mb-4" style="color: var(--teal-main);">Cargar archivo</h4>
@@ -145,9 +146,9 @@
                     </div>
                 </div>
 
-                <div class="d-flex align-items-center gap-3">
+                <div class="d-flex align-items-center gap-3" id="bloqueFechaVigencia" style="display: none;">
                     <label for="fechaVencimiento" class="fw-medium mb-0">Fecha de Vigencia:</label>
-                    <input type="date" name="fechaVencimiento" id="fechaVencimiento" class="form-control" style="width: auto; border-radius: 8px;" disabled>
+                    <input type="date" name="fechaVencimiento" id="fechaVencimiento" class="form-control" style="width: auto; border-radius: 8px;">
                 </div>
             </div>
 
@@ -175,7 +176,7 @@
         </div>
 
         <div class="d-flex justify-content-center justify-content-md-end gap-3 mb-5">
-            <a href="mi_evento_co.jsp" class="btn btn-outline-teal px-5 py-2 fw-semibold d-flex align-items-center" style="border: 2px solid var(--teal-main); color: var(--teal-main); border-radius: 6px;">
+            <a href="mi_evento_de.jsp" id="btnVolver" class="btn btn-outline-teal px-5 py-2 fw-semibold d-flex align-items-center" style="border: 2px solid var(--teal-main); color: var(--teal-main); border-radius: 6px;">
                 <i class="bi bi-chevron-left me-2"></i> Volver
             </a>
             <button type="submit" class="btn-teal px-5 py-2" style="border-radius: 6px;">Cargar Archivo</button>
@@ -190,11 +191,16 @@
     const contextPath = '<%= request.getContextPath() %>';
     const params = new URLSearchParams(window.location.search);
     const idEvento = params.get('id');
+    const idUsuarioTarget = params.get('idUsuarioTarget');
     let constanciaIdActual = null;
     let eventoFechaFin = null;
 
     if (idEvento) {
         document.getElementById('hiddenIdEvento').value = idEvento;
+        if (idUsuarioTarget) {
+            document.getElementById('hiddenIdUsuarioTarget').value = idUsuarioTarget;
+            document.getElementById('btnVolver').href = 'editar_evento_de.jsp?id=' + idEvento;
+        }
     } else {
         Swal.fire('Error', 'No se especificó un evento válido', 'error').then(() => {
             window.location.href = 'mi_evento_co.jsp';
@@ -232,7 +238,7 @@
             document.getElementById('constanciaVigencia').textContent = c.fechaVencimiento;
         }
 
-        document.getElementById('btnVerArchivo').href = contextPath + '/' + c.rutaArchivo;
+        document.getElementById('btnVerArchivo').href = contextPath + '/DescargarConstanciaServlet?idConstancia=' + c.idConstancia;
 
         if (estaVencido) {
             document.getElementById('vencidoBanner').style.display = '';
@@ -270,7 +276,13 @@
 
         // Paso 2: Consultar si existe constancia subida para este evento
         try {
-            const resConst = await fetch(contextPath + '/ObtenerConstanciaServlet?idEvento=' + encodeURIComponent(idEvento) + '&t=' + Date.now());
+            let urlConstancia = contextPath + '/ObtenerConstanciaServlet?idEvento=' + encodeURIComponent(idEvento);
+            if (idUsuarioTarget) {
+                urlConstancia += '&idUsuarioTarget=' + encodeURIComponent(idUsuarioTarget);
+            }
+            urlConstancia += '&t=' + Date.now();
+            
+            const resConst = await fetch(urlConstancia);
             const result = await resConst.json();
             const estaVencido = eventoFechaFin ? new Date() > eventoFechaFin : false;
 
@@ -313,6 +325,9 @@
             const fd = new FormData();
             fd.append('idConstancia', constanciaIdActual);
             fd.append('idEvento', idEvento);
+            if (idUsuarioTarget) {
+                fd.append('idUsuarioTarget', idUsuarioTarget);
+            }
             fetch(contextPath + '/CancelarConstanciaServlet', { method: 'POST', body: fd })
                 .then(res => res.json())
                 .then(data => {
@@ -332,12 +347,12 @@
     const fechaVencimiento = document.getElementById('fechaVencimiento');
 
     vigenciaSi.addEventListener('change', () => {
-        fechaVencimiento.disabled = false;
+        document.getElementById('bloqueFechaVigencia').style.display = 'flex';
         fechaVencimiento.required = true;
     });
 
     vigenciaNo.addEventListener('change', () => {
-        fechaVencimiento.disabled = true;
+        document.getElementById('bloqueFechaVigencia').style.display = 'none';
         fechaVencimiento.required = false;
         fechaVencimiento.value = '';
     });

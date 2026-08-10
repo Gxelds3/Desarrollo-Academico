@@ -78,7 +78,7 @@ function renderEventos(lista) {
             <td>${institucion}</td>
             <td>${fechas}</td>
             <td>
-                <a href="${contextPath}/ver_mas_evento_de.jsp?id=${idEvento}" class="action-btn" title="Ver detalle">
+                <a href="${contextPath}/ver_mas_evento_${window.sufijoRol || 'de'}.jsp?id=${idEvento}" class="action-btn" title="Ver detalle">
                     <i class="bi bi-eye"></i>
                 </a>
             </td>

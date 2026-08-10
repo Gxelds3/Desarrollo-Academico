@@ -51,7 +51,21 @@ public class AgregarEventoCO extends HttpServlet {
         HttpSession session = request.getSession(false);
         Usuario usuario = (session != null) ? (Usuario) session.getAttribute("usuario") : null;
 
-        int idDivision = (usuario != null && usuario.getIdDivision() != null) ? usuario.getIdDivision() : 1;
+        String paramDivision = request.getParameter("division");
+        int idDivision = 1; // Default
+        
+        if (usuario != null) {
+            if ("desarrollo".equalsIgnoreCase(usuario.getRol()) && paramDivision != null && !paramDivision.trim().isEmpty()) {
+                try {
+                    idDivision = Integer.parseInt(paramDivision);
+                } catch (NumberFormatException e) {
+                    idDivision = (usuario.getIdDivision() != null) ? usuario.getIdDivision() : 1;
+                }
+            } else {
+                idDivision = (usuario.getIdDivision() != null) ? usuario.getIdDivision() : 1;
+            }
+        }
+        
         int creadoPor = (usuario != null) ? usuario.getIdUsuario() : 1;
 
         // Validación mínima en servidor (nunca confiar solo en el "required" del HTML)

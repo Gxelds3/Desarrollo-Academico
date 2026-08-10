@@ -31,8 +31,20 @@ public class verDocente extends HttpServlet {
                 if (docente != null) {
                     request.setAttribute("dev", docente);
 
+                    jakarta.servlet.http.HttpSession session = request.getSession(false);
+                    String redirectPage = "gestion_docente_de.jsp";
+                    String forwardPage = "/ver_detalles_docente_de.jsp";
+                    
+                    if (session != null && session.getAttribute("usuario") != null) {
+                        Usuario current = (Usuario) session.getAttribute("usuario");
+                        if ("coordinador".equalsIgnoreCase(current.getRol())) {
+                            forwardPage = "/ver_detalles_docente_co.jsp";
+                            redirectPage = "gestion_docente_co.jsp";
+                        }
+                    }
+
                     // Renderizamos la vista de detalles
-                    request.getRequestDispatcher("/ver_detalles_docente_de.jsp").forward(request, response);
+                    request.getRequestDispatcher(forwardPage).forward(request, response);
                     return;
                 } else {
                     System.out.println("[verDocente] No se encontró ningún docente con el ID: " + idUsuario);
@@ -43,6 +55,14 @@ public class verDocente extends HttpServlet {
         }
 
         // Si el docente no existe o el ID viene vacío, reorientamos a la lista
-        response.sendRedirect(request.getContextPath() + "/gestion_docente_de.jsp");
+        jakarta.servlet.http.HttpSession session = request.getSession(false);
+        String redirectPage = "gestion_docente_de.jsp";
+        if (session != null && session.getAttribute("usuario") != null) {
+            Usuario current = (Usuario) session.getAttribute("usuario");
+            if ("coordinador".equalsIgnoreCase(current.getRol())) {
+                redirectPage = "gestion_docente_co.jsp";
+            }
+        }
+        response.sendRedirect(request.getContextPath() + "/" + redirectPage);
     }
 }

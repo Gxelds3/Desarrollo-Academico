@@ -33,8 +33,19 @@ public class CambiarEstadoUsuarioServlet extends HttpServlet {
         }
 
         try {
-            int idUsuario = Integer.parseInt(request.getParameter("id"));
-            int nuevoEstado = Integer.parseInt(request.getParameter("estado"));
+            String idStr = request.getParameter("id");
+            if (idStr == null || idStr.trim().isEmpty()) {
+                idStr = request.getParameter("idUsuario");
+            }
+            String estadoStr = request.getParameter("estado");
+            
+            if (idStr == null || estadoStr == null) {
+                out.write("{\"success\": false, \"message\": \"Faltan parámetros (id o estado).\"}");
+                return;
+            }
+            
+            int idUsuario = Integer.parseInt(idStr.trim());
+            int nuevoEstado = Integer.parseInt(estadoStr.trim());
 
             // Prevenir desactivarse a uno mismo
             if (idUsuario == admin.getIdUsuario() && nuevoEstado == 0) {
@@ -52,7 +63,7 @@ public class CambiarEstadoUsuarioServlet extends HttpServlet {
             }
 
         } catch (NumberFormatException e) {
-            out.write("{\"success\": false, \"message\": \"Parámetros inválidos.\"}");
+            out.write("{\"success\": false, \"message\": \"Parámetros inválidos. Asegúrate de enviar valores numéricos para ID y estado.\"}");
         } catch (Exception e) {
             e.printStackTrace();
             out.write("{\"success\": false, \"message\": \"Error del servidor: " + e.getMessage() + "\"}");

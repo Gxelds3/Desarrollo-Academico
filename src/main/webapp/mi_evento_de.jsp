@@ -56,8 +56,8 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
     window.contextPath = '<%= request.getContextPath() %>';
-    window.urlVerEvento = 'ver_mas_evento_co.jsp';
-    window.urlCargarArchivo = 'cargar_archivo_co.jsp';
+    window.urlVerEvento = 'ver_mas_evento_de.jsp';
+    window.urlCargarArchivo = 'cargar_archivo_de.jsp';
 </script>
 <script src="assets/js/coordinador.js"></script>
 <script src="assets/js/MisEventos.js"></script>

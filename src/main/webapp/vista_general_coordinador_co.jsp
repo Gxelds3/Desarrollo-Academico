@@ -9,10 +9,10 @@
     UsuarioListaDao usuarioListaDao = new UsuarioListaDao(); // Instancia para contar docentes
 
     Usuario usuarioSesion = (Usuario) session.getAttribute("usuario");
-    int idDivision = (usuarioSesion != null) ? usuarioSesion.getIdDivision() : 0;
+    int idDivision = (usuarioSesion != null && usuarioSesion.getIdDivision() != null) ? usuarioSesion.getIdDivision() : 0;
     int totalEventos = usuarioListaDao.contarEventos();
     int totalDocentes = usuarioListaDao.contarDocentes(idDivision);
-    List<Evento> listaEventos = usuarioDao.obtenerProximosEventos();
+    List<Evento> listaEventos = usuarioDao.obtenerProximosEventos(idDivision);
 %>
 <!doctype html>
 <html lang="es">

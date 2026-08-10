@@ -17,7 +17,7 @@
         <div class="sidebar-icon">
             <i class="bi bi-calendar-event"></i>
         </div>
-        <span class="sidebar-text">Vista general</span>
+        <span class="sidebar-text">Eventos Proximos</span>
     </a>
 
     <a href="mi_evento_do.jsp" class="sidebar-item ${param.active == 'mis_eventos' ? 'active' : ''}">

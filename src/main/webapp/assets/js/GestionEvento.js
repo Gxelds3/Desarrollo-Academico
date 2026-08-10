@@ -60,7 +60,8 @@ function renderEventos(eventos) {
     eventos.forEach(function (ev) {
         const fila = document.createElement('tr');
         fila.setAttribute('data-id', ev.id);
-        fila.innerHTML =
+
+        let celdas =
             '<td>' +
             '<div class="fw-semibold">' + escapeHtml(ev.nombre) + '</div>' +
             '<div class="small text-muted">' + escapeHtml(ev.descripcion) + '</div>' +
@@ -70,20 +71,20 @@ function renderEventos(eventos) {
             '<div>' + escapeHtml(ev.institucion) + '</div>' +
             '<div class="small text-muted">' + escapeHtml(ev.lugar) + '</div>' +
             '</td>' +
-            '<td>' + formatearFecha(ev.fechaInicio) + ' - ' + formatearFecha(ev.fechaFin) + '</td>' +
+            '<td>' + formatearFecha(ev.fechaInicio) + ' - ' + formatearFecha(ev.fechaFin) + '</td>';
+
+        if (esDesarrollador) {
+            celdas += '<td><span class="badge bg-secondary">' + escapeHtml(ev.nombreDivision || 'General') + '</span></td>';
+        }
+
+        celdas +=
             '<td>' +
-            //  Editar
             '<a href="' + contextPath + '/editar_evento' + sufijoRol + '?id=' + ev.id + '" class="action-btn" title="Editar Evento"><i class="bi bi-pencil"></i></a> ' +
-
-            //  Ver Detalles
             '<a href="' + contextPath + '/ver_mas_evento' + sufijoRol + '?id=' + ev.id + '" class="action-btn" title="Ver Evento"><i class="bi bi-eye"></i></a> ' +
-
-            //  AQUÍ ESTÁ LA NUBE PUTA AGREGADA
-            '<a href="' + contextPath + '/cargar_archivo' + sufijoRol + '?id=' + ev.id + '" class="action-btn" title="Cargar Archivo"><i class="bi bi-cloud-arrow-up"></i></a> ' +
-
-            //  Eliminar
-            '<a href="#" class="action-btn delete" data-id="' + ev.id + '" title="Eliminar Evento"><i class="bi bi-trash"></i></a>' +
+            '<a href="#" class="action-btn delete btn-eliminar-evento" data-id="' + ev.id + '" title="Eliminar Evento"><i class="bi bi-trash"></i></a>' +
             '</td>';
+
+        fila.innerHTML = celdas;
         tbody.appendChild(fila);
     });
 }

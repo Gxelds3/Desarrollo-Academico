@@ -75,6 +75,7 @@
 <script>
     // ContextPath global para construir URLs dinámicamente
     window.contextPath = '<%= request.getContextPath() %>';
+    window.sufijoRol = 'de';
 </script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="assets/js/historial_eventos_de.js"></script>

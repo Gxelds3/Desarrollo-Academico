@@ -46,7 +46,7 @@
         </div>
         <div class="col-md-8">
             <label class="form-label text-muted">Descripción del evento:</label>
-            <input type="text" class="form-control" id="campoDescripcion" value="" readonly>
+            <textarea  class="form-control" rows="3" id="campoDescripcion" value="" readonly></textarea>
         </div>
     </div>
 

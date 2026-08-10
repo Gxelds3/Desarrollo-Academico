@@ -3,13 +3,17 @@
 <%@ page import="mx.edu.utez.DesarrolloAcademico.model.dao.UsuarioDao" %>
 <%@ page import="mx.edu.utez.DesarrolloAcademico.model.Evento" %>
 <%@ page import="java.util.List" %>
+<%@ page import="mx.edu.utez.DesarrolloAcademico.model.Usuario" %>
 <%
     // Instanciamos los DAOs para obtener los conteos reales
     UsuarioListaDao eventoDao = new UsuarioListaDao();
     UsuarioDao usuarioDao = new UsuarioDao();
 
+    Usuario usuarioSesion = (Usuario) session.getAttribute("usuario");
+    int idDivision = (usuarioSesion != null && usuarioSesion.getIdDivision() != null) ? usuarioSesion.getIdDivision() : 0;
+
     int totalEventos = eventoDao.contarEventos();
-    List<Evento> listaEventos = usuarioDao.obtenerProximosEventos();
+    List<Evento> listaEventos = usuarioDao.obtenerProximosEventos(idDivision);
 
     int totalEventos1 = eventoDao.contarEventos();
     int totalDocentes1 = eventoDao.contarDocentesD();
@@ -66,7 +70,7 @@
                     <%= ev.getFecha_Inicio() %> - <%= ev.getFecha_Fin() %>
                 </div>
             </div>
-            <a href="ver_mas_evento_de.jsp?id=<%= ev.getID() %>" class="btn-teal">
+            <a href="ver_mas_evento_do.jsp?id=<%= ev.getID() %>" class="btn-teal">
                 Ver detalles
             </a>
         </div>

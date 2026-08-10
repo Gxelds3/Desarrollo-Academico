@@ -47,7 +47,7 @@
             <div class="sidebar-icon">
                 <i class="bi bi-calendar-check"></i>
             </div>
-            <span class="sidebar-text">Eventos</span>
+            <span class="sidebar-text">Eventos Proximos</span>
         </a>
 
         <a href="${pageContext.request.contextPath}/gestion_eventos_de.jsp"

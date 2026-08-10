@@ -12,11 +12,10 @@ import mx.edu.utez.DesarrolloAcademico.model.Usuario;
 import mx.edu.utez.DesarrolloAcademico.model.dao.ConstanciaDao;
 import mx.edu.utez.DesarrolloAcademico.model.dao.UsuarioDao;
 
-import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintWriter;
 import java.nio.file.Paths;
-import java.util.UUID;
 
 @WebServlet(name = "SubirConstanciaServlet1", value = "/SubirConstanciaServlet1")
 @MultipartConfig(
@@ -59,8 +58,22 @@ public class SubirConstanciaServlet1 extends HttpServlet {
             ConstanciaDao dao = new ConstanciaDao();
             UsuarioDao usuarioDao = new UsuarioDao();
 
+            // Permitir a coordinadores y desarrolladores subir archivos en nombre de otro usuario
+            String targetUserStr = request.getParameter("idUsuarioTarget");
+            int idUsuarioSubir = usuario.getIdUsuario();
+            if (targetUserStr != null && !targetUserStr.trim().isEmpty()) {
+                String rol = usuario.getRol().toLowerCase();
+                if (rol.equals("coordinador") || rol.equals("desarrollo")) {
+                    try {
+                        idUsuarioSubir = Integer.parseInt(targetUserStr);
+                    } catch (NumberFormatException e) {
+                        // fallback al usuario actual si el valor es inválido
+                    }
+                }
+            }
+
             // Garantiza crear o reutilizar el participante
-            int idParticipante = usuarioDao.obtenerOCrearParticipante(idEvento, usuario.getIdUsuario());
+            int idParticipante = usuarioDao.obtenerOCrearParticipante(idEvento, idUsuarioSubir);
 
             if (idParticipante == -1) {
                 response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
@@ -71,7 +84,7 @@ public class SubirConstanciaServlet1 extends HttpServlet {
 
             if (dao.verificarConstanciaExistente(idParticipante)) {
                 response.setStatus(HttpServletResponse.SC_CONFLICT);
-                out.write("{\"success\": false, \"message\": \"Ya has subido una constancia para este evento.\"}");
+                out.write("{\"success\": false, \"message\": \"Ya se subió una constancia para este evento.\"}");
                 out.flush();
                 return;
             }
@@ -94,26 +107,26 @@ public class SubirConstanciaServlet1 extends HttpServlet {
                 return;
             }
 
-            // Guardado físico
-            String uploadPath = getServletContext().getRealPath("") + File.separator + "uploads" + File.separator + "constancias";
-            File uploadDir = new File(uploadPath);
-            if (!uploadDir.exists()) {
-                uploadDir.mkdirs();
+            // Determinar content-type real
+            String contentType = filePart.getContentType();
+            if (contentType == null) {
+                if (fileNameLower.endsWith(".pdf")) contentType = "application/pdf";
+                else if (fileNameLower.endsWith(".png")) contentType = "image/png";
+                else contentType = "image/jpeg";
             }
 
-            String uniqueFileName = UUID.randomUUID().toString() + "_" + fileName;
-            String filePath = uploadPath + File.separator + uniqueFileName;
+            // Leer el archivo como bytes (se almacena en Oracle como BLOB)
+            byte[] contenidoArchivo;
+            try (InputStream is = filePart.getInputStream()) {
+                contenidoArchivo = is.readAllBytes();
+            }
 
-            filePart.write(filePath);
-
-            String rutaRelativa = "uploads/constancias/" + uniqueFileName;
-
-            boolean exito = dao.guardarConstancia(idParticipante, rutaRelativa, fileName, tieneVigencia, fechaVencimiento, usuario.getIdUsuario());
+            boolean exito = dao.guardarConstancia(idParticipante, fileName, contenidoArchivo, contentType,
+                    tieneVigencia, fechaVencimiento, usuario.getIdUsuario());
 
             if (exito) {
                 out.write("{\"success\": true, \"message\": \"Constancia subida correctamente.\"}");
             } else {
-                new File(filePath).delete();
                 response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                 out.write("{\"success\": false, \"message\": \"Error al guardar en base de datos.\"}");
             }

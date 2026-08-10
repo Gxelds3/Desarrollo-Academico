@@ -1,0 +1,243 @@
+/* historial_evento_do.js
+ * Carga el historial de eventos del docente autenticado desde /ListarMisEventosServlet
+ * Renderiza tabla con 6 columnas: Título, Tipo, Institución, Modalidad, Fecha, Acciones
+ * Incluye filtro por tipo (pills) + buscador en tiempo real + paginación
+ */
+
+const contextPath = window.contextPath || '';
+const tbody       = document.getElementById('tablaEventosBody');
+const inputBuscar = document.getElementById('buscarEvento');
+const contenedorFiltros    = document.getElementById('contenedorFiltrosTipo');
+const contenedorPaginacion = document.getElementById('paginacionContainer');
+
+let eventosOriginales = [];
+let filtroTexto = '';
+let filtroTipo  = 'todos';
+let paginaActual = 1;
+const EVENTOS_POR_PAGINA = 8;
+
+// ── Utilidades ──────────────────────────────────────────────────────────────
+
+function escapeHtml(texto) {
+    if (texto === null || texto === undefined) return '';
+    return String(texto)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
+}
+
+function normalizar(texto) {
+    return String(texto || '')
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '');
+}
+
+/**
+ * Convierte "2026-08-20" → "20/08/26"
+ */
+function formatearFecha(iso) {
+    if (!iso) return '';
+    const p = iso.split('-');
+    if (p.length !== 3) return iso;
+    return p[2] + '/' + p[1] + '/' + p[0].slice(2);
+}
+
+// ── Filtrado ─────────────────────────────────────────────────────────────────
+
+function obtenerEventosFiltrados() {
+    const texto = normalizar(filtroTexto);
+
+    return eventosOriginales.filter(function (ev) {
+        const coincideTexto = texto === '' ||
+            normalizar(ev.nombre).includes(texto) ||
+            normalizar(ev.institucion).includes(texto) ||
+            normalizar(ev.descripcion).includes(texto);
+
+        const coincideTipo = filtroTipo === 'todos' ||
+            normalizar(ev.tipo) === normalizar(filtroTipo);
+
+        return coincideTexto && coincideTipo;
+    });
+}
+
+// ── Renderizado de tabla ──────────────────────────────────────────────────────
+
+function renderEventos(lista) {
+    if (!tbody) return;
+
+    if (!lista || !lista.length) {
+        tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted py-4">No se encontraron eventos registrados.</td></tr>';
+        renderPaginacion(0);
+        return;
+    }
+
+    const totalPaginas = Math.ceil(lista.length / EVENTOS_POR_PAGINA);
+    if (paginaActual > totalPaginas) paginaActual = 1;
+
+    const inicio = (paginaActual - 1) * EVENTOS_POR_PAGINA;
+    const fin    = inicio + EVENTOS_POR_PAGINA;
+    const pagina = lista.slice(inicio, fin);
+
+    tbody.innerHTML = '';
+    pagina.forEach(function (ev) {
+        const idEvento   = ev.id || ev.idEvento;
+        const fechaRango = formatearFecha(ev.fechaInicio) + ' – ' + formatearFecha(ev.fechaFin);
+        const modalidad  = escapeHtml(ev.modalidad || '');
+
+        // Capitalizar primera letra de modalidad y tipo
+        const tipoDisplay     = ev.tipo  ? ev.tipo.charAt(0).toUpperCase() + ev.tipo.slice(1)     : '';
+        const modalidadDisplay = modalidad ? modalidad.charAt(0).toUpperCase() + modalidad.slice(1) : '';
+
+        const fila = document.createElement('tr');
+        fila.setAttribute('data-id', idEvento);
+        fila.innerHTML =
+            '<td class="text-start">' +
+                '<div class="fw-semibold">' + escapeHtml(ev.nombre) + '</div>' +
+                (ev.descripcion ? '<div class="small text-muted">' + escapeHtml(ev.descripcion) + '</div>' : '') +
+            '</td>' +
+            '<td>' + escapeHtml(tipoDisplay) + '</td>' +
+            '<td>' +
+                '<div>' + escapeHtml(ev.institucion || 'N/A') + '</div>' +
+                (ev.lugar ? '<div class="small text-muted">' + escapeHtml(ev.lugar) + '</div>' : '') +
+            '</td>' +
+            '<td>' + escapeHtml(modalidadDisplay) + '</td>' +
+            '<td>' + escapeHtml(fechaRango) + '</td>' +
+            '<td>' +
+                '<a href="' + contextPath + '/ver_mas_evento_do.jsp?id=' + idEvento + '" class="action-btn" title="Ver detalle">' +
+                    '<i class="bi bi-eye"></i>' +
+                '</a>' +
+            '</td>';
+        tbody.appendChild(fila);
+    });
+
+    renderPaginacion(totalPaginas);
+}
+
+// ── Paginación dinámica ───────────────────────────────────────────────────────
+
+function renderPaginacion(totalPaginas) {
+    if (!contenedorPaginacion) return;
+    contenedorPaginacion.innerHTML = '';
+    if (totalPaginas <= 1) return;
+
+    function crearBtn(contenido, activo, deshabilitado, onClick) {
+        var a = document.createElement('a');
+        a.href = '#';
+        a.className = 'page-btn' + (activo ? ' active' : '') + (deshabilitado ? ' disabled' : '');
+        a.innerHTML = contenido;
+        if (!deshabilitado) {
+            a.addEventListener('click', function (e) { e.preventDefault(); onClick(); });
+        }
+        return a;
+    }
+
+    contenedorPaginacion.appendChild(
+        crearBtn('<i class="bi bi-chevron-left"></i>', false, paginaActual === 1, function () {
+            paginaActual--;
+            aplicarFiltros();
+        })
+    );
+
+    for (var i = 1; i <= totalPaginas; i++) {
+        var mostrar = (i === 1 || i === totalPaginas ||
+            (i >= paginaActual - 1 && i <= paginaActual + 1));
+        var esDots  = ((i === 2 && paginaActual > 3) ||
+            (i === totalPaginas - 1 && paginaActual < totalPaginas - 2));
+
+        if (mostrar) {
+            (function (p) {
+                contenedorPaginacion.appendChild(
+                    crearBtn(p, p === paginaActual, false, function () {
+                        paginaActual = p;
+                        aplicarFiltros();
+                    })
+                );
+            })(i);
+        } else if (esDots) {
+            var span = document.createElement('span');
+            span.className = 'page-btn dots';
+            span.textContent = '...';
+            contenedorPaginacion.appendChild(span);
+        }
+    }
+
+    contenedorPaginacion.appendChild(
+        crearBtn('<i class="bi bi-chevron-right"></i>', false, paginaActual === totalPaginas, function () {
+            paginaActual++;
+            aplicarFiltros();
+        })
+    );
+}
+
+// ── Aplicar filtros y rerender ────────────────────────────────────────────────
+
+function aplicarFiltros() {
+    renderEventos(obtenerEventosFiltrados());
+}
+
+// ── Carga desde servidor ──────────────────────────────────────────────────────
+
+function cargarMisEventos() {
+    if (!tbody) return;
+    tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted py-4">Cargando eventos...</td></tr>';
+
+    fetch(contextPath + '/ListarMisEventosServlet', { credentials: 'same-origin' })
+        .then(function (response) {
+            if (response.redirected || (response.url && response.url.includes('login.jsp'))) {
+                window.location.href = 'login.jsp';
+                return null;
+            }
+            var contentType = response.headers.get('content-type');
+            if (contentType && contentType.indexOf('application/json') !== -1) {
+                return response.json();
+            }
+            throw new Error('Respuesta no es JSON');
+        })
+        .then(function (data) {
+            if (!data) return;
+            eventosOriginales = data || [];
+            paginaActual = 1;
+            aplicarFiltros();
+        })
+        .catch(function (error) {
+            console.error('Error al cargar historial de eventos:', error);
+            if (tbody) {
+                tbody.innerHTML = '<tr><td colspan="6" class="text-center text-danger py-4">No se pudieron cargar los eventos.</td></tr>';
+            }
+        });
+}
+
+// ── Event listeners ───────────────────────────────────────────────────────────
+
+document.addEventListener('DOMContentLoaded', function () {
+
+    // Búsqueda en tiempo real
+    if (inputBuscar) {
+        inputBuscar.addEventListener('input', function () {
+            filtroTexto  = this.value.trim();
+            paginaActual = 1;
+            aplicarFiltros();
+        });
+    }
+
+    // Pills de tipo de evento
+    if (contenedorFiltros) {
+        contenedorFiltros.addEventListener('click', function (e) {
+            var pill = e.target.closest('.nav-pill');
+            if (!pill) return;
+            e.preventDefault();
+
+            contenedorFiltros.querySelectorAll('.nav-pill').forEach(function (p) {
+                p.classList.remove('active');
+            });
+            pill.classList.add('active');
+
+            filtroTipo   = pill.getAttribute('data-tipo') || 'todos';
+            paginaActual = 1;
+            aplicarFiltros();
+        });
+    }
+
+    cargarMisEventos();
+});

@@ -23,15 +23,15 @@
         <div class="row mb-3">
             <div class="col-md-4">
                 <label class="form-label text-muted">Nombre del evento:</label>
-                <input type="text" class="form-control" id="campoNombre" name="nombre" value="Introducion a redes" required>
+                <input type="text" class="form-control" id="campoNombre" name="nombre" required>
             </div>
             <div class="col-md-4">
                 <label class="form-label text-muted">Lugar:</label>
-                <input type="text" class="form-control" id="campoLugar" name="lugar" value="CDMX" required>
+                <input type="text" class="form-control" id="campoLugar" name="lugar" required>
             </div>
             <div class="col-md-4">
                 <label class="form-label text-muted">Institución / Empresa:</label>
-                <input type="text" class="form-control" id="campoInstitucion" name="institucion" value="Academia de formacion profesional del estado" required>
+                <input type="text" class="form-control" id="campoInstitucion" name="institucion">
             </div>
         </div>
 
@@ -41,12 +41,15 @@
                 <select class="form-select" id="campoTipo" name="tipo" required>
                     <option value="" disabled>Selecciona un tipo</option>
                     <option value="Taller">Taller</option>
-                    <option value="Diplomado" selected>Diplomado</option>
+                    <option value="Diplomado">Diplomado</option>
+                    <option value="Conferencia">Conferencia</option>
+                    <option value="Curso">Curso</option>
+                    <option value="Certificacion">Certificación</option>
                 </select>
             </div>
             <div class="col-md-8">
                 <label class="form-label text-muted">Descripción del evento:</label>
-                <input type="text" class="form-control" id="campoDescripcion" name="descripcion" value="Gran evento de introducion a redes para los futuros rederos" required>
+                <textarea class="form-control" id="campoDescripcion" name="descripcion" rows="3" style="resize: vertical;"></textarea>
             </div>
         </div>
 
@@ -117,20 +120,34 @@
     </form>
 </main>
 
-<!-- Modal Asignar Docente -->
+<!-- Modal Asignar Docente con buscador -->
 <div class="modal fade" id="modalAsignarDocente" tabindex="-1" aria-labelledby="modalAsignarDocenteLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content" style="border-radius: 12px; border: none; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
             <div class="modal-header" style="background-color: var(--teal-main); color: white; border-top-left-radius: 12px; border-top-right-radius: 12px;">
                 <h5 class="modal-title" id="modalAsignarDocenteLabel">Asignar Docente al Evento</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body p-4">
-                <label for="selectDocenteAAsignar" class="form-label text-muted mb-2">Selecciona un docente/coordinador:</label>
-                <select class="form-select mb-3" id="selectDocenteAAsignar">
-                    <option value="" disabled selected>Cargando lista...</option>
-                </select>
-                <button type="button" class="btn-teal w-100 py-2" id="btnConfirmarAsignacion">Asignar al Evento</button>
+                <div class="mb-3">
+                    <label class="form-label text-muted mb-2">Buscar por nombre, correo o número de empleado:</label>
+                    <input type="text" class="form-control" id="inputBuscarDocente" placeholder="Escribe para buscar..." autocomplete="off">
+                </div>
+                <div style="max-height: 300px; overflow-y: auto;">
+                    <table class="table table-hover table-sm" id="tablaResultadosBusqueda">
+                        <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Correo</th>
+                            <th>Rol</th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody id="tbodyBusquedaDocentes">
+                        <tr><td colspan="4" class="text-center text-muted py-3">Escribe para buscar docentes...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
@@ -139,6 +156,6 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>window.contextPath = '<%= request.getContextPath() %>';</script>
 <script src="assets/js/coordinador.js"></script>
-<script src="assets/js/EditarEvento.js?v=4"> </script>
+<script src="assets/js/EditarEvento.js?v=5"></script>
 </body>
 </html>

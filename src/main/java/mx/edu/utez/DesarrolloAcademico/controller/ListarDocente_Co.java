@@ -60,6 +60,7 @@ public class ListarDocente_Co extends HttpServlet {
                     .append("\"numeroEmpleado\":\"").append(escapar(u.getNumeroEmpleado())).append("\",")
                     .append("\"telefono\":\"").append(escapar(u.getTelefono())).append("\",")
                     .append("\"correo\":\"").append(escapar(u.getCorreoInstitucional())).append("\",")
+                    .append("\"rol\":\"").append(escapar(u.getRol())).append("\",")
                     .append("\"activo\":").append(u.getActivo())
                     .append("}");
         }

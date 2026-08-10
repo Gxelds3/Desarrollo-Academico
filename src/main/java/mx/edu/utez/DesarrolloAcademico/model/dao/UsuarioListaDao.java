@@ -67,10 +67,10 @@ public class UsuarioListaDao {
                     ev.setInstitucion(rs.getString("institucion"));
                     ev.setTipo(rs.getString("tipo_evento"));
                     ev.setDescripcion(rs.getString("descripcion"));
-                    Timestamp tsInicio = rs.getTimestamp("fecha_inicio");
-                    Timestamp tsFin = rs.getTimestamp("fecha_fin");
-                    ev.setFechaInicio(tsInicio != null ? tsInicio.toLocalDateTime().toLocalDate().toString() : "");
-                    ev.setFechaFin(tsFin != null ? tsFin.toLocalDateTime().toLocalDate().toString() : "");
+                    java.sql.Date dInicio = rs.getDate("fecha_inicio");
+                    java.sql.Date dFin    = rs.getDate("fecha_fin");
+                    ev.setFechaInicio(dInicio != null ? dInicio.toString() : "");
+                    ev.setFechaFin(dFin != null ? dFin.toString() : "");
                     ev.setModalidad(rs.getString("modalidad"));
                     lista.add(ev);
                 }

@@ -20,7 +20,7 @@
 
     <div class="d-flex align-items-center mb-4 mt-4" style="color: var(--teal-main);">
         <i class="bi bi-info-circle me-2 fs-5"></i>
-        <h5 class="mb-0 fw-bold">EDITAR DOCENTE/COORDINADOR</h5>
+        <h5 class="mb-0 fw-bold">DATOS DOCENTE/COORDINADOR</h5>
     </div>
 
     <form id="formEditarDocente" action="#" method="POST">
@@ -79,30 +79,23 @@
         </div>
 
         <div class="row mb-5">
-            <div class="col-md-4">
-                <label class="form-label text-muted">Contraseña Actual:</label>
-                <div class="input-group">
-                    <input type="password" id="passActual" class="form-control bg-white">
-                    <span class="input-group-text bg-white border-start-0" onclick="togglePassword('passActual')" style="cursor: pointer;">
-                        <i class="bi bi-eye-fill text-muted"></i>
-                    </span>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <label class="form-label text-muted">Nueva Contraseña:</label>
+            <!-- Contraseña Actual (ELIMINADA PARA ADMINISTRADOR) -->
+            <div class="col-md-6">
+                <label class="form-label text-muted">Nueva Contraseña (Opcional):</label>
                 <div class="input-group">
                     <input type="password" id="passNueva" class="form-control bg-white">
                     <span class="input-group-text bg-white border-start-0" onclick="togglePassword('passNueva')" style="cursor: pointer;">
-                        <i class="bi bi-eye-fill text-muted"></i>
+                         <i class="bi bi-eye-slash"></i>
                     </span>
                 </div>
+                <small class="text-muted">Debe tener entre 12 y 15 caracteres</small>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-6">
                 <label class="form-label text-muted">Confirmar Nueva Contraseña:</label>
                 <div class="input-group">
                     <input type="password" id="passConfirm" class="form-control bg-white">
                     <span class="input-group-text bg-white border-start-0" onclick="togglePassword('passConfirm')" style="cursor: pointer;">
-                        <i class="bi bi-eye-fill text-muted"></i>
+                         <i class="bi bi-eye-slash"></i>
                     </span>
                 </div>
             </div>

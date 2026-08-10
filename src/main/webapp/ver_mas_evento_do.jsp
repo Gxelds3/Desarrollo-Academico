@@ -18,7 +18,7 @@
 <body>
 
 <jsp:include page="sidebar_do.jsp">
-    <jsp:param name="active" value="vista_general" />
+    <jsp:param name="active" value="mis_eventos" />
 </jsp:include>
 
 <main class="main-content">
@@ -76,7 +76,7 @@
     </div>
 
     <div class="d-flex justify-content-end">
-        <a href="vista_general_docente_do.jsp" class="btn-teal">Volver</a>
+        <a href="mi_evento_do.jsp" class="btn-teal">Volver</a>
     </div>
 </main>
 

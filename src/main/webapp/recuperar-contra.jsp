@@ -16,12 +16,12 @@
   <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/bootstrap.css">
   <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/bi/bootstrap-icons.css">
   <style>
-    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f5fafa; }
+    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #ffffff; }
 
     .card-recuperar {
-      background: #fff;
-      border-radius: 20px;
-      box-shadow: 0 8px 32px rgba(76, 186, 184, 0.15);
+      background: transparent;
+      border-radius: 0;
+      box-shadow: none;
       padding: 2.5rem 2rem;
       max-width: 420px;
       width: 100%;
@@ -156,12 +156,11 @@
 
     <form action="recuperar" method="post">
       <input type="hidden" name="action" value="solicitar">
-      <div class="mb-3">
-        <label for="txtDato" class="form-label fw-bold text-dark mb-1 small">Correo o Número de Empleado:</label>
-        <div class="input-group">
-          <span class="input-group-text bg-transparent border-end-0 text-secondary py-2"><i class="bi bi-person"></i></span>
-          <input type="text" class="form-control border-start-0 py-2" id="txtDato" name="dato"
-                 placeholder="correo@utez.edu.mx o num. empleado" required>
+      <div class="mb-4">
+        <label for="txtDato" class="form-label fw-bold mb-1 small" style="color: #2B1818;">Correo o Número de Empleado:</label>
+        <div class="position-relative">
+          <i class="bi bi-person-fill position-absolute text-secondary fs-5" style="left: 15px; top: 50%; transform: translateY(-50%);"></i>
+          <input type="text" class="form-control rounded-3" id="txtDato" name="dato" placeholder="correo@utez.edu.mx o num. empleado" required style="padding: 0.6rem 1rem 0.6rem 2.8rem; border: 1.5px solid #6C5555; background-color: rgba(255, 255, 255, 0.6);">
         </div>
       </div>
       <button class="btn-teal-rec" type="submit">
@@ -252,30 +251,23 @@
       <input type="hidden" name="action" value="cambiar">
 
       <!-- Campo 1: Nueva contraseña -->
-      <div class="mb-3">
-        <label class="form-label fw-bold text-dark mb-1 small">Nueva contraseña:</label>
-        <div class="input-group">
-          <span class="input-group-text bg-transparent border-end-0 text-secondary py-2"><i class="bi bi-lock"></i></span>
-          <input type="password" class="form-control border-start-0 border-end-0 py-2" name="pass1" id="pass1"
-                 placeholder="Nueva contraseña" minlength="12" maxlength="15" required>
-          <button class="btn btn-outline-secondary border-start-0 py-2" type="button" onclick="togglePass('pass1', 'btnEye1')">
-            <i class="bi bi-eye" id="btnEye1"></i>
-          </button>
+      <div class="mb-4">
+        <label class="form-label fw-bold mb-1 small" style="color: #2B1818;">Nueva contraseña:</label>
+        <div class="position-relative">
+          <i class="bi bi-lock-fill position-absolute text-secondary fs-5" style="left: 15px; top: 50%; transform: translateY(-50%);"></i>
+          <input type="password" class="form-control rounded-3" name="pass1" id="pass1" placeholder="Nueva contraseña" minlength="12" maxlength="15" required style="padding: 0.6rem 2.8rem 0.6rem 2.8rem; border: 1.5px solid #6C5555; background-color: rgba(255, 255, 255, 0.6);">
+          <i class="bi bi-eye position-absolute text-secondary fs-5" id="btnEye1" onclick="togglePass('pass1', 'btnEye1')" style="right: 15px; top: 50%; transform: translateY(-50%); cursor: pointer;"></i>
         </div>
-        <div class="pass-strength" id="passStrength"></div>
-        <div class="pass-hint">Entre 12 y 15 caracteres</div>
+        <div class="pass-hint text-muted mt-1" style="font-size: 0.8rem;">Entre 12 y 15 caracteres</div>
       </div>
 
       <!-- Campo 2: Confirmar contraseña -->
-      <div class="mb-3">
-        <label class="form-label fw-bold text-dark mb-1 small">Confirmar contraseña:</label>
-        <div class="input-group">
-          <span class="input-group-text bg-transparent border-end-0 text-secondary py-2"><i class="bi bi-lock"></i></span>
-          <input type="password" class="form-control border-start-0 border-end-0 py-2" name="pass2" id="pass2"
-                 placeholder="Repite la contraseña" minlength="12" maxlength="15" required>
-          <button class="btn btn-outline-secondary border-start-0 py-2" type="button" onclick="togglePass('pass2', 'btnEye2')">
-            <i class="bi bi-eye" id="btnEye2"></i>
-          </button>
+      <div class="mb-4">
+        <label class="form-label fw-bold mb-1 small" style="color: #2B1818;">Confirmar contraseña:</label>
+        <div class="position-relative">
+          <i class="bi bi-lock-fill position-absolute text-secondary fs-5" style="left: 15px; top: 50%; transform: translateY(-50%);"></i>
+          <input type="password" class="form-control rounded-3" name="pass2" id="pass2" placeholder="Repite la contraseña" minlength="12" maxlength="15" required style="padding: 0.6rem 2.8rem 0.6rem 2.8rem; border: 1.5px solid #6C5555; background-color: rgba(255, 255, 255, 0.6);">
+          <i class="bi bi-eye position-absolute text-secondary fs-5" id="btnEye2" onclick="togglePass('pass2', 'btnEye2')" style="right: 15px; top: 50%; transform: translateY(-50%); cursor: pointer;"></i>
         </div>
         <div id="passMatchMsg" class="small mt-1"></div>
       </div>

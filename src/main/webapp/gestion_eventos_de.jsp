@@ -13,7 +13,7 @@
 <body>
 
 <jsp:include page="sidebar_de.jsp">
-    <jsp:param name="active" value="gestion_evento" />
+    <jsp:param name="active" value="gestion_eventos" />
 </jsp:include>
 
 <main class="main-content">

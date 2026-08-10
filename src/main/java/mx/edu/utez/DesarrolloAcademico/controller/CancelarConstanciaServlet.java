@@ -9,7 +9,6 @@ import jakarta.servlet.http.HttpSession;
 import mx.edu.utez.DesarrolloAcademico.model.Usuario;
 import mx.edu.utez.DesarrolloAcademico.model.dao.ConstanciaDao;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 
@@ -45,8 +44,22 @@ public class CancelarConstanciaServlet extends HttpServlet {
             int idConstancia = Integer.parseInt(idConstanciaStr);
             int idEvento = Integer.parseInt(idEventoStr);
 
+            // Permitir a coordinadores y desarrolladores cancelar constancias de otros usuarios
+            String targetUserStr = request.getParameter("idUsuarioTarget");
+            int idUsuarioAccion = usuario.getIdUsuario();
+            if (targetUserStr != null && !targetUserStr.trim().isEmpty()) {
+                String rol = usuario.getRol().toLowerCase();
+                if (rol.equals("coordinador") || rol.equals("desarrollo")) {
+                    try {
+                        idUsuarioAccion = Integer.parseInt(targetUserStr);
+                    } catch (NumberFormatException e) {
+                        // fallback al usuario actual
+                    }
+                }
+            }
+
             ConstanciaDao dao = new ConstanciaDao();
-            int idParticipante = dao.obtenerIdParticipante(idEvento, usuario.getIdUsuario());
+            int idParticipante = dao.obtenerIdParticipante(idEvento, idUsuarioAccion);
 
             if (idParticipante == -1) {
                 response.setStatus(HttpServletResponse.SC_FORBIDDEN);
@@ -55,24 +68,18 @@ public class CancelarConstanciaServlet extends HttpServlet {
                 return;
             }
 
-            // Eliminar de BD y obtener ruta del archivo para borrarlo del disco
-            String rutaRelativa = dao.eliminarConstancia(idConstancia, idParticipante);
+            // Eliminar de BD (el BLOB se elimina junto con el registro)
+            boolean eliminado = dao.eliminarConstancia(idConstancia, idParticipante);
 
-            if (rutaRelativa == null) {
+            if (!eliminado) {
                 response.setStatus(HttpServletResponse.SC_NOT_FOUND);
                 out.write("{\"success\": false, \"message\": \"No se encontró la constancia.\"}");
                 out.flush();
                 return;
             }
 
-            // Borrar el archivo físico del servidor
-            String rutaAbsoluta = getServletContext().getRealPath("") + File.separator + rutaRelativa.replace("/", File.separator);
-            File archivo = new File(rutaAbsoluta);
-            if (archivo.exists()) {
-                archivo.delete();
-            }
-
             out.write("{\"success\": true, \"message\": \"Entrega cancelada correctamente.\"}");
+
         } catch (Exception e) {
             e.printStackTrace();
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);

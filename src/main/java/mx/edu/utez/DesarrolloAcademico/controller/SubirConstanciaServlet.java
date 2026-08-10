@@ -11,11 +11,10 @@ import jakarta.servlet.http.Part;
 import mx.edu.utez.DesarrolloAcademico.model.Usuario;
 import mx.edu.utez.DesarrolloAcademico.model.dao.ConstanciaDao;
 
-import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintWriter;
 import java.nio.file.Paths;
-import java.util.UUID;
 
 @WebServlet(name = "SubirConstanciaServlet", value = "/SubirConstanciaServlet")
 @MultipartConfig(
@@ -65,6 +64,14 @@ public class SubirConstanciaServlet extends HttpServlet {
                 return;
             }
             
+            // Validar periodo activo de la división
+            if (usuario.getIdDivision() != null && !dao.esPeriodoActivo(usuario.getIdDivision())) {
+                response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                out.write("{\"success\": false, \"message\": \"No hay un periodo de carga activo para tu división.\"}");
+                out.flush();
+                return;
+            }
+            
             if (dao.verificarConstanciaExistente(idParticipante)) {
                 response.setStatus(HttpServletResponse.SC_CONFLICT);
                 out.write("{\"success\": false, \"message\": \"Ya has subido una constancia para este evento.\"}");
@@ -89,30 +96,27 @@ public class SubirConstanciaServlet extends HttpServlet {
                 out.flush();
                 return;
             }
-            
-            // Directorio de subida relativo a la aplicación web (fuera de WEB-INF para poder ser servido)
-            String uploadPath = getServletContext().getRealPath("") + File.separator + "uploads" + File.separator + "constancias";
-            File uploadDir = new File(uploadPath);
-            if (!uploadDir.exists()) {
-                uploadDir.mkdirs();
+
+            // Determinar content-type real
+            String contentType = filePart.getContentType();
+            if (contentType == null) {
+                if (fileNameLower.endsWith(".pdf")) contentType = "application/pdf";
+                else if (fileNameLower.endsWith(".png")) contentType = "image/png";
+                else contentType = "image/jpeg";
+            }
+
+            // Leer el archivo como bytes y almacenar como BLOB en Oracle
+            byte[] contenidoArchivo;
+            try (InputStream is = filePart.getInputStream()) {
+                contenidoArchivo = is.readAllBytes();
             }
             
-            String uniqueFileName = UUID.randomUUID().toString() + "_" + fileName;
-            String filePath = uploadPath + File.separator + uniqueFileName;
-            
-            // Guardar el archivo en el disco
-            filePart.write(filePath);
-            
-            // Guardar ruta relativa en BD
-            String rutaRelativa = "uploads/constancias/" + uniqueFileName;
-            
-            boolean exito = dao.guardarConstanciaCO(idParticipante, rutaRelativa, fileName, tieneVigencia, fechaVencimiento, usuario.getIdUsuario());
+            boolean exito = dao.guardarConstanciaCO(idParticipante, fileName, contenidoArchivo, contentType,
+                    tieneVigencia, fechaVencimiento, usuario.getIdUsuario());
             
             if (exito) {
                 out.write("{\"success\": true, \"message\": \"Constancia subida correctamente.\"}");
             } else {
-                // Borrar archivo si falló la BD
-                new File(filePath).delete();
                 response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                 out.write("{\"success\": false, \"message\": \"Error al guardar en base de datos.\"}");
             }

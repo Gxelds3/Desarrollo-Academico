@@ -12,7 +12,7 @@
     int totalEventos = eventoDao.contarEventos();
     int totalDocentes = eventoDao.contarDocentesD();
 
-    List<Evento> listaEventos = usuarioDao.obtenerProximosEventos();
+    List<Evento> listaEventos = usuarioDao.obtenerProximosEventos(null);
 
 
 %>
@@ -69,7 +69,7 @@
 
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h5 class="fw-bold mb-0 text-uppercase" style="letter-spacing: 0.05em; color: #333;">PRÓXIMOS EVENTOS</h5>
-        <a href="historial_eventos_de.jsp" class="btn-teal">Ver todos los eventos</a>
+        <a href="historial_eventos_de.jsp" class="btn-teal">Ver Historial de Eventos</a>
     </div>
 
     <div id="eventsList">

@@ -238,25 +238,36 @@ public class UsuarioDao {
         return false;
     }
 
-    public List<Evento> obtenerProximosEventos() {
+    public List<Evento> obtenerProximosEventos(Integer idDivision) {
         List<Evento> lista = new ArrayList<>();
-        String sql = "SELECT ID_EVENTO, NOMBRE, FECHA_INICIO, FECHA_FIN FROM EVENTOS ORDER BY FECHA_INICIO ASC";
+        String sql = "SELECT ID_EVENTO, NOMBRE, FECHA_INICIO, FECHA_FIN FROM EVENTOS ";
+        if (idDivision != null && idDivision > 0) {
+            sql += " WHERE ID_DIVISION = ? AND FECHA_INICIO >= SYSDATE ";
+        } else {
+            sql += " WHERE FECHA_INICIO >= SYSDATE ";
+        }
+        sql += " ORDER BY FECHA_INICIO ASC";
 
         try (Connection con = DatabaseConnection.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
+             PreparedStatement ps = con.prepareStatement(sql)) {
 
-            while (rs.next()) {
-                Evento e = new Evento();
-                e.setID(rs.getInt("ID_EVENTO"));
-                e.setNombre(rs.getString("NOMBRE"));
-                e.setFecha_Inicio(rs.getTimestamp("FECHA_INICIO"));
-                e.setFecha_Fin(rs.getTimestamp("FECHA_FIN"));
-                lista.add(e);
+            if (idDivision != null && idDivision > 0) {
+                ps.setInt(1, idDivision);
             }
-        } catch (SQLException ex) {
-            System.err.println("Error al listar próximos eventos: " + ex.getMessage());
-            ex.printStackTrace();
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Evento evento = new Evento();
+                    evento.setID(rs.getInt("ID_EVENTO"));
+                    evento.setNombre(rs.getString("NOMBRE"));
+                    evento.setFecha_Inicio(rs.getTimestamp("FECHA_INICIO"));
+                    evento.setFecha_Fin(rs.getTimestamp("FECHA_FIN"));
+                    lista.add(evento);
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Error al listar próximos eventos: " + e.getMessage());
+            e.printStackTrace();
         }
         return lista;
     }

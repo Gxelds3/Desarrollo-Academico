@@ -165,6 +165,7 @@ function renderDocentes(lista) {
             '</td>' +
             '<td>' + escapeHtml(doc.correo) + '</td>' +
             '<td>' + escapeHtml(divisionNombre) + '</td>' +
+            '<td><span class="badge ' + (doc.rol === 'coordinador' ? 'bg-info' : 'bg-secondary') + '">' + escapeHtml(doc.rol ? doc.rol.charAt(0).toUpperCase() + doc.rol.slice(1) : 'Docente') + '</span></td>' +
             '<td>' + escapeHtml(doc.numeroEmpleado) + '</td>' +
             '<td>' +
             '<i class="bi ' + iconoEstado + ' fs-4 toggle-estado" style="cursor:pointer;" data-id="' + doc.id + '" data-activo="' + (activo ? 1 : 0) + '"></i>' +
@@ -174,8 +175,8 @@ function renderDocentes(lista) {
             /* EDITAR */
             '<a href="' + contextPath + '/editar_docente_' + sufijoRol + '.jsp?id=' + doc.id + '" class="action-btn" title="Editar"><i class="bi bi-pencil"></i></a>' +
 
-            /* VER DETALLES (Ruta corregida con sufijo de rol) */
-            '<a href="' + contextPath + '/ver_docente_' + sufijoRol + '.jsp?id=' + doc.id + '" class="action-btn" title="Ver"><i class="bi bi-eye"></i></a>' +
+            /* VER DETALLES (a través del servlet verDocente) */
+            '<a href="' + contextPath + '/verDocente?id=' + doc.id + '" class="action-btn" title="Ver"><i class="bi bi-eye"></i></a>' +
 
             /* ELIMINAR PERMANENTE */
             '<a href="#" class="action-btn delete" title="Eliminar" data-id="' + doc.id + '"><i class="bi bi-trash"></i></a>' +

@@ -42,9 +42,23 @@ public class ObtenerConstanciaServlet extends HttpServlet {
 
         try {
             int idEvento = Integer.parseInt(idEventoStr);
+            String targetUserStr = request.getParameter("idUsuarioTarget");
+            
+            int idUsuarioConsulta = usuario.getIdUsuario();
+            if (targetUserStr != null && !targetUserStr.trim().isEmpty()) {
+                String rol = usuario.getRol().toLowerCase();
+                if (rol.equals("coordinador") || rol.equals("desarrollo")) {
+                    try {
+                        idUsuarioConsulta = Integer.parseInt(targetUserStr);
+                    } catch (NumberFormatException e) {
+                        // fallback
+                    }
+                }
+            }
+            
             ConstanciaDao dao = new ConstanciaDao();
 
-            int idParticipante = dao.obtenerIdParticipante(idEvento, usuario.getIdUsuario());
+            int idParticipante = dao.obtenerIdParticipante(idEvento, idUsuarioConsulta);
             if (idParticipante == -1) {
                 out.write("{\"success\": true, \"constancia\": null}");
                 out.flush();
@@ -70,7 +84,7 @@ public class ObtenerConstanciaServlet extends HttpServlet {
                     "\"constancia\": {" +
                         "\"idConstancia\": " + constancia.get("idConstancia") + "," +
                         "\"nombreArchivo\": \"" + esc(constancia.get("nombreArchivo").toString()) + "\"," +
-                        "\"rutaArchivo\": \"" + esc(constancia.get("rutaArchivo").toString()) + "\"," +
+                        "\"contentType\": \"" + esc(constancia.get("contentType").toString()) + "\"," +
                         "\"tieneVigencia\": " + constancia.get("tieneVigencia") + "," +
                         "\"fechaSubida\": \"" + fechaSubidaStr + "\"," +
                         "\"fechaVencimiento\": \"" + fechaVencimientoStr + "\"," +

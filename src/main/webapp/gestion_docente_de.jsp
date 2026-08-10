@@ -34,7 +34,7 @@
             <input type="text" id="buscarDocente" placeholder="Buscar por nombre, correo, número de empleado...">
         </div>
         <a href="${pageContext.request.contextPath}/agregar_docente_de.jsp" class="btn-teal">
-            <i class="bi bi-person-plus"></i> Agregar Docente
+            <i class="bi bi-person-plus"></i> Agregar Docente/Coordinador
         </a>
     </div>
 
@@ -58,18 +58,20 @@
     <div class="data-card p-0 mb-4" style="overflow: hidden;">
         <table class="table-custom mb-0 text-center">
             <colgroup>
-                <col style="width: 24%;">
                 <col style="width: 22%;">
-                <col style="width: 13%;">
-                <col style="width: 13%;">
+                <col style="width: 20%;">
                 <col style="width: 10%;">
-                <col style="width: 18%;">
+                <col style="width: 10%;">
+                <col style="width: 12%;">
+                <col style="width: 10%;">
+                <col style="width: 16%;">
             </colgroup>
             <thead>
             <tr>
                 <th class="text-start">Nombre</th>
                 <th>Correo</th>
                 <th>División</th>
+                <th>Rol</th>
                 <th>Núm. Empleado</th>
                 <th>Estado</th>
                 <th>Acciones</th>
@@ -77,7 +79,7 @@
             </thead>
             <tbody id="tablaDocentesBody">
             <tr>
-                <td colspan="6" class="text-center text-muted py-4">Cargando docentes...</td>
+                <td colspan="7" class="text-center text-muted py-4">Cargando docentes...</td>
             </tr>
             </tbody>
         </table>

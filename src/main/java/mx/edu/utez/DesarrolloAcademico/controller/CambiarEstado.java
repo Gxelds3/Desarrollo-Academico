@@ -20,6 +20,9 @@ public class CambiarEstado extends HttpServlet {
         PrintWriter out = response.getWriter();
 
         String idStr = request.getParameter("id");
+        if (idStr == null || idStr.trim().isEmpty()) {
+            idStr = request.getParameter("idUsuario");
+        }
         String estadoStr = request.getParameter("estado");
 
         try {
@@ -45,7 +48,7 @@ public class CambiarEstado extends HttpServlet {
 
         } catch (NumberFormatException e) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            out.write("{\"success\": false, \"message\": \"Formato de parámetros inválido.\"}");
+            out.write("{\"success\": false, \"message\": \"Formato de parámetros inválido. Asegúrate de enviar valores numéricos.\"}");
         } catch (Exception e) {
             e.printStackTrace();
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
