@@ -112,6 +112,11 @@
             <i class="bi bi-lock-fill me-2"></i>
             <strong>Plazo vencido.</strong> Ya no es posible modificar ni cancelar esta entrega.
         </div>
+        <div class="d-flex justify-content-center justify-content-md-end mt-4">
+            <a href="mi_evento_co.jsp" class="btn btn-outline-teal px-5 py-2 fw-semibold d-flex align-items-center btn-volver-dinamico" style="border: 2px solid var(--teal-main); color: var(--teal-main); border-radius: 6px;">
+                <i class="bi bi-chevron-left me-2"></i> Volver
+            </a>
+        </div>
     </div>
 
     <!-- Formulario para Cargar Archivo (Oculto por defecto) -->
@@ -135,8 +140,8 @@
                     </div>
                 </div>
 
-                <div class="d-flex align-items-center gap-3" id="bloqueFechaVigencia" style="display: none;">
-                    <span class="fw-medium">Fecha de Vigencia:</span>
+                <div class="d-flex align-items-center gap-3 d-none" id="bloqueFechaVigencia">
+                    <label for="fechaVencimiento" class="fw-medium mb-0">Fecha de Vigencia:</label>
                     <input type="date" name="fechaVencimiento" id="fechaVencimiento" class="form-control" style="width: auto; border-radius: 8px;">
                 </div>
             </div>
@@ -165,7 +170,7 @@
         </div>
 
         <div class="d-flex justify-content-center justify-content-md-end gap-3 mb-5">
-            <a href="mi_evento_co.jsp" id="btnVolver" class="btn btn-outline-teal px-5 py-2 fw-semibold d-flex align-items-center" style="border: 2px solid var(--teal-main); color: var(--teal-main); border-radius: 6px;">
+            <a href="mi_evento_co.jsp" class="btn btn-outline-teal px-5 py-2 fw-semibold d-flex align-items-center btn-volver-dinamico" style="border: 2px solid var(--teal-main); color: var(--teal-main); border-radius: 6px;">
                 <i class="bi bi-chevron-left me-2"></i> Volver
             </a>
             <button type="submit" class="btn-teal px-5 py-2" style="border-radius: 6px;">Cargar Archivo</button>
@@ -188,7 +193,9 @@
         document.getElementById('hiddenIdEvento').value = idEvento;
         if (idUsuarioTarget) {
             document.getElementById('hiddenIdUsuarioTarget').value = idUsuarioTarget;
-            document.getElementById('btnVolver').href = 'editar_evento_co.jsp?id=' + idEvento;
+            document.querySelectorAll('.btn-volver-dinamico').forEach(btn => {
+                btn.href = 'editar_evento_co.jsp?id=' + idEvento;
+            });
         }
     } else {
         Swal.fire('Error', 'No se especificó un evento válido', 'error').then(() => {
@@ -337,12 +344,12 @@
     const fechaVencimiento = document.getElementById('fechaVencimiento');
 
     vigenciaSi.addEventListener('change', () => {
-        document.getElementById('bloqueFechaVigencia').style.display = 'flex';
+        document.getElementById('bloqueFechaVigencia').classList.remove('d-none');
         fechaVencimiento.required = true;
     });
 
     vigenciaNo.addEventListener('change', () => {
-        document.getElementById('bloqueFechaVigencia').style.display = 'none';
+        document.getElementById('bloqueFechaVigencia').classList.add('d-none');
         fechaVencimiento.required = false;
         fechaVencimiento.value = '';
     });

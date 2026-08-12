@@ -33,12 +33,12 @@ public class verDocente extends HttpServlet {
 
                     jakarta.servlet.http.HttpSession session = request.getSession(false);
                     String redirectPage = "gestion_docente_de.jsp";
-                    String forwardPage = "/ver_detalles_docente_de.jsp";
+                    String forwardPage = "/detalles_docente_coordinadores_de.jsp";
                     
                     if (session != null && session.getAttribute("usuario") != null) {
                         Usuario current = (Usuario) session.getAttribute("usuario");
                         if ("coordinador".equalsIgnoreCase(current.getRol())) {
-                            forwardPage = "/ver_detalles_docente_co.jsp";
+                            forwardPage = "/detalles_docente_coordinadores_co.jsp";
                             redirectPage = "gestion_docente_co.jsp";
                         }
                     }

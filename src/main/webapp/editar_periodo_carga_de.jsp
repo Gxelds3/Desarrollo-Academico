@@ -32,14 +32,7 @@
         <div class="row mb-5">
             <div class="col-md-4">
                 <label class="form-label text-muted">División Académica <span class="text-danger">*</span> :</label>
-                <select class="form-select bg-white" id="selectDivision" name="division" required>
-                    <option value="" disabled selected>Cargando...</option>
-                    <option value="DATID">DATID</option>
-                    <option value="DAMI">DAMI</option>
-                    <option value="DACEA">DACEA</option>
-                    <option value="DATEFI">DATEFI</option>
-                    <option value="GENERAL">GENERAL</option>
-                </select>
+                <input type="text" class="form-control" id="selectDivision" name="division" readonly>
             </div>
             <div class="col-md-4">
                 <label class="form-label text-muted">Fecha de inicio <span class="text-danger">*</span> :</label>

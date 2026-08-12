@@ -164,7 +164,7 @@ public class ConstanciaDao {
 
     public boolean esPeriodoActivo(int idDivision) {
         boolean activo = false;
-        String sql = "SELECT 1 FROM periodos_carga WHERE ID_DIVISION = ? AND ACTIVO = 1 AND CURRENT_DATE BETWEEN FECHA_INICIO AND FECHA_FIN";
+        String sql = "SELECT 1 FROM periodos_carga WHERE ID_DIVISION = ? AND ACTIVO = 1 AND TRUNC(SYSDATE) BETWEEN TRUNC(FECHA_INICIO) AND TRUNC(FECHA_FIN)";
         try (Connection con = DatabaseConnection.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setInt(1, idDivision);

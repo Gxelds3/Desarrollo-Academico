@@ -64,12 +64,14 @@ public class SubirConstanciaServlet extends HttpServlet {
                 return;
             }
             
-            // Validar periodo activo de la división
-            if (usuario.getIdDivision() != null && !dao.esPeriodoActivo(usuario.getIdDivision())) {
-                response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-                out.write("{\"success\": false, \"message\": \"No hay un periodo de carga activo para tu división.\"}");
-                out.flush();
-                return;
+            // Validar periodo activo de la división (solo si tiene división asignada)
+            if (usuario.getIdDivision() != null && usuario.getIdDivision() > 0) {
+                if (!dao.esPeriodoActivo(usuario.getIdDivision())) {
+                    response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                    out.write("{\"success\": false, \"message\": \"No hay un periodo de carga activo para tu división o el periodo ha vencido.\"}");
+                    out.flush();
+                    return;
+                }
             }
             
             if (dao.verificarConstanciaExistente(idParticipante)) {

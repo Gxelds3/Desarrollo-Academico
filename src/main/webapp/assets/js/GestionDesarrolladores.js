@@ -140,7 +140,6 @@ function renderDesarrolladores(lista) {
             '</div>' +
             '</td>' +
             '<td>' + escapeHtml(dev.correo) + '</td>' +
-            '<td>' + escapeHtml(divisionNombre) + '</td>' +
             '<td>' + escapeHtml(dev.numeroEmpleado) + '</td>' +
             '<td>' +
             '<i class="bi ' + iconoEstado + ' fs-4 toggle-estado" style="cursor:pointer;" data-id="' + dev.id + '" data-activo="' + (activo ? 1 : 0) + '"></i>' +

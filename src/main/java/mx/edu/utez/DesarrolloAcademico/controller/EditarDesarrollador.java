@@ -53,18 +53,18 @@ public class EditarDesarrollador extends HttpServlet {
         PrintWriter out = response.getWriter();
 
         try {
-            String idStr = request.getParameter("id");
-            String nombre = request.getParameter("nombre");
-            String apellidoPaterno = request.getParameter("apellido_paterno");
-            String apellidoMaterno = request.getParameter("apellido_materno");
-            String divisionStr = request.getParameter("division");
-            String numeroEmpleado = request.getParameter("numero_empleado");
-            String telefono = request.getParameter("telefono");
-            String correo = request.getParameter("correo");
-            String contrasena = request.getParameter("contrasena");
-            String confirmarContrasena = request.getParameter("confirmar_contrasena");
+            String idStr              = request.getParameter("id");
+            String nombre             = request.getParameter("nombre");
+            String apellidoPaterno    = request.getParameter("apellido_paterno");
+            String apellidoMaterno    = request.getParameter("apellido_materno");
+            String divisionStr        = request.getParameter("division");
+            String numeroEmpleado     = request.getParameter("numero_empleado");
+            String telefono           = request.getParameter("telefono");
+            String correo             = request.getParameter("correo");
+            String contrasena         = request.getParameter("contrasena");
+            String confirmarContrasena= request.getParameter("confirmar_contrasena");
 
-            // Validaciones en servidor
+            // Campos obligatorios
             if (idStr == null || idStr.trim().isEmpty()
                     || nombre == null || nombre.trim().isEmpty()
                     || apellidoPaterno == null || apellidoPaterno.trim().isEmpty()
@@ -72,16 +72,14 @@ public class EditarDesarrollador extends HttpServlet {
                     || divisionStr == null || divisionStr.trim().isEmpty()
                     || numeroEmpleado == null || numeroEmpleado.trim().isEmpty()
                     || telefono == null || telefono.trim().isEmpty()
-                    || correo == null || correo.trim().isEmpty()
-                    || contrasena == null || contrasena.trim().isEmpty()
-                    || confirmarContrasena == null || confirmarContrasena.trim().isEmpty()) {
+                    || correo == null || correo.trim().isEmpty()) {
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 out.write("{\"success\": false, \"message\": \"Faltan campos obligatorios.\"}");
                 out.flush();
                 return;
             }
 
-            // Correo institucional
+            // Correo institucional obligatorio
             if (!correo.trim().toLowerCase().endsWith("@utez.edu.mx")) {
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 out.write("{\"success\": false, \"message\": \"El correo debe terminar en @utez.edu.mx\"}");
@@ -89,19 +87,21 @@ public class EditarDesarrollador extends HttpServlet {
                 return;
             }
 
-            // Longitud de 12 a 15 caracteres
-            if (contrasena.trim().length() < 12 || contrasena.trim().length() > 15) {
-                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                out.write("{\"success\": false, \"message\": \"La contraseña debe tener entre 12 y 15 caracteres.\"}");
-                out.flush();
-                return;
-            }
-
-            if (!contrasena.equals(confirmarContrasena)) {
-                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                out.write("{\"success\": false, \"message\": \"Las contraseñas no coinciden.\"}");
-                out.flush();
-                return;
+            // Contraseña OPCIONAL: solo validar si se pone algo
+            boolean cambiarPass = (contrasena != null && !contrasena.trim().isEmpty());
+            if (cambiarPass) {
+                if (contrasena.trim().length() < 12 || contrasena.trim().length() > 15) {
+                    response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                    out.write("{\"success\": false, \"message\": \"La contrase\u00f1a debe tener entre 12 y 15 caracteres.\"}");
+                    out.flush();
+                    return;
+                }
+                if (!contrasena.trim().equals(confirmarContrasena == null ? "" : confirmarContrasena.trim())) {
+                    response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                    out.write("{\"success\": false, \"message\": \"Las contrase\u00f1as no coinciden.\"}");
+                    out.flush();
+                    return;
+                }
             }
 
             int id;
@@ -135,7 +135,9 @@ public class EditarDesarrollador extends HttpServlet {
             desarrollador.setTelefono(telefono.trim());
             desarrollador.setCorreoInstitucional(correo.trim());
 
-            boolean exito = dao.actualizarDesarrollador(desarrollador, contrasena.trim());
+            // Si no se cambia contraseña pasamos cadena vacía y el DAO decide qué hacer
+            String passAEnviar = cambiarPass ? contrasena.trim() : "";
+            boolean exito = dao.actualizarDesarrollador(desarrollador, passAEnviar);
 
             if (exito) {
                 out.write("{\"success\": true, \"message\": \"Desarrollador actualizado correctamente.\"}");

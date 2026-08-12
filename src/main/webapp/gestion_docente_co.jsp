@@ -17,7 +17,7 @@
 </jsp:include>
 
 <main class="main-content">
-    <h3 class="page-title mb-4">GESTION DE PERSONAL</h3>
+    <h3 class="page-title mb-4">GESTION DE DOCENTES/COORDINADORES</h3>
 
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div class="search-box mb-0" style="max-width: 600px; flex-grow: 1; margin-right: 20px;">

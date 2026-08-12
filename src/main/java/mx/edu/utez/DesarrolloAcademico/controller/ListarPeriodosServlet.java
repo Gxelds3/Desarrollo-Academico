@@ -27,15 +27,17 @@ public class ListarPeriodosServlet extends HttpServlet {
             UsuarioListaDao dao = new UsuarioListaDao();
             List<Periodo> listaPeriodos = dao.obtenerTodosLosPeriodos(); // Método SELECT en tu DAO
 
-            // Construir respuesta JSON manualmente
+            // Construir respuesta JSON manualmente (fechas como strings YYYY-MM-DD)
             StringBuilder json = new StringBuilder("[");
             for (int i = 0; i < listaPeriodos.size(); i++) {
                 Periodo p = listaPeriodos.get(i);
+                String fechaIni = p.getFechaInicio() != null ? p.getFechaInicio().toString() : "";
+                String fechaFin = p.getFechaFin()    != null ? p.getFechaFin().toString()    : "";
                 json.append("{")
-                        .append("\"idPeriodo\":").append(p.getId()).append(",") // o p.getId()
-                        .append("\"division\":\"").append(p.getDivision()).append("\",")
-                        .append("\"fechaInicio\":\"").append(p.getFechaInicio()).append("\",")
-                        .append("\"fechaFin\":\"").append(p.getFechaFin()).append("\",")
+                        .append("\"idPeriodo\":").append(p.getId()).append(",")
+                        .append("\"division\":\"").append(p.getDivision() != null ? p.getDivision().replace("\"","\\\"") : "").append("\",")
+                        .append("\"fechaInicio\":\"").append(fechaIni).append("\",")
+                        .append("\"fechaFin\":\"").append(fechaFin).append("\",")
                         .append("\"activo\":").append(p.isActivo())
                         .append("}");
 

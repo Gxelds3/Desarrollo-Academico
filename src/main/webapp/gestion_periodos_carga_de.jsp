@@ -26,11 +26,6 @@
             <i class="bi bi-search"></i>
             <input type="text" id="inputBuscar" placeholder="Buscar periodo por división...">
         </div>
-
-        <!-- Botón Agregar -->
-        <a href="agregar_periodos_cargar_de.jsp" class="btn-teal">
-            <i class="bi bi-calendar-plus me-2"></i> Agregar periodo
-        </a>
     </div>
 
     <div class="data-card p-0 mb-4" style="overflow: hidden;">
@@ -77,6 +72,15 @@
         });
     });
 
+    function formatDateMX(dateStr) {
+        if (!dateStr) return '';
+        const parts = dateStr.split('-');
+        if (parts.length === 3) {
+            return `${parts[2]}/${parts[1]}/${parts[0]}`;
+        }
+        return dateStr;
+    }
+
     function cargarPeriodos() {
         const tbody = document.getElementById("tablaPeriodosBody");
         tbody.innerHTML = `<tr><td colspan="5" class="py-4 text-muted">Cargando periodos...</td></tr>`;
@@ -112,8 +116,8 @@
                             <span class="fw-semibold ms-2">\${periodo.division}</span>
                         </div>
                     </td>
-                    <td>\${periodo.fechaInicio}</td>
-                    <td>\${periodo.fechaFin}</td>
+                    <td>\${formatDateMX(periodo.fechaInicio)}</td>
+                    <td>\${formatDateMX(periodo.fechaFin)}</td>
                     <td>
                         <button type="button" class="btn btn-link p-0 text-decoration-none"
                                 title="\${esActivo ? 'Desactivar' : 'Activar'}"
@@ -124,9 +128,6 @@
                     <td>
                         <a href="editar_periodo_carga_de.jsp?id=\${id}" class="action-btn" title="Editar"><i class="bi bi-pencil"></i></a>
                         <a href="ver_periodo_carga_de.jsp?id=\${id}" class="action-btn" title="Ver detalle"><i class="bi bi-eye"></i></a>
-                        <button type="button" class="action-btn delete" title="Eliminar" onclick="confirmarEliminar(\${id})">
-                            <i class="bi bi-trash"></i>
-                        </button>
                     </td>
                 `;
                     tbody.appendChild(tr);

@@ -27,7 +27,7 @@ public class VerDesarrollador extends HttpServlet {
                 if (dev != null) {
                     request.setAttribute("dev", dev);
                     // Reenvía directamente a la vista de detalles
-                    request.getRequestDispatcher("ver_detalles_desarrollador_de.jsp").forward(request, response);
+                    request.getRequestDispatcher("detalles_docente_coordinadores_de.jsp").forward(request, response);
                     return;
                 }
             } catch (Exception e) {

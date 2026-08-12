@@ -41,18 +41,16 @@
     <div class="data-card p-0 mb-4" style="overflow: hidden;">
         <table class="table-custom mb-0 text-center">
             <colgroup>
-                <col style="width: 24%;">
-                <col style="width: 22%;">
-                <col style="width: 13%;">
-                <col style="width: 13%;">
-                <col style="width: 10%;">
-                <col style="width: 18%;">
+                <col style="width: 25%;">
+                <col style="width: 25%;">
+                <col style="width: 15%;">
+                <col style="width: 15%;">
+                <col style="width: 20%;">
             </colgroup>
             <thead>
             <tr>
                 <th class="text-start">Nombre</th>
                 <th>Correo</th>
-                <th>Division</th>
                 <th>Num. Empleado</th>
                 <th>Estado</th>
                 <th>Acciones</th>
@@ -60,7 +58,7 @@
             </thead>
             <tbody id="tablaDesarrolladoresBody">
             <tr>
-                <td colspan="6" class="text-center text-muted py-4">Cargando...</td>
+                <td colspan="5" class="text-center text-muted py-4">Cargando...</td>
             </tr>
             </tbody>
         </table>

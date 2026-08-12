@@ -71,6 +71,14 @@ public class SubirConstanciaServlet1 extends HttpServlet {
                     }
                 }
             }
+            
+            Usuario targetUsuario = usuarioDao.buscarPorId(idUsuarioSubir);
+            if (targetUsuario != null && targetUsuario.getIdDivision() != null && !dao.esPeriodoActivo(targetUsuario.getIdDivision())) {
+                response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                out.write("{\"success\": false, \"message\": \"No hay un periodo de carga activo para la división del docente.\"}");
+                out.flush();
+                return;
+            }
 
             // Garantiza crear o reutilizar el participante
             int idParticipante = usuarioDao.obtenerOCrearParticipante(idEvento, idUsuarioSubir);

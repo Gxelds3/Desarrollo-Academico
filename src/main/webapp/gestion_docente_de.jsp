@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestión de Docentes</title>
+    <title>Gestión de Docentes/Coordinadores</title>
 
     <!-- Bootstrap 5 CSS -->
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/bootstrap.css">
@@ -26,7 +26,7 @@
 </jsp:include>
 
 <main class="main-content">
-    <h3 class="page-title mb-4">GESTIÓN DE DOCENTES</h3>
+    <h3 class="page-title mb-4">GESTIÓN DE DOCENTES/COORDINADORES</h3>
 
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div class="search-box mb-0" style="max-width: 600px; flex-grow: 1; margin-right: 20px;">

@@ -165,7 +165,7 @@ function renderDocentes(lista) {
             '</td>' +
             '<td>' + escapeHtml(doc.correo) + '</td>' +
             '<td>' + escapeHtml(divisionNombre) + '</td>' +
-            '<td><span class="badge ' + (doc.rol === 'coordinador' ? 'bg-info' : 'bg-secondary') + '">' + escapeHtml(doc.rol ? doc.rol.charAt(0).toUpperCase() + doc.rol.slice(1) : 'Docente') + '</span></td>' +
+            '<td><span class="badge ' + (doc.rol === 'desarrollador' ? 'bg-secondary' : 'bg-success') + '">' + escapeHtml(doc.rol ? doc.rol.charAt(0).toUpperCase() + doc.rol.slice(1) : 'Docente') + '</span></td>' +
             '<td>' + escapeHtml(doc.numeroEmpleado) + '</td>' +
             '<td>' +
             '<i class="bi ' + iconoEstado + ' fs-4 toggle-estado" style="cursor:pointer;" data-id="' + doc.id + '" data-activo="' + (activo ? 1 : 0) + '"></i>' +
