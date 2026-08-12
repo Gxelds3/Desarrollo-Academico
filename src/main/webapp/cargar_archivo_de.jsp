@@ -8,44 +8,7 @@
     <link rel="stylesheet" href="assets/css/bootstrap.css">
     <link rel="stylesheet" href="assets/css/bi/bootstrap-icons.css">
     <link rel="stylesheet" href="assets/css/coordinador.css">
-    <style>
-        .form-control[readonly] {
-            background-color: #f8f9fa;
-            opacity: 1;
-        }
-        .constancia-card {
-            background-color: white;
-            border-radius: 12px;
-            padding: 25px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-        }
-        .constancia-file-icon {
-            font-size: 3rem;
-            color: #e74c3c;
-        }
-        .constancia-meta {
-            font-size: 0.9rem;
-            color: #6c757d;
-        }
-        .vencido-banner {
-            background: #fee2e2;
-            border: 1px solid #fca5a5;
-            border-radius: 8px;
-            padding: 12px 16px;
-            color: #991b1b;
-            font-size: 0.9rem;
-        }
-        .upload-zone {
-            border: 2px dashed var(--teal-main, #00847b);
-            border-radius: 12px;
-            transition: background-color 0.2s ease, border-color 0.2s ease;
-            position: relative;
-        }
-        .upload-zone.dragover {
-            background-color: rgba(0, 132, 123, 0.08);
-            border-color: #005650;
-        }
-    </style>
+    <link rel="stylesheet" href="assets/css/cargararchivo.css">
 </head>
 <body>
 
@@ -58,7 +21,6 @@
         <h3 class="page-title mb-3" id="tituloEvento">CARGANDO EVENTO...</h3>
     </div>
 
-    <!-- Tarjeta de Información del Evento -->
     <div class="info-card-outline mb-4" style="border-color: var(--teal-main); padding: 25px;">
         <div class="row mb-3">
             <div class="col-md-4">

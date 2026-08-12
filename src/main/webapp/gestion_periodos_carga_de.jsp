@@ -8,7 +8,6 @@
     <link rel="stylesheet" href="assets/css/bootstrap.css">
     <link rel="stylesheet" href="assets/css/bi/bootstrap-icons.css">
     <link rel="stylesheet" href="assets/css/coordinador.css">
-    <!-- SweetAlert2 CDN -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
@@ -26,6 +25,11 @@
             <i class="bi bi-search"></i>
             <input type="text" id="inputBuscar" placeholder="Buscar periodo por división...">
         </div>
+
+        <!-- Botón Agregar -->
+        <a href="agregar_periodos_cargar_de.jsp" class="btn-teal">
+            <i class="bi bi-calendar-plus me-2"></i> Agregar periodo
+        </a>
     </div>
 
     <div class="data-card p-0 mb-4" style="overflow: hidden;">
@@ -47,7 +51,7 @@
             </tr>
             </thead>
             <tbody id="tablaPeriodosBody">
-            <!-- Se poblará dinámicamente mediante JavaScript -->
+
             </tbody>
         </table>
     </div>
@@ -60,7 +64,6 @@
     document.addEventListener("DOMContentLoaded", function() {
         cargarPeriodos();
 
-        // Filtro rápido de búsqueda en frontend
         document.getElementById("inputBuscar").addEventListener("keyup", function() {
             const valor = this.value.toLowerCase();
             const filas = document.querySelectorAll("#tablaPeriodosBody tr");
@@ -71,15 +74,6 @@
             });
         });
     });
-
-    function formatDateMX(dateStr) {
-        if (!dateStr) return '';
-        const parts = dateStr.split('-');
-        if (parts.length === 3) {
-            return `${parts[2]}/${parts[1]}/${parts[0]}`;
-        }
-        return dateStr;
-    }
 
     function cargarPeriodos() {
         const tbody = document.getElementById("tablaPeriodosBody");
@@ -116,8 +110,8 @@
                             <span class="fw-semibold ms-2">\${periodo.division}</span>
                         </div>
                     </td>
-                    <td>\${formatDateMX(periodo.fechaInicio)}</td>
-                    <td>\${formatDateMX(periodo.fechaFin)}</td>
+                    <td>\${periodo.fechaInicio}</td>
+                    <td>\${periodo.fechaFin}</td>
                     <td>
                         <button type="button" class="btn btn-link p-0 text-decoration-none"
                                 title="\${esActivo ? 'Desactivar' : 'Activar'}"
@@ -128,6 +122,7 @@
                     <td>
                         <a href="editar_periodo_carga_de.jsp?id=\${id}" class="action-btn" title="Editar"><i class="bi bi-pencil"></i></a>
                         <a href="ver_periodo_carga_de.jsp?id=\${id}" class="action-btn" title="Ver detalle"><i class="bi bi-eye"></i></a>
+                        
                     </td>
                 `;
                     tbody.appendChild(tr);
@@ -144,7 +139,6 @@
             });
     }
 
-    // Proceso de cambio de estado (Activar / Desactivar) manejado 100% en el JSP
     function confirmarCambioEstado(id, nuevoEstado) {
         const accionTexto = nuevoEstado ? "activar" : "desactivar";
 
@@ -179,40 +173,8 @@
         });
     }
 
-    // Proceso completo de eliminación manejado 100% en el JSP
-    function confirmarEliminar(id) {
-        Swal.fire({
-            title: '¿Estás seguro?',
-            text: "Esta acción eliminará el periodo de carga.",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#dc3545',
-            cancelButtonColor: '#6c757d',
-            confirmButtonText: 'Sí, eliminar',
-            cancelButtonText: 'Cancelar'
-        }).then((result) => {
-            if (result.isConfirmed) {
 
-                fetch(`EliminarPeriodoServlet?id=\${id}`)
-                    .then(() => {
-                        // Al terminar de borrar, mostramos la alerta de éxito inmediatamente
-                        Swal.fire({
-                            title: '¡Eliminado!',
-                            text: 'El periodo de carga ha sido eliminado correctamente.',
-                            icon: 'success',
-                            timer: 2000,
-                            showConfirmButton: false
-                        });
 
-                        cargarPeriodos();
-                    })
-                    .catch(error => {
-                        console.error("Error al eliminar:", error);
-                        Swal.fire('Error', 'No se pudo eliminar el periodo.', 'error');
-                    });
-            }
-        });
-    }
 </script>
 </body>
 </html>

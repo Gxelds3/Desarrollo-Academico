@@ -342,7 +342,6 @@ public class UsuarioListaDao {
     public List<Periodo> obtenerTodosLosPeriodos() {
         List<Periodo> lista = new ArrayList<>();
 
-        // Realizamos un JOIN entre periodos_carga y la tabla de divisiones (ajusta "divisiones" si tu tabla se llama diferente)
         String sql = "SELECT p.ID_PERIODO, d.NOMBRE AS NOMBRE_DIVISION, p.FECHA_INICIO, p.FECHA_FIN, p.ACTIVO " +
                 "FROM periodos_carga p " +
                 "JOIN divisiones d ON p.ID_DIVISION = d.ID_DIVISION " +
@@ -356,7 +355,6 @@ public class UsuarioListaDao {
                 Periodo p = new Periodo();
                 p.setId(rs.getInt("ID_PERIODO"));
 
-                // Asignamos el NOMBRE traducido de la división en lugar del ID número 1 o 2
                 p.setDivision(rs.getString("NOMBRE_DIVISION"));
 
                 p.setFechaInicio(rs.getDate("FECHA_INICIO"));

@@ -1,6 +1,7 @@
 package mx.edu.utez.DesarrolloAcademico.controller;
 
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -13,6 +14,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 @WebServlet(name = "CancelarConstanciaServlet", value = "/CancelarConstanciaServlet")
+@MultipartConfig
 public class CancelarConstanciaServlet extends HttpServlet {
 
     @Override

@@ -27,7 +27,6 @@ public class ListarPeriodosServlet extends HttpServlet {
             UsuarioListaDao dao = new UsuarioListaDao();
             List<Periodo> listaPeriodos = dao.obtenerTodosLosPeriodos(); // Método SELECT en tu DAO
 
-            // Construir respuesta JSON manualmente (fechas como strings YYYY-MM-DD)
             StringBuilder json = new StringBuilder("[");
             for (int i = 0; i < listaPeriodos.size(); i++) {
                 Periodo p = listaPeriodos.get(i);
