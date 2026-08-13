@@ -78,9 +78,23 @@
             Cambio de contraseña (Opcional)
         </div>
 
-        <div class="row mb-5">
+        <div class="row mb-4">
+
+            <div class="col-4 mb-4">
+                <label class="form-label text-muted">Contraseña Actual:</label>
+                <div class="input-group">
+                    <input type="password"
+                           id="passActual"
+                           class="form-control"
+                           value="<%= "" %>" readonly>
+                    <span class="input-group-text bg-white border-start-0" onclick="togglePassword('passActual')" style="cursor: pointer;">
+                        <i id="icon-passActual" class="bi bi-eye-fill text-muted"></i>
+                    </span>
+                </div>
+            </div>
+
             <!-- Contraseña Actual (ELIMINADA PARA ADMINISTRADOR) -->
-            <div class="col-md-6">
+            <div class="col-4 mb-4">
                 <label class="form-label text-muted">Nueva Contraseña (Opcional):</label>
                 <div class="input-group">
                     <input type="password" id="passNueva" class="form-control bg-white">
@@ -90,7 +104,7 @@
                 </div>
                 <small class="text-muted">Debe tener entre 12 y 15 caracteres</small>
             </div>
-            <div class="col-md-6">
+            <div class="col-4 mb-4">
                 <label class="form-label text-muted">Confirmar Nueva Contraseña:</label>
                 <div class="input-group">
                     <input type="password" id="passConfirm" class="form-control bg-white">

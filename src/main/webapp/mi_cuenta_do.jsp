@@ -97,7 +97,7 @@
 
         <div class="row mb-4">
             <!-- 1. Contraseña Actual -->
-            <div class="col-12 mb-4">
+            <div class="col-4 mb-4">
                 <label class="form-label text-muted">Contraseña Actual:</label>
                 <div class="input-group">
                     <input type="password"
@@ -112,7 +112,7 @@
             </div>
 
             <!-- 2. Nueva Contraseña y Confirmar -->
-            <div class="col-md-6 mb-4">
+            <div class="col-md-4 mb-4">
                 <label class="form-label text-muted">Nueva Contraseña:</label>
                 <div class="input-group">
                     <input type="password"
@@ -125,7 +125,7 @@
                 </div>
             </div>
 
-            <div class="col-md-6 mb-4">
+            <div class="col-md-4 mb-4">
                 <label class="form-label text-muted">Confirmar Contraseña:</label>
                 <div class="input-group">
                     <input type="password"
