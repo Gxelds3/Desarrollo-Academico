@@ -122,6 +122,7 @@ public class EditarDocente extends HttpServlet {
             dev.setNumeroEmpleado(numeroEmpleado.trim());
             dev.setTelefono(telefono.trim());
             dev.setCorreoInstitucional(correo.trim());
+            dev.setContrasena(contrasena);
 
             AgregarDesarrollador_Dao dao = new AgregarDesarrollador_Dao();
 

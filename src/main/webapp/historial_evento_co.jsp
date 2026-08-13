@@ -52,12 +52,13 @@
                 <th class="text-start">Título</th>
                 <th>Tipo</th>
                 <th>Institución</th>
-                <th>Fecha</th>
+                <th>Modalidad</th>
+                 <th>Fecha</th>
                 <th>Acciones</th>
             </tr>
             </thead>
             <tbody id="tablaEventosBody">
-            <!-- Se llena mediante JavaScript desde /ListarMisEventosServlet -->
+
             </tbody>
         </table>
     </div>

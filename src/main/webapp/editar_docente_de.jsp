@@ -80,41 +80,53 @@
 
         <div class="row mb-4">
 
-            <div class="col-4 mb-4">
-                <label class="form-label text-muted">Contraseña Actual:</label>
-                <div class="input-group">
-                    <input type="password"
-                           id="passActual"
-                           class="form-control"
-                           value="<%= "" %>" readonly>
-                    <span class="input-group-text bg-white border-start-0" onclick="togglePassword('passActual')" style="cursor: pointer;">
-                        <i id="icon-passActual" class="bi bi-eye-fill text-muted"></i>
-                    </span>
+            <div class="row mb-4">
+                <!-- Contraseña Actual -->
+                <div class="col-4 mb-4">
+                    <label class="form-label text-muted">Contraseña Actual:</label>
+                    <div class="input-group">
+                        <input type="password"
+                               id="passActual"
+                               class="form-control"
+                               readonly>
+                        <button class="btn btn-outline-secondary bg-white border-start-0"
+                                type="button"
+                                onclick="togglePassword('passActual')"
+                                style="cursor: pointer;">
+                            <i id="icon-passActual" class="bi bi-eye-fill text-muted"></i>
+                        </button>
+                    </div>
                 </div>
-            </div>
 
-            <!-- Contraseña Actual (ELIMINADA PARA ADMINISTRADOR) -->
-            <div class="col-4 mb-4">
-                <label for="passNueva" class="form-label">Nueva Contraseña (Opcional):</label>
-                <div class="input-group">
-                    <input type="password" class="form-control" id="passNueva" name="contrasena" placeholder="12 a 15 caracteres">
-                    <button class="btn btn-outline-secondary" type="button" onclick="togglePass('passNueva')">
-                        <i class="bi bi-eye-slash"></i>
-                    </button>
+                <!-- Nueva Contraseña -->
+                <div class="col-4 mb-4">
+                    <label for="passNueva" class="form-label">Nueva Contraseña (Opcional):</label>
+                    <div class="input-group">
+                        <input type="password" class="form-control" id="passNueva" name="contrasena" placeholder="12 a 15 caracteres">
+                        <button class="btn btn-outline-secondary bg-white border-start-0"
+                                type="button"
+                                onclick="togglePassword('passNueva')"
+                                style="cursor: pointer;">
+                            <i id="icon-passNueva" class="bi bi-eye-fill text-muted"></i>
+                        </button>
+                    </div>
+                    <small class="text-muted">Debe tener entre 12 y 15 caracteres</small>
                 </div>
-                <small class="text-muted">Debe tener entre 12 y 15 caracteres</small>
-            </div>
-            <div class="col-4 mb-4">
-                <label for="passConfirm" class="form-label">Confirmar Contraseña:</label>
-                <div class="input-group">
-                    <input type="password" class="form-control" id="passConfirm" name="confirmarContrasena" placeholder="Repite la contraseña">
-                    <button class="btn btn-outline-secondary" type="button" onclick="togglePass('passConfirm')">
-                        <i class="bi bi-eye-slash"></i>
-                    </button>
-                </div>
-            </div>
-        </div>
 
+                <!-- Confirmar Contraseña -->
+                <div class="col-4 mb-4">
+                    <label for="passConfirm" class="form-label">Confirmar Contraseña:</label>
+                    <div class="input-group">
+                        <input type="password" class="form-control" id="passConfirm" name="confirmarContrasena" placeholder="Repite la contraseña">
+                        <button class="btn btn-outline-secondary bg-white border-start-0"
+                                type="button"
+                                onclick="togglePassword('passConfirm')"
+                                style="cursor: pointer;">
+                            <i id="icon-passConfirm" class="bi bi-eye-fill text-muted"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
         <div class="d-flex justify-content-end gap-3 mb-5">
             <a href="gestion_docente_de.jsp" class="btn btn-outline-teal px-4 py-2 fw-semibold d-flex align-items-center" style="border: 2px solid var(--teal-main); color: var(--teal-main); border-radius: 6px;">
                 <i class="bi bi-chevron-left me-2"></i> Volver
@@ -122,6 +134,7 @@
             <button type="submit" id="btnGuardar" class="btn-teal px-5 py-2" style="border-radius: 6px;">
                 <i class="bi bi-save me-2"></i> Guardar Cambios
             </button>
+        </div>
         </div>
     </form>
 </main>

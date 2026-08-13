@@ -63,55 +63,46 @@ function obtenerEventosFiltrados() {
 
 // ── Renderizado de tabla ──────────────────────────────────────────────────────
 
+// Renderizado dinámico de la tabla
 function renderEventos(lista) {
     if (!tbody) return;
 
     if (!lista || !lista.length) {
         tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted py-4">No se encontraron eventos registrados.</td></tr>';
-        renderPaginacion(0);
         return;
     }
 
-    const totalPaginas = Math.ceil(lista.length / EVENTOS_POR_PAGINA);
-    if (paginaActual > totalPaginas) paginaActual = 1;
-
-    const inicio = (paginaActual - 1) * EVENTOS_POR_PAGINA;
-    const fin    = inicio + EVENTOS_POR_PAGINA;
-    const pagina = lista.slice(inicio, fin);
-
     tbody.innerHTML = '';
-    pagina.forEach(function (ev) {
-        const idEvento   = ev.id || ev.idEvento;
-        const fechaRango = formatearFecha(ev.fechaInicio) + ' – ' + formatearFecha(ev.fechaFin);
-        const modalidad  = escapeHtml(ev.modalidad || '');
-
-        // Capitalizar primera letra de modalidad y tipo
-        const tipoDisplay     = ev.tipo  ? ev.tipo.charAt(0).toUpperCase() + ev.tipo.slice(1)     : '';
-        const modalidadDisplay = modalidad ? modalidad.charAt(0).toUpperCase() + modalidad.slice(1) : '';
+    lista.forEach(function (evt) {
+        const idEvento = evt.id || evt.idEvento;
+        const titulo = escapeHtml(evt.titulo || evt.nombre);
+        const subtitulo = escapeHtml(evt.subtitulo || evt.descripcionCorta || '');
+        const tipo = escapeHtml(evt.tipo || evt.tipoEvento || 'Sin especificación');
+        const institucion = escapeHtml(evt.institucion || 'N/A');
+        const modalidad = escapeHtml(evt.modalidad || 'Sin especificar');
+        const fechas = formatearFechas(evt.fechaInicio, evt.fechaFin);
 
         const fila = document.createElement('tr');
         fila.setAttribute('data-id', idEvento);
-        fila.innerHTML =
-            '<td class="text-start">' +
-                '<div class="fw-semibold">' + escapeHtml(ev.nombre) + '</div>' +
-                (ev.descripcion ? '<div class="small text-muted">' + escapeHtml(ev.descripcion) + '</div>' : '') +
-            '</td>' +
-            '<td>' + escapeHtml(tipoDisplay) + '</td>' +
-            '<td>' +
-                '<div>' + escapeHtml(ev.institucion || 'N/A') + '</div>' +
-                (ev.lugar ? '<div class="small text-muted">' + escapeHtml(ev.lugar) + '</div>' : '') +
-            '</td>' +
-            '<td>' + escapeHtml(modalidadDisplay) + '</td>' +
-            '<td>' + escapeHtml(fechaRango) + '</td>' +
-            '<td>' +
-                '<a href="' + contextPath + '/ver_mas_evento_do.jsp?id=' + idEvento + '" class="action-btn" title="Ver detalle">' +
-                    '<i class="bi bi-eye"></i>' +
-                '</a>' +
-            '</td>';
+
+        // Mismo orden que el <thead> de tu JSP
+        fila.innerHTML = `
+            <td class="text-start">
+                <div class="fw-semibold">${titulo}</div>
+                ${subtitulo ? `<div class="small text-muted">${subtitulo}</div>` : ''}
+            </td>
+            <td>${tipo}</td>
+            <td>${institucion}</td>
+            <td>${modalidad}</td>
+            <td>${fechas}</td>
+            <td>
+                <a href="${contextPath}/ver_mas_evento_${window.sufijoRol || 'de'}.jsp?id=${idEvento}" class="action-btn" title="Ver detalle">
+                    <i class="bi bi-eye"></i>
+                </a>
+            </td>
+        `;
         tbody.appendChild(fila);
     });
-
-    renderPaginacion(totalPaginas);
 }
 
 // ── Paginación dinámica ───────────────────────────────────────────────────────

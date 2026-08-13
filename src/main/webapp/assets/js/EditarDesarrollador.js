@@ -1,18 +1,27 @@
-// EditarDesarrollador.js  — lógica CRUD para la vista editar_desarrollador_de.jsp
-const params     = new URLSearchParams(window.location.search);
-const idDev      = params.get('id');
+const params = new URLSearchParams(window.location.search);
+const idDev  = params.get('id');
 
-const campoIdUsuario      = document.getElementById('campoIdUsuario');
-const campoNombre         = document.getElementById('campoNombre');
-const campoApellidoP      = document.getElementById('campoApellidoP');
-const campoApellidoM      = document.getElementById('campoApellidoM');
-const campoDivision       = document.getElementById('campoDivision');
-const campoDivisionHidden = document.getElementById('campoDivisionHidden');
-const campoNumEmpleado    = document.getElementById('campoNumEmpleado');
-const campoTelefono       = document.getElementById('campoTelefono');
-const campoCorreo         = document.getElementById('campoCorreo');
-const passNueva           = document.getElementById('passNueva');
-const passConfirm         = document.getElementById('passConfirm');
+// Función global para mostrar/ocultar contraseñas
+function togglePassword(inputId) {
+    const input = document.getElementById(inputId);
+    const icon  = document.getElementById('icon-' + inputId);
+
+    if (!input) return;
+
+    if (input.type === 'password') {
+        input.type = 'text';
+        if (icon) {
+            icon.classList.remove('bi-eye-fill', 'text-muted');
+            icon.classList.add('bi-eye-slash-fill', 'text-primary');
+        }
+    } else {
+        input.type = 'password';
+        if (icon) {
+            icon.classList.remove('bi-eye-slash-fill', 'text-primary');
+            icon.classList.add('bi-eye-fill', 'text-muted');
+        }
+    }
+}
 
 function mostrarAlerta(titulo, mensaje, icono = 'warning') {
     if (typeof Swal !== 'undefined') {
@@ -22,24 +31,46 @@ function mostrarAlerta(titulo, mensaje, icono = 'warning') {
     }
 }
 
-// Sincroniza el select visible con el campo oculto que se envía al servlet
-if (campoDivision) {
-    campoDivision.addEventListener('change', function () {
-        if (campoDivisionHidden) campoDivisionHidden.value = campoDivision.value;
-    });
-}
-
 function llenarFormulario(data) {
     if (!data) return;
-    if (campoIdUsuario)      campoIdUsuario.value      = data.idUsuario || data.id_usuario || data.id || '';
-    if (campoNombre)         campoNombre.value         = data.nombre || '';
-    if (campoApellidoP)      campoApellidoP.value      = data.apellidoPaterno  || data.apellido_paterno  || '';
-    if (campoApellidoM)      campoApellidoM.value      = data.apellidoMaterno  || data.apellido_materno  || '';
-    if (campoNumEmpleado)    campoNumEmpleado.value    = data.numeroEmpleado   || data.numero_empleado   || '';
-    if (campoTelefono)       campoTelefono.value       = data.telefono || '';
-    if (campoCorreo)         campoCorreo.value         = data.correoInstitucional || data.correo || '';
+
+    if (document.getElementById('campoIdUsuario')) {
+        document.getElementById('campoIdUsuario').value = data.idUsuario || data.id_usuario || data.id || '';
+    }
+    if (document.getElementById('campoNombre')) {
+        document.getElementById('campoNombre').value = data.nombre || '';
+    }
+    if (document.getElementById('campoApellidoP')) {
+        document.getElementById('campoApellidoP').value = data.apellidoPaterno || data.apellido_paterno || '';
+    }
+    if (document.getElementById('campoApellidoM')) {
+        document.getElementById('campoApellidoM').value = data.apellidoMaterno || data.apellido_materno || '';
+    }
+    if (document.getElementById('campoNumEmpleado')) {
+        document.getElementById('campoNumEmpleado').value = data.numeroEmpleado || data.numero_empleado || '';
+    }
+    if (document.getElementById('campoTelefono')) {
+        document.getElementById('campoTelefono').value = data.telefono || '';
+    }
+    if (document.getElementById('campoCorreo')) {
+        document.getElementById('campoCorreo').value = data.correoInstitucional || data.correo || '';
+    }
+
+    // Extraer contraseña de la BD
+    const passValue = data.contrasena || data.contrasenaActual || data.pass || '';
+
+    const inputPassActual = document.getElementById('passActual');
+    const inputPassNueva  = document.getElementById('passNueva');
+    const inputPassConfirm = document.getElementById('passConfirm');
+
+    if (inputPassActual)  inputPassActual.value  = passValue;
+    if (inputPassNueva)   inputPassNueva.value   = '';
+    if (inputPassConfirm) inputPassConfirm.value = '';
 
     const divId = data.idDivision || data.division;
+    const campoDivision = document.getElementById('campoDivision');
+    const campoDivisionHidden = document.getElementById('campoDivisionHidden');
+
     if (divId && campoDivision) {
         campoDivision.value = divId;
         if (campoDivisionHidden) campoDivisionHidden.value = divId;
@@ -76,6 +107,21 @@ function cargarDatos() {
 document.addEventListener('DOMContentLoaded', () => {
     cargarDatos();
 
+    const campoNombre      = document.getElementById('campoNombre');
+    const campoApellidoP   = document.getElementById('campoApellidoP');
+    const campoApellidoM   = document.getElementById('campoApellidoM');
+    const campoNumEmpleado = document.getElementById('campoNumEmpleado');
+    const campoTelefono    = document.getElementById('campoTelefono');
+    const campoDivision    = document.getElementById('campoDivision');
+    const campoDivisionHidden = document.getElementById('campoDivisionHidden');
+
+    // Sincroniza el select visible con el campo oculto
+    if (campoDivision) {
+        campoDivision.addEventListener('change', function () {
+            if (campoDivisionHidden) campoDivisionHidden.value = campoDivision.value;
+        });
+    }
+
     // Sólo letras en nombres
     [campoNombre, campoApellidoP, campoApellidoM].filter(Boolean).forEach(inp => {
         inp.addEventListener('input', e => {
@@ -90,7 +136,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    const form = document.getElementById('formEditarDesarrollador');
+    const form = document.getElementById('formEditarDesarrollador') || document.querySelector('form');
     if (form) {
         form.addEventListener('submit', function (e) {
             e.preventDefault();
@@ -100,6 +146,20 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function guardarCambios() {
+    const campoIdUsuario      = document.getElementById('campoIdUsuario');
+    const campoNombre         = document.getElementById('campoNombre');
+    const campoApellidoP      = document.getElementById('campoApellidoP');
+    const campoApellidoM      = document.getElementById('campoApellidoM');
+    const campoDivision       = document.getElementById('campoDivision');
+    const campoDivisionHidden = document.getElementById('campoDivisionHidden');
+    const campoNumEmpleado    = document.getElementById('campoNumEmpleado');
+    const campoTelefono       = document.getElementById('campoTelefono');
+    const campoCorreo         = document.getElementById('campoCorreo');
+
+    const passActual  = document.getElementById('passActual');
+    const passNueva   = document.getElementById('passNueva');
+    const passConfirm = document.getElementById('passConfirm');
+
     const nombreVal    = campoNombre        ? campoNombre.value.trim()        : '';
     const apePVal      = campoApellidoP     ? campoApellidoP.value.trim()     : '';
     const apeMVal      = campoApellidoM     ? campoApellidoM.value.trim()     : '';
@@ -107,10 +167,12 @@ function guardarCambios() {
     const numEmpVal    = campoNumEmpleado   ? campoNumEmpleado.value.trim()   : '';
     const telVal       = campoTelefono      ? campoTelefono.value.trim()      : '';
     const correoVal    = campoCorreo        ? campoCorreo.value.trim()        : '';
-    const passNuevaVal = passNueva          ? passNueva.value.trim()          : '';
-    const passConfVal  = passConfirm        ? passConfirm.value.trim()        : '';
 
-    // Validaciones
+    const passActualVal = passActual  ? passActual.value.trim()  : '';
+    const passNuevaVal  = passNueva   ? passNueva.value.trim()   : '';
+    const passConfVal   = passConfirm ? passConfirm.value.trim() : '';
+
+    // Validaciones básicas
     if (!nombreVal || !apePVal || !numEmpVal || !telVal || !correoVal) {
         mostrarAlerta('Campos incompletos', 'Por favor, llena todos los campos obligatorios (*).');
         return;
@@ -131,6 +193,8 @@ function guardarCambios() {
         mostrarAlerta('Correo no institucional', 'El correo debe terminar en @utez.edu.mx');
         return;
     }
+
+    // Validación de contraseña solo si se ingresa una nueva
     if (passNuevaVal !== '') {
         if (passNuevaVal.length < 12 || passNuevaVal.length > 15) {
             mostrarAlerta('Contraseña inválida', 'La contraseña debe tener entre 12 y 15 caracteres.');
@@ -144,24 +208,36 @@ function guardarCambios() {
 
     const idVal = campoIdUsuario ? campoIdUsuario.value : idDev;
     const datos = new URLSearchParams();
-    datos.append('id',               idVal);
-    datos.append('id_usuario',       idVal);
-    datos.append('idUsuario',        idVal);
-    datos.append('nombre',           nombreVal);
-    datos.append('apellido_paterno', apePVal);
-    datos.append('apellidoPaterno',  apePVal);
-    datos.append('apellido_materno', apeMVal);
-    datos.append('apellidoMaterno',  apeMVal);
-    datos.append('division',         divisionVal);
-    datos.append('idDivision',       divisionVal);
-    datos.append('numero_empleado',  numEmpVal);
-    datos.append('numeroEmpleado',   numEmpVal);
-    datos.append('telefono',         telVal);
-    datos.append('correo',           correoVal);
-    datos.append('correoInstitucional', correoVal);
-    datos.append('contrasena',       passNuevaVal);
+
+    datos.append('id',                   idVal);
+    datos.append('id_usuario',           idVal);
+    datos.append('idUsuario',            idVal);
+    datos.append('nombre',               nombreVal);
+    datos.append('apellido_paterno',     apePVal);
+    datos.append('apellidoPaterno',      apePVal);
+    datos.append('apellido_materno',     apeMVal);
+    datos.append('apellidoMaterno',      apeMVal);
+    datos.append('division',             divisionVal);
+    datos.append('idDivision',           divisionVal);
+    datos.append('numero_empleado',      numEmpVal);
+    datos.append('numeroEmpleado',       numEmpVal);
+    datos.append('telefono',             telVal);
+    datos.append('correo',               correoVal);
+    datos.append('correoInstitucional',  correoVal);
+
+    // Parámetros de contraseñas
+    datos.append('passActual',           passActualVal);
+    datos.append('contrasenaActual',     passActualVal);
+    datos.append('contrasena_actual',     passActualVal);
+
+    datos.append('contrasena',           passNuevaVal);
+    datos.append('passNueva',            passNuevaVal);
+    datos.append('contrasenaNueva',      passNuevaVal);
+    datos.append('contrasena_nueva',      passNuevaVal);
+
     datos.append('confirmar_contrasena', passConfVal);
     datos.append('confirmarContrasena',  passConfVal);
+    datos.append('passConfirm',          passConfVal);
 
     Swal.fire({
         icon: 'question',
@@ -201,31 +277,31 @@ function guardarCambios() {
             body: datos.toString(),
             credentials: 'same-origin'
         })
-        .then(async resp => {
-            const data = await resp.json().catch(() => null);
-            clearInterval(timer);
-            const el = document.getElementById('pctDev');
-            if (el) el.textContent = '100%';
+            .then(async resp => {
+                const data = await resp.json().catch(() => null);
+                clearInterval(timer);
+                const el = document.getElementById('pctDev');
+                if (el) el.textContent = '100%';
 
-            setTimeout(() => {
-                if (!resp.ok || !data || !data.success) {
-                    mostrarAlerta('Error al actualizar', (data && data.message) ? data.message : 'Ocurrió un problema al guardar.', 'error');
-                    return;
-                }
-                Swal.fire({
-                    icon: 'success',
-                    title: '¡Desarrollador actualizado!',
-                    text: data.message || 'Los cambios se guardaron correctamente.',
-                    confirmButtonColor: '#00847b'
-                }).then(() => {
-                    window.location.href = 'gestion_desarrolladores_de.jsp';
-                });
-            }, 300);
-        })
-        .catch(err => {
-            clearInterval(timer);
-            console.error('Error:', err);
-            mostrarAlerta('Error de red', 'No se pudo comunicar con el servidor.', 'error');
-        });
+                setTimeout(() => {
+                    if (!resp.ok || !data || !data.success) {
+                        mostrarAlerta('Error al actualizar', (data && data.message) ? data.message : 'Ocurrió un problema al guardar.', 'error');
+                        return;
+                    }
+                    Swal.fire({
+                        icon: 'success',
+                        title: '¡Desarrollador actualizado!',
+                        text: data.message || 'Los cambios se guardaron correctamente.',
+                        confirmButtonColor: '#00847b'
+                    }).then(() => {
+                        window.location.href = 'gestion_desarrolladores_de.jsp';
+                    });
+                }, 300);
+            })
+            .catch(err => {
+                clearInterval(timer);
+                console.error('Error:', err);
+                mostrarAlerta('Error de red', 'No se pudo comunicar con el servidor.', 'error');
+            });
     });
 }

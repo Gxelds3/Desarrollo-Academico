@@ -38,7 +38,8 @@ function obtenerEventosFiltrados() {
     return eventosOriginales.filter(function (evt) {
         const coincideTexto = normalizar(evt.titulo).includes(texto) ||
             normalizar(evt.subtitulo).includes(texto) ||
-            normalizar(evt.institucion).includes(texto);
+            normalizar(evt.institucion).includes(texto) ||
+            normalizar(evt.modalidad).includes(texto);
 
         const tipoEventoNormalizado = normalizar(evt.tipo || evt.tipoEvento);
         const tipoFiltroNormalizado = normalizar(filtroTipo);
@@ -54,7 +55,7 @@ function renderEventos(lista) {
     if (!tbody) return;
 
     if (!lista || !lista.length) {
-        tbody.innerHTML = '<tr><td colspan="5" class="text-center text-muted py-4">No se encontraron eventos registrados.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted py-4">No se encontraron eventos registrados.</td></tr>';
         return;
     }
 
@@ -65,10 +66,13 @@ function renderEventos(lista) {
         const subtitulo = escapeHtml(evt.subtitulo || evt.descripcionCorta || '');
         const tipo = escapeHtml(evt.tipo || evt.tipoEvento || 'Sin especificación');
         const institucion = escapeHtml(evt.institucion || 'N/A');
+        const modalidad = escapeHtml(evt.modalidad || 'Sin especificar');
         const fechas = formatearFechas(evt.fechaInicio, evt.fechaFin);
 
         const fila = document.createElement('tr');
         fila.setAttribute('data-id', idEvento);
+
+        // Mismo orden que el <thead> de tu JSP
         fila.innerHTML = `
             <td class="text-start">
                 <div class="fw-semibold">${titulo}</div>
@@ -76,6 +80,7 @@ function renderEventos(lista) {
             </td>
             <td>${tipo}</td>
             <td>${institucion}</td>
+            <td>${modalidad}</td>
             <td>${fechas}</td>
             <td>
                 <a href="${contextPath}/ver_mas_evento_${window.sufijoRol || 'de'}.jsp?id=${idEvento}" class="action-btn" title="Ver detalle">
@@ -93,9 +98,8 @@ function aplicarFiltro() {
 
 function cargarMisEventos() {
     if (!tbody) return;
-    tbody.innerHTML = '<tr><td colspan="5" class="text-center text-muted py-4">Cargando eventos...</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted py-4">Cargando eventos...</td></tr>';
 
-    // Ajustar URL al Servlet de Backend que lista los eventos del usuario autenticado (ej. /ListarMisEventos)
     fetch(contextPath + '/ListarMisEventosServlet', { credentials: 'same-origin' })
         .then(function (response) {
             if (response.redirected || (response.url && response.url.includes('login.jsp'))) {
@@ -111,7 +115,7 @@ function cargarMisEventos() {
         })
         .catch(function (error) {
             console.error('Error al cargar la lista de eventos:', error);
-            tbody.innerHTML = '<tr><td colspan="5" class="text-center text-danger py-4">No se pudieron cargar los eventos.</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="6" class="text-center text-danger py-4">No se pudieron cargar los eventos.</td></tr>';
         });
 }
 

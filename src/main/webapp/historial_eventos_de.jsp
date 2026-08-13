@@ -53,6 +53,7 @@
                 <th class="text-start">Título</th>
                 <th>Tipo</th>
                 <th>Institución</th>
+                <th>Modalidad</th>
                 <th>Fecha</th>
                 <th>Acciones</th>
             </tr>
