@@ -36,7 +36,7 @@
 
     <div class="row mb-5 gx-4 mt-3">
         <!-- Tarjeta de Eventos -->
-        <div class="col-md-6 col-lg-5 mb-3">
+        <div class="col-md-6 col-lg-6 mb-3">
             <div class="stat-card">
                 <div class="stat-icon">
                     <i class="bi bi-calendar-check"></i>
@@ -51,7 +51,7 @@
         </div>
 
         <!-- Tarjeta de Docentes -->
-        <div class="col-md-6 col-lg-5 mb-3">
+        <div class="col-md-6 col-lg-6 mb-3">
             <div class="stat-card">
                 <div class="stat-icon">
                     <i class="bi bi-people"></i>

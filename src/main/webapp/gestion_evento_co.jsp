@@ -41,11 +41,11 @@
     <div class="data-card p-0 mb-4" style="overflow: hidden;">
         <table class="table-custom mb-0">
             <colgroup>
-                <col style="width: 30%;">
-                <col style="width: 14%;">
-                <col style="width: 22%;">
-                <col style="width: 20%;">
-                <col style="width: 14%;">
+                <col style="width: 25%;">
+                <col style="width: 18%;">
+                <col style="width: 19%;">
+                <col style="width: 21%;">
+                <col style="width: 17%;">
             </colgroup>
             <thead>
             <tr>

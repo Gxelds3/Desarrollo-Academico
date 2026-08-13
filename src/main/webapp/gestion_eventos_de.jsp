@@ -42,11 +42,10 @@
         <table class="table-custom mb-0">
             <colgroup>
                 <col style="width: 25%;">
-                <col style="width: 14%;">
-                <col style="width: 20%;">
-                <col style="width: 15%;">
-                <col style="width: 12%;">
-                <col style="width: 14%;">
+                <col style="width: 18%;">
+                <col style="width: 19%;">
+                <col style="width: 21%;">
+                <col style="width: 17%;">
             </colgroup>
             <thead>
             <tr>

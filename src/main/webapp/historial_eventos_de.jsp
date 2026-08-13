@@ -42,9 +42,10 @@
     <div class="data-card p-0 mb-4" style="overflow: hidden;">
         <table class="table-custom mb-0 text-center">
             <colgroup>
-                <col style="width: 30%;">
-                <col style="width: 15%;">
                 <col style="width: 25%;">
+                <col style="width: 15%;">
+                <col style="width: 20%;">
+                <col style="width: 10%;">
                 <col style="width: 20%;">
                 <col style="width: 10%;">
             </colgroup>
@@ -53,6 +54,7 @@
                 <th class="text-start">Título</th>
                 <th>Tipo</th>
                 <th>Institución</th>
+                <th>Modalidad</th>
                 <th>Fecha</th>
                 <th>Acciones</th>
             </tr>
