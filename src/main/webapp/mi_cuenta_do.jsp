@@ -22,7 +22,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mi Cuenta – Desarrollador</title>
+    <title>Mi Cuenta – Docente</title>
     <link rel="stylesheet" href="assets/css/bootstrap.css">
     <link rel="stylesheet" href="assets/css/bi/bootstrap-icons.css">
     <link rel="stylesheet" href="assets/css/coordinador.css">
@@ -42,7 +42,7 @@
 <main class="main-content">
     <div class="d-flex align-items-center mb-4" style="color: var(--teal-main);">
         <i class="bi bi-info-circle me-2 fs-5"></i>
-        <h3 class="page-title mb-0">DESARROLLADOR ACADÉMICO</h3>
+        <h3 class="page-title mb-0">DOCENTE</h3>
     </div>
 
     <form id="formMiCuenta">

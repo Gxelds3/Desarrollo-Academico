@@ -45,11 +45,7 @@
                 <label class="form-label">Division Academica <span class="text-danger">*</span> :</label>
                 <select class="form-select" name="division" required>
                     <option value="" disabled selected></option>
-                    <option value="2">DACEA</option>
-                    <option value="4">DAMI</option>
-                    <option value="1">DATID</option>
-                    <option value="3">DATEFI</option>
-                    <option value="5">GENERAL</option>
+                    <option value="2">GENERAL</option>
                 </select>
             </div>
             <div class="col-md-4">
