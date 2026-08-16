@@ -1,3 +1,4 @@
+
 package mx.edu.utez.DesarrolloAcademico.controller;
 
 import jakarta.servlet.ServletException;
@@ -38,7 +39,7 @@ public class SubirConstanciaServlet1 extends HttpServlet {
             return;
         }
 
-        Usuario usuario = (Usuario) session.getAttribute("usuario");
+        Usuario usuarioEnSesion = (Usuario) session.getAttribute("usuario");
 
         try {
             String idEventoStr = request.getParameter("idEvento");
@@ -58,20 +59,26 @@ public class SubirConstanciaServlet1 extends HttpServlet {
             ConstanciaDao dao = new ConstanciaDao();
             UsuarioDao usuarioDao = new UsuarioDao();
 
-            // Permitir a coordinadores y desarrolladores subir archivos en nombre de otro usuario
+            // 1. DETERMINAR PARA QUÉ USUARIO ES LA CONSTANCIA (TARGET)
             String targetUserStr = request.getParameter("idUsuarioTarget");
-            int idUsuarioSubir = usuario.getIdUsuario();
+            int idUsuarioSubir = usuarioEnSesion.getIdUsuario(); // Por defecto, el usuario en sesión
+
             if (targetUserStr != null && !targetUserStr.trim().isEmpty()) {
-                String rol = usuario.getRol().toLowerCase();
-                if (rol.equals("coordinador") || rol.equals("desarrollo")) {
+                String rol = (usuarioEnSesion.getRol() != null) ? usuarioEnSesion.getRol().toLowerCase().trim() : "";
+
+                // Flexibilidad en el rol: evalúa variaciones como "coordinador", "desarrollo", "desarrollador", etc.
+                boolean esAutorizado = rol.contains("coordinador") || rol.contains("desarroll") || rol.contains("dev");
+
+                if (esAutorizado) {
                     try {
                         idUsuarioSubir = Integer.parseInt(targetUserStr);
                     } catch (NumberFormatException e) {
-                        // fallback al usuario actual si el valor es inválido
+                        System.err.println("Error al parsear idUsuarioTarget: " + targetUserStr);
                     }
                 }
             }
-            
+
+            // 2. VALIDAR EL PERIODO DE CARGA PARA LA DIVISIÓN DEL DOCENTE/USUARIO DESTINO
             Usuario targetUsuario = usuarioDao.buscarPorId(idUsuarioSubir);
             if (targetUsuario != null && targetUsuario.getIdDivision() != null && !dao.esPeriodoActivo(targetUsuario.getIdDivision())) {
                 response.setStatus(HttpServletResponse.SC_FORBIDDEN);
@@ -80,23 +87,25 @@ public class SubirConstanciaServlet1 extends HttpServlet {
                 return;
             }
 
-            // Garantiza crear o reutilizar el participante
+            // 3. VINCULAR AL DOCENTE/DESTINATARIO CON EL EVENTO (OBTENER SU ID DE PARTICIPANTE)
             int idParticipante = usuarioDao.obtenerOCrearParticipante(idEvento, idUsuarioSubir);
 
             if (idParticipante == -1) {
-                response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-                out.write("{\"success\": false, \"message\": \"Error al vincular el usuario con el evento.\"}");
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                out.write("{\"success\": false, \"message\": \"El docente o destinatario seleccionado no está registrado en este evento.\"}");
                 out.flush();
                 return;
             }
 
+            // 4. VERIFICAR SI YA EXISTE UNA CONSTANCIA PARA ESTE PARTICIPANTE
             if (dao.verificarConstanciaExistente(idParticipante)) {
                 response.setStatus(HttpServletResponse.SC_CONFLICT);
-                out.write("{\"success\": false, \"message\": \"Ya se subió una constancia para este evento.\"}");
+                out.write("{\"success\": false, \"message\": \"Ya se subió una constancia para este docente en este evento.\"}");
                 out.flush();
                 return;
             }
 
+            // 5. PROCESAR Y VALIDAR EL ARCHIVO SUBIDO
             Part filePart = request.getPart("archivo");
             if (filePart == null || filePart.getSize() == 0) {
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -115,7 +124,7 @@ public class SubirConstanciaServlet1 extends HttpServlet {
                 return;
             }
 
-            // Determinar content-type real
+            // Determinar Content-Type
             String contentType = filePart.getContentType();
             if (contentType == null) {
                 if (fileNameLower.endsWith(".pdf")) contentType = "application/pdf";
@@ -123,14 +132,15 @@ public class SubirConstanciaServlet1 extends HttpServlet {
                 else contentType = "image/jpeg";
             }
 
-            // Leer el archivo como bytes (se almacena en Oracle como BLOB)
+            // Leer los bytes del archivo (para guardar en BLOB)
             byte[] contenidoArchivo;
             try (InputStream is = filePart.getInputStream()) {
                 contenidoArchivo = is.readAllBytes();
             }
 
+            // Nota: Se envía usuarioEnSesion.getIdUsuario() en el último parámetro para auditoría (quién subió el archivo)
             boolean exito = dao.guardarConstancia(idParticipante, fileName, contenidoArchivo, contentType,
-                    tieneVigencia, fechaVencimiento, usuario.getIdUsuario());
+                    tieneVigencia, fechaVencimiento, usuarioEnSesion.getIdUsuario());
 
             if (exito) {
                 out.write("{\"success\": true, \"message\": \"Constancia subida correctamente.\"}");

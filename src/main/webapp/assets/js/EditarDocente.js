@@ -1,6 +1,10 @@
 const params = new URLSearchParams(window.location.search);
 const idDocente = params.get('id');
 
+// Guarda el rol con el que se cargó originalmente el docente,
+// para poder detectar si el usuario lo cambió antes de guardar.
+let rolOriginal = 'docente';
+
 // Función global para mostrar/ocultar contraseñas
 function togglePassword(inputId) {
     const input = document.getElementById(inputId);
@@ -45,6 +49,60 @@ function obtenerPaginaDestino() {
     }
     return 'gestion_docente_co.jsp';
 }
+
+/* =========================================================
+   MANEJO DEL SELECTOR DE ROL (Docente / Coordinador)
+   ========================================================= */
+
+// Cambia la card seleccionada visualmente y marca el radio correspondiente.
+// No dispara ninguna alerta: solo actualiza el estado visual/lógico.
+function selectRol(rol) {
+    const cardDocente = document.getElementById('cardDocente');
+    const cardCoordinador = document.getElementById('cardCoordinador');
+    const radioDocente = document.getElementById('radioDocente');
+    const radioCoordinador = document.getElementById('radioCoordinador');
+
+    if (!cardDocente || !cardCoordinador) return;
+
+    const iconoDocente = cardDocente.querySelector('i');
+    const textoDocente = cardDocente.querySelector('div');
+    const iconoCoordinador = cardCoordinador.querySelector('i');
+    const textoCoordinador = cardCoordinador.querySelector('div');
+
+    if (rol === 'docente') {
+        cardDocente.style.border = '2px solid var(--teal-main)';
+        if (iconoDocente) iconoDocente.style.color = 'var(--teal-main)';
+        if (textoDocente) textoDocente.style.color = 'var(--teal-main)';
+
+        cardCoordinador.style.border = '2px solid #ccc';
+        if (iconoCoordinador) iconoCoordinador.style.color = '#aaa';
+        if (textoCoordinador) textoCoordinador.style.color = '#aaa';
+
+        if (radioDocente) radioDocente.checked = true;
+        if (radioCoordinador) radioCoordinador.checked = false;
+    } else {
+        cardCoordinador.style.border = '2px solid var(--teal-main)';
+        if (iconoCoordinador) iconoCoordinador.style.color = 'var(--teal-main)';
+        if (textoCoordinador) textoCoordinador.style.color = 'var(--teal-main)';
+
+        cardDocente.style.border = '2px solid #ccc';
+        if (iconoDocente) iconoDocente.style.color = '#aaa';
+        if (textoDocente) textoDocente.style.color = '#aaa';
+
+        if (radioCoordinador) radioCoordinador.checked = true;
+        if (radioDocente) radioDocente.checked = false;
+    }
+}
+
+// Devuelve el rol actualmente seleccionado en el formulario ('docente' | 'coordinador')
+function obtenerRolSeleccionado() {
+    const radioCoordinador = document.getElementById('radioCoordinador');
+    return (radioCoordinador && radioCoordinador.checked) ? 'coordinador' : 'docente';
+}
+
+/* =========================================================
+   CARGA DE DATOS DEL DOCENTE
+   ========================================================= */
 
 function llenarFormularioDocente(data) {
     if (!data) return;
@@ -91,6 +149,18 @@ function llenarFormularioDocente(data) {
         campoDivision.value = divisionId;
         if (campoDivisionHidden) campoDivisionHidden.value = divisionId;
     }
+
+    // --- Rol actual del docente ---
+    // Acepta distintos nombres/formatos que pueda mandar el servlet:
+    // "docente" | "coordinador", o un booleano tipo esCoordinador.
+    let rolData = (data.rol || data.tipoUsuario || data.tipo_usuario || '').toString().toLowerCase();
+
+    if (!rolData) {
+        rolData = (data.esCoordinador === true || data.es_coordinador === true) ? 'coordinador' : 'docente';
+    }
+
+    rolOriginal = (rolData === 'coordinador') ? 'coordinador' : 'docente';
+    selectRol(rolOriginal);
 }
 
 function cargarDatosDocente() {
@@ -154,6 +224,10 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 });
 
+/* =========================================================
+   GUARDADO
+   ========================================================= */
+
 function guardarCambios(e) {
     if (e && e.preventDefault) e.preventDefault();
 
@@ -162,7 +236,6 @@ function guardarCambios(e) {
     const campoApellidoP = document.getElementById('campoApellidoP');
     const campoApellidoM = document.getElementById('campoApellidoM');
     const campoDivision = document.getElementById('campoDivision');
-    const campoDivisionHidden = document.getElementById('campoDivisionHidden');
     const campoNumEmpleado = document.getElementById('campoNumEmpleado');
     const campoTelefono = document.getElementById('campoTelefono');
     const campoCorreo = document.getElementById('campoCorreo');
@@ -174,7 +247,7 @@ function guardarCambios(e) {
     const nombreVal = campoNombre ? campoNombre.value.trim() : '';
     const apePVal = campoApellidoP ? campoApellidoP.value.trim() : '';
     const apeMVal = campoApellidoM ? campoApellidoM.value.trim() : '';
-    const divisionVal = campoDivisionHidden ? campoDivisionHidden.value.trim() : (campoDivision ? campoDivision.value.trim() : '');
+    const divisionVal = campoDivision ? campoDivision.value.trim() : '';
     const numEmpVal = campoNumEmpleado ? campoNumEmpleado.value.trim() : '';
     const telVal = campoTelefono ? campoTelefono.value.trim() : '';
     const correoVal = campoCorreo ? campoCorreo.value.trim() : '';
@@ -182,6 +255,8 @@ function guardarCambios(e) {
     const passActualVal = passActual ? passActual.value.trim() : '';
     const passNuevaVal = passNueva ? passNueva.value.trim() : '';
     const passConfirmVal = passConfirm ? passConfirm.value.trim() : '';
+
+    const rolSeleccionado = obtenerRolSeleccionado();
 
     // Validaciones
     if (!nombreVal || !apePVal || !apeMVal || !numEmpVal || !telVal || !correoVal) {
@@ -263,6 +338,37 @@ function guardarCambios(e) {
     datos.append('confirmar_contrasena', passConfirmVal);
     datos.append('passConfirm', passConfirmVal);
 
+    // Rol seleccionado (para que el servlet lo reciba y lo guarde)
+    datos.append('rol', rolSeleccionado);
+
+    const huboCambioDeRol = rolSeleccionado !== rolOriginal;
+
+    // Si el rol cambió, primero se pregunta específicamente por eso.
+    // Si no cambió, se salta directo a la confirmación general de guardado.
+    if (huboCambioDeRol) {
+        const nombreRolNuevo = rolSeleccionado === 'coordinador' ? 'Coordinador' : 'Docente';
+        const nombreRolViejo = rolOriginal === 'coordinador' ? 'Coordinador' : 'Docente';
+
+        Swal.fire({
+            icon: 'warning',
+            title: '¿Deseas modificar el rol?',
+            text: `El rol cambiará de "${nombreRolViejo}" a "${nombreRolNuevo}". ¿Deseas continuar?`,
+            showCancelButton: true,
+            confirmButtonColor: '#00847b',
+            cancelButtonColor: '#aaaaaa',
+            confirmButtonText: 'Sí, cambiar rol',
+            cancelButtonText: 'Cancelar'
+        }).then(function (resRol) {
+            if (!resRol.isConfirmed) return;
+            confirmarYGuardar(datos);
+        });
+    } else {
+        confirmarYGuardar(datos);
+    }
+}
+
+// Confirmación general de guardado + envío real al servlet
+function confirmarYGuardar(datos) {
     Swal.fire({
         icon: 'question',
         title: '¿Deseas guardar los cambios?',
@@ -342,4 +448,3 @@ function guardarCambios(e) {
             });
     });
 }
-

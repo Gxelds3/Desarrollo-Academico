@@ -2,6 +2,7 @@ package mx.edu.utez.DesarrolloAcademico.model.dao;
 
 import mx.edu.utez.DesarrolloAcademico.model.Evento;
 import mx.edu.utez.DesarrolloAcademico.model.Usuario;
+import mx.edu.utez.DesarrolloAcademico.model.agregarEvento_co;
 import mx.edu.utez.DesarrolloAcademico.utils.DatabaseConnection;
 
 import java.sql.Connection;
@@ -366,7 +367,7 @@ public class UsuarioDao {
     public Usuario obtenerDocentePorId(int idUsuario) {
         Usuario u = null;
         String sql = "SELECT ID_USUARIO, NOMBRE, APELLIDO_PATERNO, APELLIDO_MATERNO, " +
-                "CORREO_INSTITUCIONAL, ID_DIVISION, NUMERO_EMPLEADO, TELEFONO, ACTIVO, CONTRASENA " +
+                "CORREO_INSTITUCIONAL, ID_DIVISION, NUMERO_EMPLEADO, TELEFONO, ACTIVO, CONTRASENA, ROL " +
                 "FROM USUARIOS WHERE ID_USUARIO = ?";
 
         try (Connection con = DatabaseConnection.getConnection();
@@ -386,6 +387,7 @@ public class UsuarioDao {
                     u.setTelefono(rs.getString("TELEFONO") != null ? rs.getString("TELEFONO") : "");
                     u.setActivo(rs.getInt("ACTIVO"));
                     u.setContrasena(rs.getString("CONTRASENA"));
+                    u.setRol(rs.getString("ROL"));
                 }
             }
         } catch (SQLException ex) {
@@ -510,4 +512,40 @@ public class UsuarioDao {
         // 3. Reconsulta de rescate por si la secuencia no devolvió el valor mediante el driver
         return obtenerIdParticipante(idEvento, idUsuario);
     }
+
+    public List<agregarEvento_co> listarTodosEventos() {
+        List<agregarEvento_co> lista = new ArrayList<>();
+        String sql = "SELECT id_evento, nombre, tipo_evento, institucion, lugar, descripcion, " +
+                "fecha_inicio, fecha_fin, modalidad FROM eventos ORDER BY id_evento DESC";
+
+        try (Connection con = DatabaseConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                agregarEvento_co ev = new agregarEvento_co();
+                ev.setId(rs.getInt("id_evento"));
+                ev.setNombre(rs.getString("nombre"));
+                ev.setTipo(rs.getString("tipo_evento"));
+                ev.setInstitucion(rs.getString("institucion"));
+                ev.setLugar(rs.getString("lugar"));
+                ev.setDescripcion(rs.getString("descripcion"));
+
+                java.sql.Date dInicio = rs.getDate("fecha_inicio");
+                java.sql.Date dFin = rs.getDate("fecha_fin");
+                ev.setFechaInicio(dInicio != null ? dInicio.toString() : "");
+                ev.setFechaFin(dFin != null ? dFin.toString() : "");
+
+                ev.setModalidad(rs.getString("modalidad"));
+                lista.add(ev);
+            }
+        } catch (SQLException e) {
+            System.err.println("Error al listar todos los eventos: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return lista;
+    }
+
+
+
 }

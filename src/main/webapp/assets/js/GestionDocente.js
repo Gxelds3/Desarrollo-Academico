@@ -11,6 +11,38 @@ const DIVISIONES = {
     5: 'General'
 };
 
+// Colores específicos por división
+const COLORES_DIVISION = {
+    'Datid': '#007BFF',    // Azul Eléctrico
+    'Datefi': '#32CD32',   // Verde Lima
+    'Dami': '#DC143C',     // Rojo Carmesí
+    'Dacea': '#DA70D6',    // Púrpura Orquídea
+    'General': '#6c757d'   // Gris (neutro, no especificado)
+};
+
+function obtenerColorDivision(nombreDivision) {
+    return COLORES_DIVISION[nombreDivision] || '#adb5bd';
+}
+
+// Colores específicos por rol
+const COLORES_ROL = {
+    'docente': '#FF8C00',        // Naranja Mandarina
+    'coordinador': '#CCFF00',    // Amarillo Limón
+    'desarrollador': '#00FFFF'   // Azul Turquesa (Desarrollo Académico)
+};
+
+function obtenerColorRol(rol) {
+    const rolNormalizado = (rol || 'docente').toLowerCase();
+    return COLORES_ROL[rolNormalizado] || '#adb5bd';
+}
+
+// Devuelve el color de texto adecuado según el fondo, para mantener buen contraste.
+// Los fondos muy claros (amarillo limón, turquesa) usan texto oscuro; el resto, texto blanco.
+function obtenerColorTexto(colorFondoHex) {
+    const clarosSinContrasteBlanco = ['#CCFF00', '#00FFFF'];
+    return clarosSinContrasteBlanco.includes(colorFondoHex) ? '#212529' : '#ffffff';
+}
+
 // "Lista maestra" con todos los docentes que trae el servidor.
 let docentesOriginales = [];
 let filtroTexto = '';
@@ -152,6 +184,14 @@ function renderDocentes(lista) {
         const iconoEstado = activo ? 'bi-toggle-on text-success' : 'bi-toggle-off text-danger';
         const divisionNombre = DIVISIONES[doc.idDivision] || doc.division || '';
 
+        const colorDivision = obtenerColorDivision(divisionNombre);
+        const colorTextoDivision = obtenerColorTexto(colorDivision);
+
+        const colorRol = obtenerColorRol(doc.rol);
+        const colorTextoRol = obtenerColorTexto(colorRol);
+
+        const nombreRolMostrado = doc.rol ? doc.rol.charAt(0).toUpperCase() + doc.rol.slice(1) : 'Docente';
+
         const fila = document.createElement('tr');
         fila.setAttribute('data-id', doc.id);
         fila.innerHTML =
@@ -164,8 +204,8 @@ function renderDocentes(lista) {
             '</div>' +
             '</td>' +
             '<td>' + escapeHtml(doc.correo) + '</td>' +
-            '<td>' + escapeHtml(divisionNombre) + '</td>' +
-            '<td><span class="badge ' + (doc.rol === 'desarrollador' ? 'bg-secondary' : 'bg-success') + '">' + escapeHtml(doc.rol ? doc.rol.charAt(0).toUpperCase() + doc.rol.slice(1) : 'Docente') + '</span></td>' +
+            '<td><span class="badge" style="background-color:' + colorDivision + '; color:' + colorTextoDivision + '; padding:5px 12px; border-radius:12px; font-weight:500;">' + escapeHtml(divisionNombre) + '</span></td>' +
+            '<td><span class="badge" style="background-color:' + colorRol + '; color:' + colorTextoRol + '; padding:5px 12px; border-radius:12px; font-weight:500;">' + escapeHtml(nombreRolMostrado) + '</span></td>' +
             '<td>' + escapeHtml(doc.numeroEmpleado) + '</td>' +
             '<td>' +
             '<i class="bi ' + iconoEstado + ' fs-4 toggle-estado" style="cursor:pointer;" data-id="' + doc.id + '" data-activo="' + (activo ? 1 : 0) + '"></i>' +
@@ -420,6 +460,5 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    // Cargar la lista al cargar la vista
     cargarDocentes();
 });

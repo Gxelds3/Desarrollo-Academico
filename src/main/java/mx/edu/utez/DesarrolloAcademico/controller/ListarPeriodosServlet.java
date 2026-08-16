@@ -25,7 +25,8 @@ public class ListarPeriodosServlet extends HttpServlet {
 
         try {
             UsuarioListaDao dao = new UsuarioListaDao();
-            List<Periodo> listaPeriodos = dao.obtenerTodosLosPeriodos(); // Método SELECT en tu DAO
+            dao.desactivarPeriodosVencidos();
+            List<Periodo> listaPeriodos = dao.obtenerTodosLosPeriodos();
 
             StringBuilder json = new StringBuilder("[");
             for (int i = 0; i < listaPeriodos.size(); i++) {

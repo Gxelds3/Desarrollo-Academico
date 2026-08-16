@@ -154,8 +154,8 @@ public class AgregarDesarrollador_Dao {
 
         try {
             con = DatabaseConnection.getConnection();
+            con.setAutoCommit(true);
 
-            // 1. VALIDAR SI EL NÚMERO DE EMPLEADO YA PERTENECE A OTRO USUARIO
             String checkNumEmp = "SELECT COUNT(*) FROM usuarios WHERE numero_empleado = ? AND id_usuario != ?";
             ps = con.prepareStatement(checkNumEmp);
             ps.setString(1, usuario.getNumeroEmpleado());
@@ -181,7 +181,7 @@ public class AgregarDesarrollador_Dao {
 
             String query = "UPDATE usuarios SET " +
                     "nombre = ?, apellido_paterno = ?, apellido_materno = ?, id_division = ?, " +
-                    "numero_empleado = ?, telefono = ?, correo_institucional = ?" +
+                    "numero_empleado = ?, telefono = ?, correo_institucional = ?, rol = ?" +
                     (cambiaPassword ? ", contrasena = ?" : "") +
                     " WHERE id_usuario = ?";
 
@@ -200,6 +200,7 @@ public class AgregarDesarrollador_Dao {
             ps.setString(i++, usuario.getNumeroEmpleado());
             ps.setString(i++, usuario.getTelefono());
             ps.setString(i++, usuario.getCorreoInstitucional());
+            ps.setString(i++, usuario.getRol());
 
             if (cambiaPassword) {
                 ps.setString(i++, nuevaContrasena);

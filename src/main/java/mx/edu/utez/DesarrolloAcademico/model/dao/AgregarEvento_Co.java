@@ -245,4 +245,39 @@ public class AgregarEvento_Co {
         }
         return estado;
     }
+
+    public List<agregarEvento_co> listarTodosLosEventos() {
+        List<agregarEvento_co> eventos = new ArrayList<>();
+        String query = "SELECT e.id_evento, e.nombre, e.lugar, e.institucion, e.tipo_evento, " +
+                "e.descripcion, e.fecha_inicio, e.fecha_fin, e.modalidad, d.nombre AS nombre_division " +
+                "FROM eventos e " +
+                "LEFT JOIN divisiones d ON e.id_division = d.id_division " +
+                "ORDER BY e.id_evento DESC";
+
+        Connection con = DatabaseConnection.getConnection();
+        try (PreparedStatement ps = con.prepareStatement(query)) {
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    agregarEvento_co evento = new agregarEvento_co();
+                    evento.setId(rs.getInt("id_evento"));
+                    evento.setNombre(rs.getString("nombre"));
+                    evento.setLugar(rs.getString("lugar"));
+                    evento.setInstitucion(rs.getString("institucion"));
+                    evento.setTipo(rs.getString("tipo_evento"));
+                    evento.setDescripcion(rs.getString("descripcion"));
+                    java.sql.Date dInicio = rs.getDate("fecha_inicio");
+                    java.sql.Date dFin = rs.getDate("fecha_fin");
+                    evento.setFechaInicio(dInicio != null ? dInicio.toString() : "");
+                    evento.setFechaFin(dFin != null ? dFin.toString() : "");
+                    evento.setModalidad(rs.getString("modalidad"));
+                    evento.setNombreDivision(rs.getString("nombre_division"));
+                    eventos.add(evento);
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Error al listar todos los eventos: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return eventos;
+    }
 }

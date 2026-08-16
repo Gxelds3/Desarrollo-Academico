@@ -45,6 +45,7 @@ public class ObtenerDocente extends HttpServlet {
                 json.append("\"numeroEmpleado\":\"").append(escape(d.getNumeroEmpleado())).append("\",");
                 json.append("\"telefono\":\"").append(escape(d.getTelefono())).append("\",");
                 json.append("\"activo\":").append(d.getActivo()).append(",");
+                json.append("\"rol\":\"").append(escape(d.getRol())).append("\",");
                 json.append("\"contrasena\":\"").append(escape(d.getContrasena())).append("\"");
                 json.append("}");
 

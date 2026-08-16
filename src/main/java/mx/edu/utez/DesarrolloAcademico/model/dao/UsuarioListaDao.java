@@ -412,7 +412,8 @@ public class UsuarioListaDao {
         String sql = "UPDATE periodos_carga SET " +
                 "ID_DIVISION = (SELECT ID_DIVISION FROM divisiones WHERE (NOMBRE = ? OR TO_CHAR(ID_DIVISION) = ?) AND ROWNUM <= 1), " +
                 "FECHA_INICIO = TO_DATE(?, 'YYYY-MM-DD'), " +
-                "FECHA_FIN = TO_DATE(?, 'YYYY-MM-DD') " +
+                "FECHA_FIN = TO_DATE(?, 'YYYY-MM-DD'), " +
+                "ACTIVO = CASE WHEN TO_DATE(?, 'YYYY-MM-DD') >= TRUNC(SYSDATE) THEN 1 ELSE 0 END " +
                 "WHERE ID_PERIODO = ?";
 
         try (Connection con = DatabaseConnection.getConnection()) {
@@ -423,7 +424,8 @@ public class UsuarioListaDao {
                 ps.setString(2, division);
                 ps.setString(3, fechaInicio);
                 ps.setString(4, fechaFin);
-                ps.setInt(5, idPeriodo);
+                ps.setString(5, fechaFin); // se repite para el CASE del ACTIVO
+                ps.setInt(6, idPeriodo);
 
                 int filasAfectadas = ps.executeUpdate();
                 return filasAfectadas > 0;
@@ -435,7 +437,6 @@ public class UsuarioListaDao {
             return false;
         }
     }
-
 
     public boolean existeDivision(String division, int idPeriodoExcluir) {
 
@@ -482,6 +483,41 @@ public class UsuarioListaDao {
         }
         return divisionOrId;
     }
+    public void desactivarPeriodosVencidos() {
+        String sql = "UPDATE periodos_carga SET activo = 0 WHERE fecha_fin < TRUNC(SYSDATE) AND activo = 1";
 
+        try (Connection con = DatabaseConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            int filasActualizadas = ps.executeUpdate();
+            if (filasActualizadas > 0) {
+                System.out.println("Periodos desactivados automáticamente: " + filasActualizadas);
+            }
+
+        } catch (SQLException e) {
+            System.err.println("Error al desactivar periodos vencidos: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    public boolean periodoYaVencio(int idPeriodo) {
+        String sql = "SELECT CASE WHEN fecha_fin < TRUNC(SYSDATE) THEN 1 ELSE 0 END AS vencido " +
+                "FROM periodos_carga WHERE id_periodo = ?";
+
+        try (Connection con = DatabaseConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setInt(1, idPeriodo);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt("vencido") == 1;
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Error al verificar vencimiento del periodo: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return false;
+    }
 }
 

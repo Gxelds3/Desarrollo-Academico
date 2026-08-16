@@ -396,7 +396,7 @@
             didOpen: () => Swal.showLoading()
         });
 
-        fetch(contextPath + '/SubirConstanciaServlet', {
+        fetch(contextPath + '/SubirConstanciaServlet1', {
             method: 'POST',
             body: formData
         })

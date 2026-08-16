@@ -62,6 +62,9 @@ public class EditarDocente extends HttpServlet {
             if (idStr == null || idStr.trim().isEmpty()) idStr = request.getParameter("idUsuario");
             if (idStr == null || idStr.trim().isEmpty()) idStr = request.getParameter("id_usuario");
 
+            String rol = request.getParameter("rol");
+            if (rol == null || rol.trim().isEmpty()) rol = "docente";
+
             String nombre = request.getParameter("nombre");
             String apellidoPaterno = request.getParameter("apellidoPaterno");
             if (apellidoPaterno == null) apellidoPaterno = request.getParameter("apellido_paterno");
@@ -123,6 +126,8 @@ public class EditarDocente extends HttpServlet {
             dev.setTelefono(telefono.trim());
             dev.setCorreoInstitucional(correo.trim());
             dev.setContrasena(contrasena);
+            dev.setRol(rol.trim());
+
 
             AgregarDesarrollador_Dao dao = new AgregarDesarrollador_Dao();
 
