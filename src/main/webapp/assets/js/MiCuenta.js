@@ -30,7 +30,19 @@ document.addEventListener("DOMContentLoaded", () => {
             const novaPasswordVal = inputNueva ? inputNueva.value.trim() : '';
             const passConfirmVal = inputConfirm ? inputConfirm.value.trim() : '';
 
-            // --- A) VALIDACIÓN DE TELÉFONO (Exactamente 10 dígitos) ---
+            // --- A) VALIDACIÓN DE CONTRASEÑA ACTUAL OBLIGATORIA ---
+            if (!passActualVal) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Contraseña Actual Requerida',
+                    text: 'Debes ingresar tu contraseña actual para confirmar cualquier cambio.',
+                    confirmButtonColor: '#00847b',
+                    confirmButtonText: 'Aceptar'
+                });
+                return;
+            }
+
+            // --- B) VALIDACIÓN DE TELÉFONO (Exactamente 10 dígitos) ---
             if (!/^\d{10}$/.test(telefonoVal)) {
                 Swal.fire({
                     icon: 'warning',
@@ -42,7 +54,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 return;
             }
 
-            // --- B) VALIDACIÓN DE CONTRASEÑA (Solo si intenta cambiarla) ---
+            // --- C) VALIDACIÓN DE NUEVA CONTRASEÑA (Solo si intenta cambiarla) ---
             const estaCambiandoPass = novaPasswordVal !== '' || passConfirmVal !== '';
 
             if (estaCambiandoPass) {
@@ -80,16 +92,19 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
             }
 
-            // --- C) PREPARACIÓN DE DATOS PARA ENVÍO ---
+            // --- D) PREPARACIÓN DE DATOS PARA ENVÍO ---
             const btnGuardar = formMiCuenta.querySelector('button[type="submit"]');
             if (btnGuardar) btnGuardar.disabled = true;
 
-            const formData = new URLSearchParams();
-            formData.append('telefono', telefonoVal);
-            formData.append('passActual', passActualVal);
-            formData.append('passNueva', novaPasswordVal);
+            // FormData recopila automáticamente todos los inputs del HTML (incluyendo readonly y hiddens)
+            const formData = new FormData(formMiCuenta);
 
-            // --- D) PRELOADER CON PORCENTAJE PARA GUARDAR CAMBIOS ---
+            // Asignación explícita de campos opcionales/sensibles
+            formData.set('passActual', passActualVal);
+            formData.set('contrasena', novaPasswordVal);
+            formData.set('confirmar_contrasena', passConfirmVal);
+
+            // --- E) PRELOADER CON PORCENTAJE ---
             let porcentaje = 0;
             let timerCarga;
 
@@ -111,11 +126,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
             });
 
-            // --- E) ENVÍO AL SERVLET ---
+            // --- F) ENVÍO AL SERVLET 'EditarDesarrollador' ---
             fetch(contextPath + '/ActualizarMiCuentaServlet', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8' },
-                body: formData.toString()
+                body: formData // Envío compatible con @MultipartConfig en el Servlet
             })
                 .then(res => res.json().then(data => ({ ok: res.ok, data: data })))
                 .then(resultado => {
@@ -125,12 +139,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
                     setTimeout(() => {
                         if (resultado.ok && resultado.data.success) {
-                            // Si cambió la contraseña, actualizamos visualmente los inputs
-                            if (estaCambiandoPass) {
-                                if (inputActual) inputActual.value = novaPasswordVal;
-                                if (inputNueva) inputNueva.value = '';
-                                if (inputConfirm) inputConfirm.value = '';
-                            }
+                            // Limpiar campos de contraseña tras éxito
+                            if (inputActual) inputActual.value = '';
+                            if (inputNueva) inputNueva.value = '';
+                            if (inputConfirm) inputConfirm.value = '';
 
                             Swal.fire({
                                 icon: 'success',

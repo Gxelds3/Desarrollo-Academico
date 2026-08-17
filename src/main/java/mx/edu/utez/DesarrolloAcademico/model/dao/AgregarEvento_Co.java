@@ -162,6 +162,31 @@ public class AgregarEvento_Co {
         }
         return estado;
     }
+    public String obtenerFechaLimitePorDivision(int idDivision) {
+        String query = "SELECT fecha_fin FROM periodos_carga " +
+                "WHERE id_division = ? AND activo = 1 " +
+                "ORDER BY fecha_fin DESC";
+
+        Connection con = DatabaseConnection.getConnection();
+        if (con == null) {
+            System.err.println("Error al obtener fecha límite: no se pudo obtener conexión a la base de datos.");
+            return null;
+        }
+        try (PreparedStatement ps = con.prepareStatement(query)) {
+            ps.setInt(1, idDivision);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    java.sql.Date fechaFin = rs.getDate("fecha_fin");
+                    return fechaFin != null ? fechaFin.toString() : null;
+                }
+            }
+        } catch (Exception e) {
+            System.err.println("Error al obtener fecha límite del periodo: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     public agregarEvento_co obtenerPorId(int idEvento) {
         String query = "SELECT id_evento, nombre, lugar, institucion, tipo_evento, descripcion, fecha_inicio, fecha_fin, modalidad, id_division, creado_por FROM eventos WHERE id_evento = ?";
 

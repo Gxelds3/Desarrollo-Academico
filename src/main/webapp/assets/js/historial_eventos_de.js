@@ -1,126 +1,143 @@
-const contextPath = window.contextPath || '';
-const tbody = document.getElementById('tablaEventosBody');
-const inputBuscar = document.getElementById('buscarEvento');
-const contenedorFiltros = document.getElementById('contenedorFiltrosTipo');
+document.addEventListener("DOMContentLoaded", function () {
+    const contextPath = window.contextPath || (window.location.pathname.substring(0, window.location.pathname.indexOf("/", 1))) || '';
+    const tbody = document.getElementById('tablaEventosBody');
+    const inputBuscar = document.getElementById('buscarEvento');
+    const contenedorFiltros = document.getElementById('contenedorFiltrosTipo');
 
-let eventosOriginales = [];
-let filtroTexto = '';
-let filtroTipo = 'todos';
+    let eventosOriginales = [];
+    let filtroTexto = '';
+    let filtroTipo = 'todos';
 
-// Sanitización contra inyección HTML
-function escapeHtml(texto) {
-    if (texto === null || texto === undefined) return '';
-    return String(texto)
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;');
-}
-
-// Normalizador para búsqueda insensible a acentos/mayúsculas
-function normalizar(texto) {
-    return String(texto || '')
-        .toLowerCase()
-        .normalize('NFD')
-        .replace(/[\u0300-\u036f]/g, '');
-}
-
-// Formateador de rangos de fecha
-function formatearFechas(fechaInicio, fechaFin) {
-    if (!fechaInicio) return 'Sin fecha';
-    if (!fechaFin) return escapeHtml(fechaInicio);
-    return `${escapeHtml(fechaInicio)} - ${escapeHtml(fechaFin)}`;
-}
-
-// Filtrado combinado: Texto de búsqueda + Filtro de Categoría/Pill
-function obtenerEventosFiltrados() {
-    const texto = normalizar(filtroTexto);
-
-    return eventosOriginales.filter(function (evt) {
-        const coincideTexto = normalizar(evt.titulo).includes(texto) ||
-            normalizar(evt.subtitulo).includes(texto) ||
-            normalizar(evt.institucion).includes(texto) ||
-            normalizar(evt.modalidad).includes(texto);
-
-        const tipoEventoNormalizado = normalizar(evt.tipo || evt.tipoEvento);
-        const tipoFiltroNormalizado = normalizar(filtroTipo);
-
-        const coincideTipo = (filtroTipo === 'todos') || (tipoEventoNormalizado === tipoFiltroNormalizado);
-
-        return coincideTexto && coincideTipo;
-    });
-}
-
-// Renderizado dinámico de la tabla
-function renderEventos(lista) {
-    if (!tbody) return;
-
-    if (!lista || !lista.length) {
-        tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted py-4">No se encontraron eventos registrados.</td></tr>';
-        return;
+    // Sanitización contra inyección HTML (XSS)
+    function escapeHtml(texto) {
+        if (texto === null || texto === undefined) return '';
+        return String(texto)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;');
     }
 
-    tbody.innerHTML = '';
-    lista.forEach(function (evt) {
-        const idEvento = evt.id || evt.idEvento;
-        const titulo = escapeHtml(evt.titulo || evt.nombre);
-        const subtitulo = escapeHtml(evt.subtitulo || evt.descripcionCorta || '');
-        const tipo = escapeHtml(evt.tipo || evt.tipoEvento || 'Sin especificación');
-        const institucion = escapeHtml(evt.institucion || 'N/A');
-        const modalidad = escapeHtml(evt.modalidad || 'Sin especificar');
-        const fechas = formatearFechas(evt.fechaInicio, evt.fechaFin);
+    // Normalizador para búsqueda insensible a acentos/mayúsculas
+    function normalizar(texto) {
+        return String(texto || '')
+            .toLowerCase()
+            .normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '');
+    }
 
-        const fila = document.createElement('tr');
-        fila.setAttribute('data-id', idEvento);
+    // Formateador individual de fecha (YYYY-MM-DD a DD/MM/YY)
+    function formatearFechaIndividual(fechaIso) {
+        if (!fechaIso) return '';
+        const partes = fechaIso.split('-');
+        if (partes.length !== 3) return fechaIso;
+        return partes[2] + '/' + partes[1] + '/' + partes[0].slice(2);
+    }
 
-        // Mismo orden que el <thead> de tu JSP
-        fila.innerHTML = `
-            <td class="text-start">
-                <div class="fw-semibold">${titulo}</div>
-                ${subtitulo ? `<div class="small text-muted">${subtitulo}</div>` : ''}
-            </td>
-            <td>${tipo}</td>
-            <td>${institucion}</td>
-            <td>${modalidad}</td>
-            <td>${fechas}</td>
-            <td>
-                <a href="${contextPath}/ver_mas_evento_${window.sufijoRol || 'de'}.jsp?id=${idEvento}" class="action-btn" title="Ver detalle">
-                    <i class="bi bi-eye"></i>
-                </a>
-            </td>
-        `;
-        tbody.appendChild(fila);
-    });
-}
+    // Formateador de rangos de fecha
+    function formatearFechas(fechaInicio, fechaFin) {
+        if (!fechaInicio) return 'Sin fecha';
+        const fInicio = formatearFechaIndividual(fechaInicio);
+        if (!fechaFin) return escapeHtml(fInicio);
+        const fFin = formatearFechaIndividual(fechaFin);
+        return `${escapeHtml(fInicio)} - ${escapeHtml(fFin)}`;
+    }
 
-function aplicarFiltro() {
-    renderEventos(obtenerEventosFiltrados());
-}
+    // Filtrado combinado: Texto de búsqueda + Filtro de Categoría/Pill
+    function obtenerEventosFiltrados() {
+        const texto = normalizar(filtroTexto);
+        const tipoFiltroNormalizado = normalizar(filtroTipo);
 
-function cargarMisEventos() {
-    if (!tbody) return;
-    tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted py-4">Cargando eventos...</td></tr>';
+        return eventosOriginales.filter(function (evt) {
+            const coincideTexto = normalizar(evt.titulo || evt.nombre).includes(texto) ||
+                normalizar(evt.subtitulo || evt.descripcion).includes(texto) ||
+                normalizar(evt.institucion).includes(texto) ||
+                normalizar(evt.modalidad).includes(texto);
 
-    fetch(contextPath + '/ListarMisEventosServlet', { credentials: 'same-origin' })
-        .then(function (response) {
-            if (response.redirected || (response.url && response.url.includes('login.jsp'))) {
-                window.location.href = 'login.jsp';
-                return null;
-            }
-            return response.json();
-        })
-        .then(function (eventos) {
-            if (!eventos) return;
-            eventosOriginales = eventos || [];
-            aplicarFiltro();
-        })
-        .catch(function (error) {
-            console.error('Error al cargar la lista de eventos:', error);
-            tbody.innerHTML = '<tr><td colspan="6" class="text-center text-danger py-4">No se pudieron cargar los eventos.</td></tr>';
+            const tipoEventoNormalizado = normalizar(evt.tipo || evt.tipoEvento);
+            const coincideTipo = (filtroTipo === 'todos') || (tipoEventoNormalizado === tipoFiltroNormalizado);
+
+            return coincideTexto && coincideTipo;
         });
-}
+    }
 
-document.addEventListener("DOMContentLoaded", function () {
+    // Renderizado dinámico de la tabla (6 Columnas)
+    function renderEventos(lista) {
+        if (!tbody) return;
 
+        if (!lista || !lista.length) {
+            tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted py-4">No se encontraron eventos registrados.</td></tr>';
+            return;
+        }
+
+        const sufijoRol = window.sufijoRol || 'de';
+        tbody.innerHTML = '';
+
+        lista.forEach(function (evt) {
+            const idEvento = evt.id || evt.idEvento;
+            const titulo = escapeHtml(evt.titulo || evt.nombre);
+            const subtitulo = escapeHtml(evt.subtitulo || evt.descripcion || '');
+            const tipo = escapeHtml(evt.tipo || evt.tipoEvento || 'Sin especificación');
+            const institucion = escapeHtml(evt.institucion || 'N/A');
+            const modalidad = escapeHtml(evt.modalidad || 'Presencial');
+            const fechas = formatearFechas(evt.fechaInicio, evt.fechaFin);
+
+            const fila = document.createElement('tr');
+            fila.setAttribute('data-id', idEvento);
+
+            // Coincide exactamente con las 6 columnas del <thead> y <colgroup>
+            fila.innerHTML = `
+                <td class="text-start">
+                    <div class="fw-semibold">${titulo}</div>
+                    ${subtitulo ? `<div class="small text-muted">${subtitulo}</div>` : ''}
+                </td>
+                <td>${tipo}</td>
+                <td>${institucion}</td>
+                <td>${modalidad}</td>
+                <td>${fechas}</td>
+                <td>
+                    <a href="${contextPath}/ver_mas_evento_${sufijoRol}.jsp?id=${idEvento}" class="action-btn" title="Ver detalle">
+                        <i class="bi bi-eye"></i>
+                    </a>
+                </td>
+            `;
+            tbody.appendChild(fila);
+        });
+    }
+
+    function aplicarFiltro() {
+        renderEventos(obtenerEventosFiltrados());
+    }
+
+    function cargarMisEventos() {
+        if (!tbody) return;
+        tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted py-4">Cargando eventos...</td></tr>';
+
+        fetch(contextPath + '/ListarMisEventosServlet?t=' + Date.now(), { credentials: 'same-origin' })
+            .then(function (response) {
+                if (response.redirected || (response.url && response.url.includes('login.jsp'))) {
+                    window.location.href = 'login.jsp';
+                    return null;
+                }
+
+                const contentType = response.headers.get("content-type");
+                if (contentType && contentType.indexOf("application/json") !== -1) {
+                    return response.json();
+                } else {
+                    throw new Error("Respuesta del servidor no válida (Se esperaba JSON).");
+                }
+            })
+            .then(function (eventos) {
+                if (!eventos) return;
+                eventosOriginales = eventos || [];
+                aplicarFiltro();
+            })
+            .catch(function (error) {
+                console.error('Error al cargar la lista de eventos:', error);
+                tbody.innerHTML = '<tr><td colspan="6" class="text-center text-danger py-4">No se pudieron cargar los eventos. Revisa la conexión con el servidor.</td></tr>';
+            });
+    }
+
+    // Escuchadores de eventos para búsqueda y filtros por Pill
     if (inputBuscar) {
         inputBuscar.addEventListener('input', function () {
             filtroTexto = inputBuscar.value.trim();
@@ -143,5 +160,6 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
+    // Carga inicial
     cargarMisEventos();
 });

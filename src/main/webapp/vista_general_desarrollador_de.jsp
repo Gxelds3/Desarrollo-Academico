@@ -10,7 +10,7 @@
 
 
     int totalEventos = eventoDao.contarEventos();
-    int totalDocentes = eventoDao.contarDocentesD();
+    int totalDocentes = eventoDao.contarDocentesYCoordinadores();
 
     List<Evento> listaEventos = usuarioDao.obtenerProximosEventos(null);
 

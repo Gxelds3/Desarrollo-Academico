@@ -5,18 +5,23 @@
 <%@ page import="java.util.List" %>
 <%@ page import="mx.edu.utez.DesarrolloAcademico.model.Usuario" %>
 <%
-    // Instanciamos los DAOs para obtener los conteos reales
+    // 1. Validar la sesión
+    Usuario usuarioSesion = (session != null) ? (Usuario) session.getAttribute("usuario") : null;
+    if (usuarioSesion == null) {
+        response.sendRedirect("login.jsp");
+        return;
+    }
+
+    // 2. Extraer parámetros requeridos del usuario
+    int idUsuario = usuarioSesion.getIdUsuario();
+    int idDivision = (usuarioSesion.getIdDivision() != null) ? usuarioSesion.getIdDivision() : 0;
+
+    // 3. Instanciar DAOs y obtener conteos reales
     UsuarioListaDao eventoDao = new UsuarioListaDao();
     UsuarioDao usuarioDao = new UsuarioDao();
 
-    Usuario usuarioSesion = (Usuario) session.getAttribute("usuario");
-    int idDivision = (usuarioSesion != null && usuarioSesion.getIdDivision() != null) ? usuarioSesion.getIdDivision() : 0;
-
-    int totalEventos = eventoDao.contarEventos();
+    int totalEventosPropio = eventoDao.contarEventosAsignados(idUsuario);
     List<Evento> listaEventos = usuarioDao.obtenerProximosEventos(idDivision);
-
-    int totalEventos1 = eventoDao.contarEventos();
-    int totalDocentes1 = eventoDao.contarDocentesD();
 %>
 <!doctype html>
 <html lang="es">
@@ -30,11 +35,9 @@
 </head>
 <body>
 
-
 <jsp:include page="sidebar_do.jsp">
     <jsp:param name="active" value="vista_general" />
 </jsp:include>
-
 
 <main class="main-content">
 
@@ -46,8 +49,9 @@
                 </div>
                 <div>
                     <div class="text-muted small">Eventos registrados</div>
-                    <div class="fs-4 fw-bold lh-1 mt-1"><%= totalEventos %></div>
-                    <div class="text-muted" style="font-size: 0.75rem;">Total eventos</div>
+                    <!-- Se muestra el conteo de eventos propios del docente -->
+                    <div class="fs-4 fw-bold lh-1 mt-1"><%= totalEventosPropio %></div>
+                    <div class="text-muted" style="font-size: 0.75rem;">Mis eventos asignados</div>
                 </div>
             </div>
         </div>
@@ -90,9 +94,7 @@
 
 </main>
 
-
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
 <script src="assets/js/coordinador.js"></script>
 </body>
 </html>

@@ -48,7 +48,6 @@ function renderMisEventos(lista) {
             '<td>' + formatFechaMisEv(ev.fechaInicio) + ' - ' + formatFechaMisEv(ev.fechaFin) + '</td>' +
             '<td>' +
             '  <a href="' + urlVer + '" class="action-btn"><i class="bi bi-eye"></i></a>' +
-            '  <a href="' + urlCargar + '" class="action-btn"><i class="bi bi-cloud-upload"></i></a>' +
             '</td>';
         tbodyMisEventos.appendChild(tr);
     });

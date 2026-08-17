@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Historial de Eventos</title>
+    <title>Historial de Eventos – Coordinador</title>
     <link rel="stylesheet" href="assets/css/bootstrap.css">
     <link rel="stylesheet" href="assets/css/bi/bootstrap-icons.css">
     <link rel="stylesheet" href="assets/css/coordinador.css">
@@ -17,16 +17,16 @@
 </jsp:include>
 
 <main class="main-content">
-    <h3 class="page-title mb-4">HISTORIAL EVENTOS</h3>
+    <h3 class="page-title mb-4">HISTORIAL DE EVENTOS</h3>
 
     <!-- Filtros por tipo de evento -->
     <div class="d-flex flex-wrap gap-2 mb-4" id="contenedorFiltrosTipo">
         <a href="#" class="nav-pill active" data-tipo="todos">Todos</a>
-        <a href="#" class="nav-pill" data-tipo="Diplomado">Diplomado</a>
-        <a href="#" class="nav-pill" data-tipo="Conferencia">Conferencia</a>
-        <a href="#" class="nav-pill" data-tipo="Taller">Taller</a>
-        <a href="#" class="nav-pill" data-tipo="Curso">Curso</a>
-        <a href="#" class="nav-pill" data-tipo="Certificacion">Certificación</a>
+        <a href="#" class="nav-pill" data-tipo="diplomado">Diplomado</a>
+        <a href="#" class="nav-pill" data-tipo="conferencia">Conferencia</a>
+        <a href="#" class="nav-pill" data-tipo="taller">Taller</a>
+        <a href="#" class="nav-pill" data-tipo="curso">Curso</a>
+        <a href="#" class="nav-pill" data-tipo="certificacion">Certificación</a>
     </div>
 
     <!-- Buscador en tiempo real -->
@@ -37,15 +37,16 @@
         </div>
     </div>
 
-    <!-- Tabla dinámica -->
+    <!-- Tabla dinámica (6 columnas) -->
     <div class="data-card p-0 mb-4" style="overflow: hidden;">
         <table class="table-custom mb-0 text-center">
             <colgroup>
-                <col style="width: 30%;">
-                <col style="width: 15%;">
                 <col style="width: 25%;">
+                <col style="width: 12%;">
                 <col style="width: 20%;">
-                <col style="width: 10%;">
+                <col style="width: 13%;">
+                <col style="width: 15%;">
+                <col style="width: 15%;">
             </colgroup>
             <thead>
             <tr>
@@ -53,28 +54,26 @@
                 <th>Tipo</th>
                 <th>Institución</th>
                 <th>Modalidad</th>
-                 <th>Fecha</th>
+                <th>Fecha</th>
                 <th>Acciones</th>
             </tr>
             </thead>
             <tbody id="tablaEventosBody">
-
+            <tr>
+                <td colspan="6" class="text-center text-muted py-4">Cargando eventos...</td>
+            </tr>
             </tbody>
         </table>
     </div>
 
-    <div class="pagination-container" id="paginacionContainer">
-        <a href="#" class="page-btn"><i class="bi bi-chevron-left"></i></a>
-        <a href="#" class="page-btn active">1</a>
-        <a href="#" class="page-btn"><i class="bi bi-chevron-right"></i></a>
-    </div>
+    <!-- Paginación dinámica -->
+    <div class="pagination-container" id="paginacionContainer"></div>
 
 </main>
 
 <script>
     window.contextPath = '<%= request.getContextPath() %>';
-    // Sufijo del rol para redirigir al ver detalle
-    window.sufijoRol = 'co';
+    window.sufijoRol   = 'co';
 </script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="assets/js/historial_eventos_de.js"></script>

@@ -54,21 +54,40 @@ public class EditarDesarrollador extends HttpServlet {
 
         try {
             String idStr              = request.getParameter("id");
+            if (idStr == null || idStr.trim().isEmpty()) idStr = request.getParameter("idUsuario");
+
             String nombre             = request.getParameter("nombre");
             String apellidoPaterno    = request.getParameter("apellido_paterno");
-            String apellidoMaterno    = request.getParameter("apellido_materno");
-            String divisionStr        = request.getParameter("division");
-            String numeroEmpleado     = request.getParameter("numero_empleado");
-            String telefono           = request.getParameter("telefono");
-            String correo             = request.getParameter("correo");
-            String contrasena         = request.getParameter("contrasena");
-            String confirmarContrasena= request.getParameter("confirmar_contrasena");
+            if (apellidoPaterno == null) apellidoPaterno = request.getParameter("apellidoPaterno");
 
-            // Campos obligatorios
+            String apellidoMaterno    = request.getParameter("apellido_materno");
+            if (apellidoMaterno == null) apellidoMaterno = request.getParameter("apellidoMaterno");
+
+            String divisionStr        = request.getParameter("division");
+            if (divisionStr == null) divisionStr = request.getParameter("idDivision");
+
+            String numeroEmpleado     = request.getParameter("numero_empleado");
+            if (numeroEmpleado == null) numeroEmpleado = request.getParameter("numeroEmpleado");
+
+            String telefono           = request.getParameter("telefono");
+
+            String correo             = request.getParameter("correo");
+            if (correo == null) correo = request.getParameter("correoInstitucional");
+
+            // Contraseñas
+            String passActual         = request.getParameter("passActual");
+            if (passActual == null) passActual = request.getParameter("contrasenaActual");
+
+            String contrasena         = request.getParameter("contrasena");
+            if (contrasena == null) contrasena = request.getParameter("passNueva");
+
+            String confirmarContrasena= request.getParameter("confirmar_contrasena");
+            if (confirmarContrasena == null) confirmarContrasena = request.getParameter("passConfirm");
+
+            // Validar Campos obligatorios básicos
             if (idStr == null || idStr.trim().isEmpty()
                     || nombre == null || nombre.trim().isEmpty()
                     || apellidoPaterno == null || apellidoPaterno.trim().isEmpty()
-                    || apellidoMaterno == null || apellidoMaterno.trim().isEmpty()
                     || divisionStr == null || divisionStr.trim().isEmpty()
                     || numeroEmpleado == null || numeroEmpleado.trim().isEmpty()
                     || telefono == null || telefono.trim().isEmpty()
@@ -79,29 +98,20 @@ public class EditarDesarrollador extends HttpServlet {
                 return;
             }
 
+            // Validar que proporcione contraseña actual
+            if (passActual == null || passActual.trim().isEmpty()) {
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                out.write("{\"success\": false, \"message\": \"Debes ingresar tu contraseña actual para confirmar los cambios.\"}");
+                out.flush();
+                return;
+            }
+
             // Correo institucional obligatorio
             if (!correo.trim().toLowerCase().endsWith("@utez.edu.mx")) {
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 out.write("{\"success\": false, \"message\": \"El correo debe terminar en @utez.edu.mx\"}");
                 out.flush();
                 return;
-            }
-
-            // Contraseña OPCIONAL: solo validar si se pone algo
-            boolean cambiarPass = (contrasena != null && !contrasena.trim().isEmpty());
-            if (cambiarPass) {
-                if (contrasena.trim().length() < 12 || contrasena.trim().length() > 15) {
-                    response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                    out.write("{\"success\": false, \"message\": \"La contrase\u00f1a debe tener entre 12 y 15 caracteres.\"}");
-                    out.flush();
-                    return;
-                }
-                if (!contrasena.trim().equals(confirmarContrasena == null ? "" : confirmarContrasena.trim())) {
-                    response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                    out.write("{\"success\": false, \"message\": \"Las contrase\u00f1as no coinciden.\"}");
-                    out.flush();
-                    return;
-                }
             }
 
             int id;
@@ -118,6 +128,32 @@ public class EditarDesarrollador extends HttpServlet {
 
             AgregarDesarrollador_Dao dao = new AgregarDesarrollador_Dao();
 
+            // Validar la contraseña actual contra la base de datos
+            Usuario usuarioActual = dao.obtenerPorId(id);
+            if (usuarioActual == null || !passActual.trim().equals(usuarioActual.getContrasena())) {
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                out.write("{\"success\": false, \"message\": \"La contraseña actual es incorrecta.\"}");
+                out.flush();
+                return;
+            }
+
+            // Contraseña OPCIONAL: solo validar si ingresa una nueva
+            boolean cambiarPass = (contrasena != null && !contrasena.trim().isEmpty());
+            if (cambiarPass) {
+                if (contrasena.trim().length() < 12 || contrasena.trim().length() > 15) {
+                    response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                    out.write("{\"success\": false, \"message\": \"La nueva contraseña debe tener entre 12 y 15 caracteres.\"}");
+                    out.flush();
+                    return;
+                }
+                if (!contrasena.trim().equals(confirmarContrasena == null ? "" : confirmarContrasena.trim())) {
+                    response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                    out.write("{\"success\": false, \"message\": \"Las contraseñas no coinciden.\"}");
+                    out.flush();
+                    return;
+                }
+            }
+
             if (dao.existeCorreoOEmpleadoExcluyendo(correo.trim(), numeroEmpleado.trim(), id)) {
                 response.setStatus(HttpServletResponse.SC_CONFLICT);
                 out.write("{\"success\": false, \"message\": \"Ya existe otro usuario con ese correo o número de empleado.\"}");
@@ -129,13 +165,15 @@ public class EditarDesarrollador extends HttpServlet {
             desarrollador.setIdUsuario(id);
             desarrollador.setNombre(nombre.trim());
             desarrollador.setApellidoPaterno(apellidoPaterno.trim());
-            desarrollador.setApellidoMaterno(apellidoMaterno.trim());
+            desarrollador.setApellidoMaterno(apellidoMaterno != null ? apellidoMaterno.trim() : "");
             desarrollador.setIdDivision(idDivision);
             desarrollador.setNumeroEmpleado(numeroEmpleado.trim());
             desarrollador.setTelefono(telefono.trim());
             desarrollador.setCorreoInstitucional(correo.trim());
 
-            // Si no se cambia contraseña pasamos cadena vacía y el DAO decide qué hacer
+            // CONSERVACIÓN DE ROL: Recupera el rol exacto desde la base de datos
+            desarrollador.setRol(usuarioActual.getRol());
+
             String passAEnviar = cambiarPass ? contrasena.trim() : "";
             boolean exito = dao.actualizarDesarrollador(desarrollador, passAEnviar);
 

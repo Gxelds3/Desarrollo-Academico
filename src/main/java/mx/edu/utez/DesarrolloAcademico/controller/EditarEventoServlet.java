@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 @WebServlet(name = "EditarEventoServlet", value = "/EditarEventoServlet")
+@MultipartConfig
 public class EditarEventoServlet extends HttpServlet {
 
     private String escapar(String valor) {
@@ -20,7 +21,6 @@ public class EditarEventoServlet extends HttpServlet {
         return valor.replace("\\", "\\\\").replace("\"", "\\\"");
     }
 
-    // Regresa los datos de UN evento en JSON, para llenar el formulario de edición.
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("application/json;charset=UTF-8");
@@ -35,6 +35,12 @@ public class EditarEventoServlet extends HttpServlet {
                 response.setStatus(HttpServletResponse.SC_NOT_FOUND);
                 out.write("{\"success\": false, \"message\": \"Evento no encontrado.\"}");
             } else {
+                // Fecha límite real: la del periodo de carga de la división del evento
+                String fechaLimite = dao.obtenerFechaLimitePorDivision(evento.getIdDivision());
+                if (fechaLimite == null) {
+                    fechaLimite = evento.getFechaFin(); // fallback si no hay periodo configurado
+                }
+
                 out.write("{"
                         + "\"success\": true,"
                         + "\"id\":" + evento.getId() + ","
@@ -45,7 +51,8 @@ public class EditarEventoServlet extends HttpServlet {
                         + "\"descripcion\":\"" + escapar(evento.getDescripcion()) + "\","
                         + "\"fechaInicio\":\"" + escapar(evento.getFechaInicio()) + "\","
                         + "\"fechaFin\":\"" + escapar(evento.getFechaFin()) + "\","
-                        + "\"modalidad\":\"" + escapar(evento.getModalidad()) + "\""
+                        + "\"modalidad\":\"" + escapar(evento.getModalidad()) + "\","
+                        + "\"fechaLimiteEntrega\":\"" + escapar(fechaLimite) + "\""
                         + "}");
             }
         } catch (Exception e) {

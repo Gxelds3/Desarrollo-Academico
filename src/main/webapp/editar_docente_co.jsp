@@ -79,21 +79,21 @@
         </div>
 
         <div class="row mb-4">
-
             <div class="col-4 mb-4">
                 <label class="form-label text-muted">Contraseña Actual:</label>
                 <div class="input-group">
                     <input type="password"
                            id="passActual"
+                           name="passActual"
                            class="form-control"
-                           value="<%= "" %>" readonly>
+                           placeholder="Ingresa tu contraseña actual"
+                           required>
                     <span class="input-group-text bg-white border-start-0" onclick="togglePassword('passActual')" style="cursor: pointer;">
-                        <i id="icon-passActual" class="bi bi-eye-fill text-muted"></i>
-                    </span>
+            <i id="icon-passActual" class="bi bi-eye-fill text-muted"></i>
+        </span>
                 </div>
             </div>
 
-            <!-- Contraseña Actual (ELIMINADA PARA ADMINISTRADOR) -->
             <div class="col-4 mb-4">
                 <label class="form-label text-muted">Nueva Contraseña (Opcional):</label>
                 <div class="input-group">

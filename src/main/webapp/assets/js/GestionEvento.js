@@ -8,6 +8,34 @@ let eventosOriginales = [];
 let filtroTexto = '';
 let filtroTipo = 'todos';
 
+// Detectar si estamos en vista de desarrollador (_de.jsp) o coordinador (_co.jsp)
+const esDesarrollador = window.location.pathname.includes('_de.jsp');
+const sufijoRol = esDesarrollador ? '_de.jsp' : '_co.jsp';
+// Si es desarrollador son 6 columnas, si es coordinador son 5 columnas
+const totalColumnas = esDesarrollador ? 6 : 5;
+
+const COLORES_DIVISION = {
+    'DATID': '#007BFF',
+    'DATEFI': '#32CD32',
+    'DAMI': '#DC143C',
+    'DACEA': '#DA70D6',
+    'GENERAL': '#6c757d'
+};
+
+function obtenerColorDivision(nombreDivision) {
+    const clave = (nombreDivision || '').toString().toUpperCase().trim();
+    return COLORES_DIVISION[clave] || '#adb5bd';
+}
+
+function obtenerColorDivision(nombreDivision) {
+    return COLORES_DIVISION[nombreDivision] || '#adb5bd';
+}
+
+function obtenerColorTexto(colorFondoHex) {
+    const clarosSinContrasteBlanco = ['#CCFF00', '#00FFFF'];
+    return clarosSinContrasteBlanco.includes(colorFondoHex) ? '#212529' : '#ffffff';
+}
+
 function escapeHtml(texto) {
     if (texto === null || texto === undefined) return '';
     return String(texto)
@@ -48,13 +76,9 @@ function obtenerEventosFiltrados() {
 
 function renderEventos(eventos) {
     if (!eventos.length) {
-        tbody.innerHTML = '<tr><td colspan="5" class="text-center text-muted py-4">No se encontraron eventos.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="' + totalColumnas + '" class="text-center text-muted py-4">No se encontraron eventos.</td></tr>';
         return;
     }
-
-    // Detectar si estamos en vista de desarrollador (_de.jsp) o coordinador (_co.jsp)
-    const esDesarrollador = window.location.pathname.includes('_de.jsp');
-    const sufijoRol = esDesarrollador ? '_de.jsp' : '_co.jsp';
 
     tbody.innerHTML = '';
     eventos.forEach(function (ev) {
@@ -74,7 +98,10 @@ function renderEventos(eventos) {
             '<td>' + formatearFecha(ev.fechaInicio) + ' - ' + formatearFecha(ev.fechaFin) + '</td>';
 
         if (esDesarrollador) {
-            celdas += '<td><span class="badge bg-secondary">' + escapeHtml(ev.nombreDivision || 'General') + '</span></td>';
+            const nombreDivision = ev.nombreDivision || 'General';
+            const colorDivision = obtenerColorDivision(nombreDivision);
+            const colorTextoDivision = obtenerColorTexto(colorDivision);
+            celdas += '<td><span class="badge" style="background-color:' + colorDivision + '; color:' + colorTextoDivision + '; padding:5px 12px; border-radius:12px; font-weight:500;">' + escapeHtml(nombreDivision) + '</span></td>';
         }
 
         celdas +=
@@ -96,7 +123,6 @@ function aplicarFiltros() {
 function cargarEventos() {
     fetch(contextPath + '/ListarEventosServlet')
         .then(function (response) {
-            // 3. MEJORA: Validar si la respuesta es JSON
             const contentType = response.headers.get("content-type");
             if (contentType && contentType.indexOf("application/json") !== -1) {
                 return response.json();
@@ -110,7 +136,7 @@ function cargarEventos() {
         })
         .catch(function (error) {
             console.error('Error al cargar eventos:', error);
-            tbody.innerHTML = '<tr><td colspan="5" class="text-center text-danger py-4">No se pudieron cargar los eventos. Revisa tu servidor.</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="' + totalColumnas + '" class="text-center text-danger py-4">No se pudieron cargar los eventos. Revisa tu servidor.</td></tr>';
         });
 }
 
@@ -137,7 +163,6 @@ if (filtrosTipo) {
     });
 }
 
-// 2. CORREGIDO: Validamos que tbody exista antes de meterle eventos y cargar la data
 if (tbody) {
     tbody.addEventListener('click', function (e) {
         const boton = e.target.closest('.action-btn.delete');
@@ -166,7 +191,6 @@ if (tbody) {
                 body: datos
             })
                 .then(function (response) {
-                    // 4. MEJORA: Validamos si la respuesta es JSON al eliminar
                     const contentType = response.headers.get("content-type");
                     if (contentType && contentType.indexOf("application/json") !== -1) {
                         return response.json().then(function (data) {
@@ -206,6 +230,5 @@ if (tbody) {
         });
     });
 
-    // Solo cargamos los eventos si existe la tabla
     cargarEventos();
 }

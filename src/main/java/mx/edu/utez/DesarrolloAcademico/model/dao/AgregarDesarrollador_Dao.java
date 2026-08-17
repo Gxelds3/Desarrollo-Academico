@@ -277,4 +277,23 @@ public class AgregarDesarrollador_Dao {
         }
         return false;
     }
+
+
+    public boolean validarContrasenaActual(int idUsuario, String passActualIngresada) {
+        String sql = "SELECT contrasena FROM usuarios WHERE id_usuario = ?";
+        try (Connection con = DatabaseConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setInt(1, idUsuario);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    String passBD = rs.getString("contrasena");
+                    return passBD != null && passBD.equals(passActualIngresada);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
 }

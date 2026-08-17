@@ -83,10 +83,16 @@ public class UsuarioListaDao {
 
     public List<Usuario> listarParticipantesPorEvento(int idEvento) {
         List<Usuario> lista = new ArrayList<>();
-        String query = "SELECT u.id_usuario, u.nombre, u.apellido_paterno, u.apellido_materno, u.correo_institucional, u.numero_empleado, u.activo, u.rol " +
+        String query = "SELECT u.id_usuario, u.nombre, u.apellido_paterno, u.apellido_materno, " +
+                "u.correo_institucional, u.numero_empleado, u.activo, u.rol, " +
+                "CASE WHEN EXISTS (" +
+                "    SELECT 1 FROM constancias c WHERE c.id_participante = pe.id_participante" +
+                ") THEN 1 ELSE 0 END AS entregado " +
                 "FROM usuarios u " +
                 "JOIN participantes_eventos pe ON u.id_usuario = pe.id_usuario " +
-                "WHERE pe.id_evento = ? ORDER BY u.nombre";
+                "WHERE pe.id_evento = ? " +
+                "ORDER BY u.nombre";
+
         try (Connection con = DatabaseConnection.getConnection();
              PreparedStatement ps = con.prepareStatement(query)) {
             ps.setInt(1, idEvento);
@@ -101,6 +107,7 @@ public class UsuarioListaDao {
                     u.setNumeroEmpleado(rs.getString("numero_empleado"));
                     u.setActivo(rs.getInt("activo"));
                     u.setRol(rs.getString("rol"));
+                    u.setEntregado(rs.getInt("entregado") == 1);
                     lista.add(u);
                 }
             }
@@ -195,6 +202,33 @@ public class UsuarioListaDao {
         return false;
     }
 
+
+    public int contarEventosAsignados(int idUsuario) {
+        String sql = "SELECT COUNT(e.ID_EVENTO) " +
+                "FROM EVENTOS e " +
+                "INNER JOIN PARTICIPANTES_EVENTOS pe ON e.ID_EVENTO = pe.ID_EVENTO " +
+                "WHERE pe.ID_USUARIO = ? AND e.FECHA_FIN >= SYSDATE";
+
+        int total = 0;
+
+        try (Connection con = DatabaseConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setInt(1, idUsuario);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    total = rs.getInt(1);
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Error al contar eventos asignados: " + e.getMessage());
+            e.printStackTrace();
+        }
+
+        return total;
+    }
+
     public int contarEventos() {
         int total = 0;
         String sql = "SELECT COUNT(ID_EVENTO) FROM EVENTOS";
@@ -214,17 +248,37 @@ public class UsuarioListaDao {
         return total;
     }
 
+    public int contarEventosPorDivision(int idDivision) {
+        String sql = "SELECT COUNT(ID_EVENTO) FROM EVENTOS WHERE ID_DIVISION = ?";
+        int total = 0;
+
+        try (Connection con = DatabaseConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setInt(1, idDivision);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    total = rs.getInt(1);
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Error al contar eventos por división: " + e.getMessage());
+            e.printStackTrace();
+        }
+
+        return total;
+    }
 
 
-    public int contarDocentes(int idDivision) {
+    public int contarDocentesPorDivision(int idDivision) {
         String sql = "SELECT COUNT(*) FROM USUARIOS WHERE LOWER(ROL) = 'docente' AND ID_DIVISION = ?";
         int total = 0;
 
-        try (Connection con = DatabaseConnection.getConnection(); // o como obtengas tu conexión
+        try (Connection con = DatabaseConnection.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
-            // --- ESTA ES LA LÍNEA QUE FALTA ---
-            ps.setInt(1, idDivision); // Asigna el valor al '?'
+            ps.setInt(1, idDivision);
 
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
@@ -232,7 +286,7 @@ public class UsuarioListaDao {
                 }
             }
         } catch (SQLException e) {
-            System.err.println("Error al contar docentes: " + e.getMessage());
+            System.err.println("Error al contar docentes por división: " + e.getMessage());
             e.printStackTrace();
         }
 
@@ -240,24 +294,26 @@ public class UsuarioListaDao {
     }
 
 
-    public int contarDocentesD() {
-        String sql = "SELECT COUNT(*) FROM USUARIOS WHERE LOWER(ROL) = 'docente'";
+    public int contarDocentesYCoordinadores() {
+        // Busca roles 'docente' y 'coordinador' ignorando mayúsculas/minúsculas
+        String sql = "SELECT COUNT(*) FROM USUARIOS WHERE LOWER(ROL) IN ('docente', 'coordinador')";
         int total = 0;
 
-        try (Connection con = DatabaseConnection.getConnection(); // o como obtengas tu conexión
-             PreparedStatement ps = con.prepareStatement(sql)) {
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    total = rs.getInt(1);
-                }
+        try (Connection con = DatabaseConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
+            if (rs.next()) {
+                total = rs.getInt(1);
             }
         } catch (SQLException e) {
-            System.err.println("Error al contar docentes: " + e.getMessage());
+            System.err.println("Error al contar docentes y coordinadores: " + e.getMessage());
             e.printStackTrace();
         }
 
         return total;
     }
+
     public List<Usuario> listarPorRolesYDivision(int idDivision, String... roles) {
         List<Usuario> lista = new ArrayList<>();
         if (roles == null || roles.length == 0) return lista;
@@ -437,6 +493,14 @@ public class UsuarioListaDao {
             return false;
         }
     }
+
+
+
+
+
+
+
+
 
     public boolean existeDivision(String division, int idPeriodoExcluir) {
 

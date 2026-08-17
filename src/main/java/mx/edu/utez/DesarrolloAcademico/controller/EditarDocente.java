@@ -83,12 +83,21 @@ public class EditarDocente extends HttpServlet {
             String correo = request.getParameter("correoInstitucional");
             if (correo == null) correo = request.getParameter("correo");
 
-            String contrasena = request.getParameter("contrasena");
+            // LECTURA DE CONTRASENA ACTUAL
+            String passActual = request.getParameter("passActual");
+            if (passActual == null) passActual = request.getParameter("contrasenaActual");
+            if (passActual == null) passActual = request.getParameter("contrasena_actual");
 
-            // Soporta variantes de nombre para confirmación de contraseña
+            // LECTURA DE NUEVA CONTRASENA
+            String contrasena = request.getParameter("contrasena");
+            if (contrasena == null) contrasena = request.getParameter("passNueva");
+
             String confirmarContrasena = request.getParameter("confirmarContrasena");
             if (confirmarContrasena == null) {
                 confirmarContrasena = request.getParameter("confirmar_contrasena");
+            }
+            if (confirmarContrasena == null) {
+                confirmarContrasena = request.getParameter("passConfirm");
             }
 
             // Validar campos requeridos básicos
@@ -98,10 +107,28 @@ public class EditarDocente extends HttpServlet {
                 return;
             }
 
-            // Validar cambio opcional de contraseña
+            // 1. Validar que el usuario haya escrito la contraseña actual
+            if (passActual == null || passActual.trim().isEmpty()) {
+                out.write("{\"success\": false, \"message\": \"Debes ingresar tu contraseña actual para guardar los cambios.\"}");
+                return;
+            }
+
+            int id = Integer.parseInt(idStr.trim());
+            int idDivision = Integer.parseInt(divisionStr.trim());
+            AgregarDesarrollador_Dao dao = new AgregarDesarrollador_Dao();
+
+            // 2. VALIDAR QUE LA CONTRASEÑA ACTUAL SEA CORRECTA
+            // (Compara contra la contraseña de la BD mediante un método liviano del DAO)
+            boolean passValida = dao.validarContrasenaActual(id, passActual.trim());
+            if (!passValida) {
+                out.write("{\"success\": false, \"message\": \"La contraseña actual ingresada es incorrecta.\"}");
+                return;
+            }
+
+            // Validar cambio opcional de nueva contraseña
             if (contrasena != null && !contrasena.trim().isEmpty()) {
                 if (contrasena.trim().length() < 12 || contrasena.trim().length() > 15) {
-                    out.write("{\"success\": false, \"message\": \"La contraseña debe tener entre 12 y 15 caracteres.\"}");
+                    out.write("{\"success\": false, \"message\": \"La nueva contraseña debe tener entre 12 y 15 caracteres.\"}");
                     return;
                 }
                 if (!contrasena.trim().equals(confirmarContrasena != null ? confirmarContrasena.trim() : "")) {
@@ -113,9 +140,6 @@ public class EditarDocente extends HttpServlet {
                 contrasena = null;
             }
 
-            int id = Integer.parseInt(idStr.trim());
-            int idDivision = Integer.parseInt(divisionStr.trim());
-
             Usuario dev = new Usuario();
             dev.setIdUsuario(id);
             dev.setNombre(nombre.trim());
@@ -125,24 +149,20 @@ public class EditarDocente extends HttpServlet {
             dev.setNumeroEmpleado(numeroEmpleado.trim());
             dev.setTelefono(telefono.trim());
             dev.setCorreoInstitucional(correo.trim());
-            dev.setContrasena(contrasena);
             dev.setRol(rol.trim());
+            dev.setContrasena(contrasena);
 
-
-            AgregarDesarrollador_Dao dao = new AgregarDesarrollador_Dao();
-
-            // Aquí se ejecuta la verificación del DAO
+            // Realiza la actualización normal
             boolean actualizado = dao.actualizarDesarrollador(dev, contrasena);
 
             if (actualizado) {
                 out.write("{\"success\": true, \"message\": \"Docente actualizado con éxito.\"}");
             } else {
-                out.write("{\"success\": false, \"message\": \"No se encontró el registro para actualizar.\"}");
+                out.write("{\"success\": false, \"message\": \"No se pudo realizar la actualización en la base de datos.\"}");
             }
 
         } catch (Exception e) {
             e.printStackTrace();
-            // Limpia el mensaje para no romper el formato JSON
             String msgError = e.getMessage() != null ? e.getMessage().replace("\"", "'").replace("\n", " ") : "Error interno del servidor.";
             out.write("{\"success\": false, \"message\": \"" + msgError + "\"}");
         }

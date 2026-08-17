@@ -56,14 +56,11 @@ function llenarFormulario(data) {
         document.getElementById('campoCorreo').value = data.correoInstitucional || data.correo || '';
     }
 
-    // Extraer contraseña de la BD
-    const passValue = data.contrasena || data.contrasenaActual || data.pass || '';
-
     const inputPassActual = document.getElementById('passActual');
     const inputPassNueva  = document.getElementById('passNueva');
     const inputPassConfirm = document.getElementById('passConfirm');
 
-    if (inputPassActual)  inputPassActual.value  = passValue;
+    if (inputPassActual)  inputPassActual.value  = '';
     if (inputPassNueva)   inputPassNueva.value   = '';
     if (inputPassConfirm) inputPassConfirm.value = '';
 
@@ -115,21 +112,18 @@ document.addEventListener('DOMContentLoaded', () => {
     const campoDivision    = document.getElementById('campoDivision');
     const campoDivisionHidden = document.getElementById('campoDivisionHidden');
 
-    // Sincroniza el select visible con el campo oculto
     if (campoDivision) {
         campoDivision.addEventListener('change', function () {
             if (campoDivisionHidden) campoDivisionHidden.value = campoDivision.value;
         });
     }
 
-    // Sólo letras en nombres
     [campoNombre, campoApellidoP, campoApellidoM].filter(Boolean).forEach(inp => {
         inp.addEventListener('input', e => {
             e.target.value = e.target.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g, '');
         });
     });
 
-    // Sólo dígitos en número empleado y teléfono
     [campoNumEmpleado, campoTelefono].filter(Boolean).forEach(inp => {
         inp.addEventListener('input', e => {
             e.target.value = e.target.value.replace(/\D/g, '');
@@ -172,7 +166,7 @@ function guardarCambios() {
     const passNuevaVal  = passNueva   ? passNueva.value.trim()   : '';
     const passConfVal   = passConfirm ? passConfirm.value.trim() : '';
 
-    // Validaciones básicas
+    // Validaciones de campos obligatorios
     if (!nombreVal || !apePVal || !numEmpVal || !telVal || !correoVal) {
         mostrarAlerta('Campos incompletos', 'Por favor, llena todos los campos obligatorios (*).');
         return;
@@ -194,14 +188,20 @@ function guardarCambios() {
         return;
     }
 
-    // Validación de contraseña solo si se ingresa una nueva
+    // Validación OBLIGATORIA de contraseña actual
+    if (!passActualVal) {
+        mostrarAlerta('Contraseña requerida', 'Debes ingresar tu contraseña actual para confirmar los cambios.');
+        return;
+    }
+
+    // Validación de nueva contraseña opcional
     if (passNuevaVal !== '') {
         if (passNuevaVal.length < 12 || passNuevaVal.length > 15) {
-            mostrarAlerta('Contraseña inválida', 'La contraseña debe tener entre 12 y 15 caracteres.');
+            mostrarAlerta('Contraseña inválida', 'La nueva contraseña debe tener entre 12 y 15 caracteres.');
             return;
         }
         if (passNuevaVal !== passConfVal) {
-            mostrarAlerta('Las contraseñas no coinciden', 'Verifica que ambas contraseñas sean iguales.');
+            mostrarAlerta('Las contraseñas no coinciden', 'Verifica que la nueva contraseña y su confirmación sean iguales.');
             return;
         }
     }
@@ -225,19 +225,14 @@ function guardarCambios() {
     datos.append('correo',               correoVal);
     datos.append('correoInstitucional',  correoVal);
 
-    // Parámetros de contraseñas
+    // Parámetros de contraseña actual y nueva
     datos.append('passActual',           passActualVal);
     datos.append('contrasenaActual',     passActualVal);
-    datos.append('contrasena_actual',     passActualVal);
+    datos.append('contrasena_actual',    passActualVal);
 
     datos.append('contrasena',           passNuevaVal);
     datos.append('passNueva',            passNuevaVal);
-    datos.append('contrasenaNueva',      passNuevaVal);
-    datos.append('contrasena_nueva',      passNuevaVal);
-
     datos.append('confirmar_contrasena', passConfVal);
-    datos.append('confirmarContrasena',  passConfVal);
-    datos.append('passConfirm',          passConfVal);
 
     Swal.fire({
         icon: 'question',

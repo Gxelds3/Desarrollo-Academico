@@ -26,7 +26,7 @@
     </div>
 
     <form id="formEditarDocente" autocomplete="off">
-        <input type="hidden" id="campoIdUsuario" name="id_usuario">
+        <input type="hidden" id="campoIdUsuario" name="idUsuario">
 
         <div class="row mb-4">
             <div class="col-md-4">
@@ -35,41 +35,41 @@
             </div>
             <div class="col-md-4">
                 <label for="campoApellidoP" class="form-label">Apellido Paterno <span class="text-danger">*</span> :</label>
-                <input type="text" class="form-control" id="campoApellidoP" name="apellido_paterno" required>
+                <input type="text" class="form-control" id="campoApellidoP" name="apellidoPaterno" required>
             </div>
             <div class="col-md-4">
                 <label for="campoApellidoM" class="form-label">Apellido Materno :</label>
-                <input type="text" class="form-control" id="campoApellidoM" name="apellido_materno">
+                <input type="text" class="form-control" id="campoApellidoM" name="apellidoMaterno">
             </div>
         </div>
 
         <div class="row mb-4">
             <div class="col-md-4">
                 <label for="campoDivision" class="form-label">División Académica <span class="text-danger">*</span> :</label>
-                <select class="form-select" id="campoDivision" name="division" required>
+                <select class="form-select" id="campoDivision" name="idDivision" required>
                     <option value="" disabled selected>Seleccione división</option>
-                    <option value="1">Datid</option>
-                    <option value="2">Dacea</option>
-                    <option value="3">Datefi</option>
-                    <option value="4">Dami</option>
+                    <option value="1">DATID</option>
+                    <option value="2">DACEA</option>
+                    <option value="3">DATEFI</option>
+                    <option value="4">DAMI</option>
                     <option value="5">General</option>
                 </select>
-                <input type="hidden" id="campoDivisionHidden" name="idDivision">
+                <input type="hidden" id="campoDivisionHidden" name="division">
             </div>
             <div class="col-md-4">
                 <label for="campoNumEmpleado" class="form-label">Número de Empleado <span class="text-danger">*</span> :</label>
-                <input type="text" class="form-control" id="campoNumEmpleado" name="numero_empleado" required>
+                <input type="text" class="form-control" id="campoNumEmpleado" name="numeroEmpleado" required>
             </div>
             <div class="col-md-4">
-                <label for="campoTelefono" class="form-label">Número de Teléfono :</label>
-                <input type="tel" class="form-control" id="campoTelefono" name="telefono">
+                <label for="campoTelefono" class="form-label">Número de Teléfono <span class="text-danger">*</span> :</label>
+                <input type="tel" class="form-control" id="campoTelefono" name="telefono" required>
             </div>
         </div>
 
         <div class="row mb-4">
             <div class="col-md-4">
                 <label for="campoCorreo" class="form-label">Correo Institucional <span class="text-danger">*</span> :</label>
-                <input type="email" class="form-control" id="campoCorreo" name="correo" required>
+                <input type="email" class="form-control" id="campoCorreo" name="correoInstitucional" required>
             </div>
         </div>
 
@@ -78,73 +78,80 @@
             Cambio de contraseña (Opcional)
         </div>
 
+        <!-- Las 3 Contraseñas Alineadas en una sola fila -->
         <div class="row mb-4">
-
-            <div class="row mb-4">
-                <!-- Contraseña Actual -->
-                <div class="col-4 mb-4">
-                    <label class="form-label text-muted">Contraseña Actual:</label>
-                    <div class="input-group">
-                        <input type="password"
-                               id="passActual"
-                               class="form-control"
-                               readonly>
-                        <button class="btn btn-outline-secondary bg-white border-start-0"
-                                type="button"
-                                onclick="togglePassword('passActual')"
-                                style="cursor: pointer;">
-                            <i id="icon-passActual" class="bi bi-eye-fill text-muted"></i>
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Nueva Contraseña -->
-                <div class="col-4 mb-4">
-                    <label for="passNueva" class="form-label">Nueva Contraseña (Opcional):</label>
-                    <div class="input-group">
-                        <input type="password" class="form-control" id="passNueva" name="contrasena" placeholder="12 a 15 caracteres">
-                        <button class="btn btn-outline-secondary bg-white border-start-0"
-                                type="button"
-                                onclick="togglePassword('passNueva')"
-                                style="cursor: pointer;">
-                            <i id="icon-passNueva" class="bi bi-eye-fill text-muted"></i>
-                        </button>
-                    </div>
-                    <small class="text-muted">Debe tener entre 12 y 15 caracteres</small>
-                </div>
-
-                <!-- Confirmar Contraseña -->
-                <div class="col-4 mb-4">
-                    <label for="passConfirm" class="form-label">Confirmar Contraseña:</label>
-                    <div class="input-group">
-                        <input type="password" class="form-control" id="passConfirm" name="confirmarContrasena" placeholder="Repite la contraseña">
-                        <button class="btn btn-outline-secondary bg-white border-start-0"
-                                type="button"
-                                onclick="togglePassword('passConfirm')"
-                                style="cursor: pointer;">
-                            <i id="icon-passConfirm" class="bi bi-eye-fill text-muted"></i>
-                        </button>
-                    </div>
+            <!-- 1. Contraseña Actual -->
+            <div class="col-md-4">
+                <label for="passActual" class="form-label">Contraseña Actual <span class="text-danger">*</span> :</label>
+                <div class="input-group">
+                    <input type="password"
+                           id="passActual"
+                           name="passActual"
+                           class="form-control"
+                           placeholder="Ingresa tu contraseña actual"
+                           required>
+                    <button class="btn btn-outline-secondary bg-white border-start-0"
+                            type="button"
+                            onclick="togglePassword('passActual')">
+                        <i id="icon-passActual" class="bi bi-eye-fill text-muted"></i>
+                    </button>
                 </div>
             </div>
 
-            <div class="mb-5">
-                <label class="form-label mb-3">Rol <span class="text-danger">*</span> :</label>
-                <div class="d-flex gap-3">
-                    <div class="rol-option-card" id="cardDocente" onclick="selectRol('docente')" style="border: 2px solid var(--teal-main); border-radius: 10px; padding: 15px 30px; cursor: pointer; background: white; text-align: center; min-width: 130px;">
-                        <i class="bi bi-person-fill fs-3 d-block mb-2" style="color: var(--teal-main);"></i>
-                        <div class="fw-semibold" style="color: var(--teal-main);">Docente</div>
-                        <input type="radio" name="rol" value="docente" id="radioDocente" checked style="display:none;">
-                    </div>
-                    <div class="rol-option-card" id="cardCoordinador" onclick="selectRol('coordinador')" style="border: 2px solid #ccc; border-radius: 10px; padding: 15px 30px; cursor: pointer; background: white; text-align: center; min-width: 130px;">
-                        <i class="bi bi-person-workspace fs-3 d-block mb-2" style="color: #aaa;"></i>
-                        <div class="fw-semibold" style="color: #aaa;">Coordinador</div>
-                        <input type="radio" name="rol" value="coordinador" id="radioCoordinador" style="display:none;">
-                    </div>
+            <!-- 2. Nueva Contraseña -->
+            <div class="col-md-4">
+                <label for="passNueva" class="form-label">Nueva Contraseña (Opcional):</label>
+                <div class="input-group">
+                    <input type="password"
+                           class="form-control"
+                           id="passNueva"
+                           name="passNueva"
+                           placeholder="12 a 15 caracteres">
+                    <button class="btn btn-outline-secondary bg-white border-start-0"
+                            type="button"
+                            onclick="togglePassword('passNueva')">
+                        <i id="icon-passNueva" class="bi bi-eye-fill text-muted"></i>
+                    </button>
                 </div>
+                <small class="text-muted d-block mt-1">Debe tener entre 12 y 15 caracteres</small>
             </div>
 
+            <!-- 3. Confirmar Contraseña -->
+            <div class="col-md-4">
+                <label for="passConfirm" class="form-label">Confirmar Contraseña:</label>
+                <div class="input-group">
+                    <input type="password"
+                           class="form-control"
+                           id="passConfirm"
+                           name="passConfirm"
+                           placeholder="Repite la contraseña">
+                    <button class="btn btn-outline-secondary bg-white border-start-0"
+                            type="button"
+                            onclick="togglePassword('passConfirm')">
+                        <i id="icon-passConfirm" class="bi bi-eye-fill text-muted"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
 
+        <!-- Selección de Rol -->
+        <div class="mb-5">
+            <label class="form-label mb-3">Rol <span class="text-danger">*</span> :</label>
+            <div class="d-flex gap-3">
+                <div class="rol-option-card" id="cardDocente" onclick="selectRol('docente')" style="border: 2px solid var(--teal-main); border-radius: 10px; padding: 15px 30px; cursor: pointer; background: white; text-align: center; min-width: 130px;">
+                    <i class="bi bi-person-fill fs-3 d-block mb-2" style="color: var(--teal-main);"></i>
+                    <div class="fw-semibold" style="color: var(--teal-main);">Docente</div>
+                    <input type="radio" name="rol" value="docente" id="radioDocente" checked style="display:none;">
+                </div>
+                <div class="rol-option-card" id="cardCoordinador" onclick="selectRol('coordinador')" style="border: 2px solid #ccc; border-radius: 10px; padding: 15px 30px; cursor: pointer; background: white; text-align: center; min-width: 130px;">
+                    <i class="bi bi-person-workspace fs-3 d-block mb-2" style="color: #aaa;"></i>
+                    <div class="fw-semibold" style="color: #aaa;">Coordinador</div>
+                    <input type="radio" name="rol" value="coordinador" id="radioCoordinador" style="display:none;">
+                </div>
+            </div>
+        </div>
+
+        <!-- Botones de Acción -->
         <div class="d-flex justify-content-end gap-3 mb-5">
             <a href="gestion_docente_de.jsp" class="btn btn-outline-teal px-4 py-2 fw-semibold d-flex align-items-center" style="border: 2px solid var(--teal-main); color: var(--teal-main); border-radius: 6px;">
                 <i class="bi bi-chevron-left me-2"></i> Volver
@@ -153,26 +160,12 @@
                 <i class="bi bi-save me-2"></i> Guardar Cambios
             </button>
         </div>
-        </div>
     </form>
 </main>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>window.contextPath = '<%= request.getContextPath() %>';</script>
 <script src="assets/js/coordinador.js"></script>
-<script>
-    function togglePass(inputId) {
-        var input = document.getElementById(inputId);
-        var icon = input.parentElement.querySelector('i');
-        if (input.type === 'password') {
-            input.type = 'text';
-            icon.className = 'bi bi-eye';
-        } else {
-            input.type = 'password';
-            icon.className = 'bi bi-eye-slash';
-        }
-    }
-</script>
 <script src="assets/js/EditarDocente.js?v=2.0"></script>
 </body>
 </html>

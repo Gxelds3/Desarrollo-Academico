@@ -42,11 +42,12 @@
     <div class="data-card p-0 mb-4" style="overflow: hidden;">
         <table class="table-custom mb-0 text-center">
             <colgroup>
-                <col style="width: 30%;">
-                <col style="width: 15%;">
                 <col style="width: 25%;">
+                <col style="width: 12%;">
                 <col style="width: 20%;">
-                <col style="width: 10%;">
+                <col style="width: 13%;">
+                <col style="width: 15%;">
+                <col style="width: 15%;">
             </colgroup>
             <thead>
             <tr>
@@ -59,12 +60,14 @@
             </tr>
             </thead>
             <tbody id="tablaEventosBody">
-            <!-- Se llena mediante JavaScript desde el Servlet /ListarMisEventos -->
+            <tr>
+                <td colspan="6" class="text-center text-muted py-4">Cargando eventos...</td>
+            </tr>
             </tbody>
         </table>
     </div>
 
-    <!-- Paginador (Preparado para lógica si se requiere) -->
+    <!-- Paginador -->
     <div class="pagination-container" id="paginacionContainer">
         <a href="#" class="page-btn"><i class="bi bi-chevron-left"></i></a>
         <a href="#" class="page-btn active">1</a>
