@@ -35,8 +35,19 @@ public class EditarEventoServlet extends HttpServlet {
                 response.setStatus(HttpServletResponse.SC_NOT_FOUND);
                 out.write("{\"success\": false, \"message\": \"Evento no encontrado.\"}");
             } else {
-                // Fecha límite real: la del periodo de carga de la división del evento
-                String fechaLimite = dao.obtenerFechaLimitePorDivision(evento.getIdDivision());
+                // Obtener división del usuario en sesión
+                jakarta.servlet.http.HttpSession session = request.getSession(false);
+                int divisionParaLimite = evento.getIdDivision(); // fallback inicial
+                
+                if (session != null && session.getAttribute("usuario") != null) {
+                    mx.edu.utez.DesarrolloAcademico.model.Usuario u = (mx.edu.utez.DesarrolloAcademico.model.Usuario) session.getAttribute("usuario");
+                    if (u.getIdDivision() != null && u.getIdDivision() > 0) {
+                        divisionParaLimite = u.getIdDivision();
+                    }
+                }
+
+                // Fecha límite real: la del periodo de carga de la división del usuario
+                String fechaLimite = dao.obtenerFechaLimitePorDivision(divisionParaLimite);
                 if (fechaLimite == null) {
                     fechaLimite = evento.getFechaFin(); // fallback si no hay periodo configurado
                 }
