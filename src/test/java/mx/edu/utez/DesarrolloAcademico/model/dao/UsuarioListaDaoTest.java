@@ -33,7 +33,7 @@ public class UsuarioListaDaoTest {
 
     @Test
     public void testContarDocentesD() {
-        int total = dao.contarDocentesD();
+        int total = dao.contarDocentesYCoordinadores();
         assertTrue(total >= 0, "El total de docentes debe ser mayor o igual a 0");
     }
 
