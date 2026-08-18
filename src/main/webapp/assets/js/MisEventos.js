@@ -63,7 +63,7 @@ function aplicarFiltrosMisEventos() {
 }
 
 function cargarMisEventos() {
-    fetch(contextPathMisEventos + '/ListarMisEventosServlet')
+    fetch(contextPathMisEventos + '/MisEventosCo')
         .then(function (res) {
             if (!res.ok) throw new Error('Error de servidor: ' + res.status);
             return res.json();

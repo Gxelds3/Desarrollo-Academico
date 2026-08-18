@@ -14,8 +14,9 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
 
-@WebServlet(name = "ListarMisEventosServlet", value = "/ListarMisEventosServlet")
-public class ListarMisEventosServlet extends HttpServlet {
+
+@WebServlet(name = "MisEventosCo", value = "/MisEventosCo")
+public class MisEventosCo extends HttpServlet {
 
     private final UsuarioListaDao dao = new UsuarioListaDao();
 
@@ -33,26 +34,25 @@ public class ListarMisEventosServlet extends HttpServlet {
             out.flush();
             return;
         }
-
         Usuario usuario = (Usuario) session.getAttribute("usuario");
 
-        List<agregarEvento_co> eventos = dao.listarEventosPorDivision1(usuario.getIdDivision());
+        List<agregarEvento_co> eventos = dao.listarEventosAsignados(usuario.getIdUsuario());
 
         StringBuilder json = new StringBuilder("[");
         for (int i = 0; i < eventos.size(); i++) {
             agregarEvento_co ev = eventos.get(i);
             if (i > 0) json.append(",");
             json.append("{")
-                .append("\"id\":").append(ev.getId()).append(",")
-                .append("\"nombre\":\"").append(esc(ev.getNombre())).append("\",")
-                .append("\"tipo\":\"").append(esc(ev.getTipo())).append("\",")
-                .append("\"institucion\":\"").append(esc(ev.getInstitucion())).append("\",")
-                .append("\"lugar\":\"").append(esc(ev.getLugar())).append("\",")
-                .append("\"descripcion\":\"").append(esc(ev.getDescripcion())).append("\",")
-                .append("\"fechaInicio\":\"").append(esc(ev.getFechaInicio())).append("\",")
-                .append("\"fechaFin\":\"").append(esc(ev.getFechaFin())).append("\",")
-                .append("\"modalidad\":\"").append(esc(ev.getModalidad())).append("\"")
-                .append("}");
+                    .append("\"id\":").append(ev.getId()).append(",")
+                    .append("\"nombre\":\"").append(esc(ev.getNombre())).append("\",")
+                    .append("\"tipo\":\"").append(esc(ev.getTipo())).append("\",")
+                    .append("\"institucion\":\"").append(esc(ev.getInstitucion())).append("\",")
+                    .append("\"lugar\":\"").append(esc(ev.getLugar())).append("\",")
+                    .append("\"descripcion\":\"").append(esc(ev.getDescripcion())).append("\",")
+                    .append("\"fechaInicio\":\"").append(esc(ev.getFechaInicio())).append("\",")
+                    .append("\"fechaFin\":\"").append(esc(ev.getFechaFin())).append("\",")
+                    .append("\"modalidad\":\"").append(esc(ev.getModalidad())).append("\"")
+                    .append("}");
         }
         json.append("]");
 

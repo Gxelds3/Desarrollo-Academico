@@ -31,19 +31,22 @@
 
     <div class="data-card p-0 mb-4" style="overflow: hidden;">
         <table class="table-custom mb-0">
+            <!-- Corregido a 7 columnas para alinearse con <thead> -->
             <colgroup>
-                <col style="width: 28%;">
-                <col style="width: 22%;">
+                <col style="width: 25%;">
+                <col style="width: 20%;">
+                <col style="width: 10%;">
                 <col style="width: 12%;">
+                <col style="width: 13%;">
+                <col style="width: 8%;">
                 <col style="width: 12%;">
-                <col style="width: 12%;">
-                <col style="width: 14%;">
             </colgroup>
             <thead>
             <tr>
                 <th>Nombre</th>
                 <th>Correo</th>
                 <th>División</th>
+                <th>Rol</th>
                 <th>Núm. Empleado</th>
                 <th>Estado</th>
                 <th>Acciones</th>
@@ -51,7 +54,8 @@
             </thead>
             <tbody id="tablaDocentesBody">
             <tr>
-                <td colspan="6" class="text-center text-muted py-4">Cargando personal...</td>
+                <!-- Corregido colspan="7" -->
+                <td colspan="7" class="text-center text-muted py-4">Cargando personal...</td>
             </tr>
             </tbody>
         </table>
@@ -62,7 +66,6 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>window.contextPath = '<%= request.getContextPath() %>';</script>
 <script src="assets/js/coordinador.js"></script>
-<script src="assets/js/GestionDocenteCO.js?v=4"></script>
+<script src="assets/js/GestionDocenteCO.js?v=5"></script>
 </body>
 </html>
-

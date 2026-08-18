@@ -87,7 +87,7 @@
                            name="passActual"
                            class="form-control"
                            placeholder="Ingresa tu contraseña actual"
-                           required>
+                           >
                     <span class="input-group-text bg-white border-start-0" onclick="togglePassword('passActual')" style="cursor: pointer;">
             <i id="icon-passActual" class="bi bi-eye-fill text-muted"></i>
         </span>
@@ -114,6 +114,25 @@
                 </div>
             </div>
         </div>
+
+
+
+        <div class="mb-5">
+            <label class="form-label mb-3">Rol <span class="text-danger">*</span> :</label>
+            <div class="d-flex gap-3">
+                <div class="rol-option-card" id="cardDocente" onclick="selectRol('docente')" style="border: 2px solid var(--teal-main); border-radius: 10px; padding: 15px 30px; cursor: pointer; background: white; text-align: center; min-width: 130px;">
+                    <i class="bi bi-person-fill fs-3 d-block mb-2" style="color: var(--teal-main);"></i>
+                    <div class="fw-semibold" style="color: var(--teal-main);">Docente</div>
+                    <input type="radio" name="rol" value="docente" id="radioDocente" checked style="display:none;">
+                </div>
+                <div class="rol-option-card" id="cardCoordinador" onclick="selectRol('coordinador')" style="border: 2px solid #ccc; border-radius: 10px; padding: 15px 30px; cursor: pointer; background: white; text-align: center; min-width: 130px;">
+                    <i class="bi bi-person-workspace fs-3 d-block mb-2" style="color: #aaa;"></i>
+                    <div class="fw-semibold" style="color: #aaa;">Coordinador</div>
+                    <input type="radio" name="rol" value="coordinador" id="radioCoordinador" style="display:none;">
+                </div>
+            </div>
+        </div>
+
 
         <div class="d-flex justify-content-end gap-3">
             <a href="gestion_docente_co.jsp" class="btn btn-outline-teal px-4 py-2 fw-semibold d-flex align-items-center" style="border: 2px solid var(--teal-main); color: var(--teal-main); border-radius: 6px;">

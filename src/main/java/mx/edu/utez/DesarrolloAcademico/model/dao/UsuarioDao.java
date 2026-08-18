@@ -241,16 +241,22 @@ public class UsuarioDao {
 
     public List<Evento> obtenerProximosEventos(Integer idDivision) {
         List<Evento> lista = new ArrayList<>();
-        String sql = "SELECT ID_EVENTO, NOMBRE, FECHA_INICIO, FECHA_FIN FROM EVENTOS ";
+
+        // CORRECCIÓN SQL: Se usa TRUNC(SYSDATE) o CURDATE() y se compara contra FECHA_FIN
+        // para que no desaparezcan los eventos que están en transcurso hoy.
+        StringBuilder sql = new StringBuilder("SELECT ID_EVENTO, NOMBRE, FECHA_INICIO, FECHA_FIN FROM EVENTOS ");
+
+        // Si usas Oracle: TRUNC(SYSDATE)
+        // Si usas MySQL: CURDATE() o CURRENT_DATE()
+        sql.append("WHERE FECHA_FIN >= TRUNC(SYSDATE) ");
+
         if (idDivision != null && idDivision > 0) {
-            sql += " WHERE ID_DIVISION = ? AND FECHA_INICIO >= SYSDATE ";
-        } else {
-            sql += " WHERE FECHA_INICIO >= SYSDATE ";
+            sql.append("AND ID_DIVISION = ? ");
         }
-        sql += " ORDER BY FECHA_INICIO ASC";
+        sql.append("ORDER BY FECHA_INICIO ASC");
 
         try (Connection con = DatabaseConnection.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
+             PreparedStatement ps = con.prepareStatement(sql.toString())) {
 
             if (idDivision != null && idDivision > 0) {
                 ps.setInt(1, idDivision);
@@ -261,8 +267,13 @@ public class UsuarioDao {
                     Evento evento = new Evento();
                     evento.setID(rs.getInt("ID_EVENTO"));
                     evento.setNombre(rs.getString("NOMBRE"));
-                    evento.setFecha_Inicio(rs.getTimestamp("FECHA_INICIO"));
-                    evento.setFecha_Fin(rs.getTimestamp("FECHA_FIN"));
+
+                    java.sql.Timestamp fInicio = rs.getTimestamp("FECHA_INICIO");
+                    java.sql.Timestamp fFin = rs.getTimestamp("FECHA_FIN");
+
+                    evento.setFecha_Inicio(fInicio);
+                    evento.setFecha_Fin(fFin);
+
                     lista.add(evento);
                 }
             }

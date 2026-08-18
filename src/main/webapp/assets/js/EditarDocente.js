@@ -125,7 +125,7 @@ function llenarFormularioDocente(data) {
         document.getElementById('campoCorreo').value = data.correoInstitucional || data.correo || '';
     }
 
-    // Los campos de contraseña permanecen libres/limpios para que el usuario ingrese sus datos
+    // Los campos de contraseña permanecen libres/limpios
     const inputPassActual = document.getElementById('passActual');
     const inputPassNueva = document.getElementById('passNueva');
     const inputPassConfirm = document.getElementById('passConfirm');
@@ -248,15 +248,9 @@ function guardarCambios(e) {
 
     const rolSeleccionado = obtenerRolSeleccionado();
 
-    // Validaciones de campos obligatorios
+    // Validaciones de campos obligatorios generales
     if (!nombreVal || !apePVal || !apeMVal || !numEmpVal || !telVal || !correoVal) {
         mostrarAlerta('Campos incompletos', 'Por favor, llena todos los campos obligatorios (*).');
-        return;
-    }
-
-    // Validación de Contraseña Actual libre/requerida
-    if (!passActualVal) {
-        mostrarAlerta('Contraseña requerida', 'Debes ingresar tu contraseña actual para confirmar los cambios.');
         return;
     }
 
@@ -285,8 +279,16 @@ function guardarCambios(e) {
         return;
     }
 
-    // Validación opcional de Nueva Contraseña
+    // -------------------------------------------------------------
+    // VALIDACIÓN DE CAMBIO DE CONTRASEÑA OPCIONAL
+    // Solo si el usuario ingresó algo en la nueva contraseña
+    // -------------------------------------------------------------
     if (passNuevaVal !== '') {
+        if (!passActualVal) {
+            mostrarAlerta('Contraseña requerida', 'Debes ingresar tu contraseña actual para confirmar el cambio de contraseña.');
+            return;
+        }
+
         if (passNuevaVal.length < 12 || passNuevaVal.length > 15) {
             mostrarAlerta('Contraseña inválida', 'La nueva contraseña debe tener entre 12 y 15 caracteres.');
             return;

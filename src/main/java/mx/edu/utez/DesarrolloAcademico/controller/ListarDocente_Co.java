@@ -40,7 +40,7 @@ public class ListarDocente_Co extends HttpServlet {
             UsuarioListaDao dao = new UsuarioListaDao();
 
             // Consultar filtrando por la división del coordinador
-            docentes = dao.listarPorRolesYDivision(idDivisionCoordinador, "docente");
+            docentes = dao.listarPorRolesYDivision(idDivisionCoordinador, "docente", "coordinador");
         } else {
             // Si no hay sesión válida o no tiene división, responder no autorizado o lista vacía
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);

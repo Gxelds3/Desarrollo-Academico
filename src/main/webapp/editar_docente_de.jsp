@@ -89,7 +89,7 @@
                            name="passActual"
                            class="form-control"
                            placeholder="Ingresa tu contraseña actual"
-                           required>
+                           >
                     <button class="btn btn-outline-secondary bg-white border-start-0"
                             type="button"
                             onclick="togglePassword('passActual')">

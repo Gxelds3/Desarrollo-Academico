@@ -1,4 +1,3 @@
-
 package mx.edu.utez.DesarrolloAcademico.controller;
 
 import jakarta.servlet.ServletException;
@@ -66,7 +65,7 @@ public class SubirConstanciaServlet1 extends HttpServlet {
             if (targetUserStr != null && !targetUserStr.trim().isEmpty()) {
                 String rol = (usuarioEnSesion.getRol() != null) ? usuarioEnSesion.getRol().toLowerCase().trim() : "";
 
-                // Flexibilidad en el rol: evalúa variaciones como "coordinador", "desarrollo", "desarrollador", etc.
+                // Flexibilidad en el rol
                 boolean esAutorizado = rol.contains("coordinador") || rol.contains("desarroll") || rol.contains("dev");
 
                 if (esAutorizado) {
@@ -78,16 +77,26 @@ public class SubirConstanciaServlet1 extends HttpServlet {
                 }
             }
 
-            // 2. VALIDAR EL PERIODO DE CARGA PARA LA DIVISIÓN DEL DOCENTE/USUARIO DESTINO
+            // Busca datos del usuario destino
             Usuario targetUsuario = usuarioDao.buscarPorId(idUsuarioSubir);
+
+            // LOGS PARA LA CONSOLA DE TOMCAT
+            System.out.println("=== DEPURACION PERIODO ===");
+            System.out.println("ID Usuario Destino: " + idUsuarioSubir);
+            System.out.println("Usuario Encontrado: " + (targetUsuario != null));
+            if (targetUsuario != null) {
+                System.out.println("ID Division del Usuario Destino: " + targetUsuario.getIdDivision());
+            }
+
+            // 2. VALIDAR EL PERIODO DE CARGA PARA LA DIVISIÓN DEL DOCENTE/USUARIO DESTINO
             if (targetUsuario != null && targetUsuario.getIdDivision() != null && !dao.esPeriodoActivo(targetUsuario.getIdDivision())) {
-                response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                response.setStatus(HttpServletResponse.SC_OK); // SC_OK para evitar error 403 en red y mostrar alerta
                 out.write("{\"success\": false, \"message\": \"No hay un periodo de carga activo para la división del docente.\"}");
                 out.flush();
                 return;
             }
 
-            // 3. VINCULAR AL DOCENTE/DESTINATARIO CON EL EVENTO (OBTENER SU ID DE PARTICIPANTE)
+            // 3. VINCULAR AL DOCENTE/DESTINATARIO CON EL EVENTO
             int idParticipante = usuarioDao.obtenerOCrearParticipante(idEvento, idUsuarioSubir);
 
             if (idParticipante == -1) {
@@ -99,7 +108,7 @@ public class SubirConstanciaServlet1 extends HttpServlet {
 
             // 4. VERIFICAR SI YA EXISTE UNA CONSTANCIA PARA ESTE PARTICIPANTE
             if (dao.verificarConstanciaExistente(idParticipante)) {
-                response.setStatus(HttpServletResponse.SC_CONFLICT);
+                response.setStatus(HttpServletResponse.SC_OK);
                 out.write("{\"success\": false, \"message\": \"Ya se subió una constancia para este docente en este evento.\"}");
                 out.flush();
                 return;
@@ -132,13 +141,12 @@ public class SubirConstanciaServlet1 extends HttpServlet {
                 else contentType = "image/jpeg";
             }
 
-            // Leer los bytes del archivo (para guardar en BLOB)
+            // Leer bytes para BLOB
             byte[] contenidoArchivo;
             try (InputStream is = filePart.getInputStream()) {
                 contenidoArchivo = is.readAllBytes();
             }
 
-            // Nota: Se envía usuarioEnSesion.getIdUsuario() en el último parámetro para auditoría (quién subió el archivo)
             boolean exito = dao.guardarConstancia(idParticipante, fileName, contenidoArchivo, contentType,
                     tieneVigencia, fechaVencimiento, usuarioEnSesion.getIdUsuario());
 

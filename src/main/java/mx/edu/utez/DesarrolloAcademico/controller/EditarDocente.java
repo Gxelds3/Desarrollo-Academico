@@ -107,26 +107,26 @@ public class EditarDocente extends HttpServlet {
                 return;
             }
 
-            // 1. Validar que el usuario haya escrito la contraseña actual
-            if (passActual == null || passActual.trim().isEmpty()) {
-                out.write("{\"success\": false, \"message\": \"Debes ingresar tu contraseña actual para guardar los cambios.\"}");
-                return;
-            }
-
             int id = Integer.parseInt(idStr.trim());
             int idDivision = Integer.parseInt(divisionStr.trim());
             AgregarDesarrollador_Dao dao = new AgregarDesarrollador_Dao();
 
-            // 2. VALIDAR QUE LA CONTRASEÑA ACTUAL SEA CORRECTA
-            // (Compara contra la contraseña de la BD mediante un método liviano del DAO)
-            boolean passValida = dao.validarContrasenaActual(id, passActual.trim());
-            if (!passValida) {
-                out.write("{\"success\": false, \"message\": \"La contraseña actual ingresada es incorrecta.\"}");
-                return;
-            }
-
-            // Validar cambio opcional de nueva contraseña
             if (contrasena != null && !contrasena.trim().isEmpty()) {
+
+                // 1. Exigir la contraseña actual únicamente en este caso
+                if (passActual == null || passActual.trim().isEmpty()) {
+                    out.write("{\"success\": false, \"message\": \"Debes ingresar tu contraseña actual para confirmar el cambio de contraseña.\"}");
+                    return;
+                }
+
+                // 2. Validar que la contraseña actual sea correcta contra la BD
+                boolean passValida = dao.validarContrasenaActual(id, passActual.trim());
+                if (!passValida) {
+                    out.write("{\"success\": false, \"message\": \"La contraseña actual es incorrecta.\"}");
+                    return;
+                }
+
+                // 3. Validar longitud y coincidencia de la nueva contraseña
                 if (contrasena.trim().length() < 12 || contrasena.trim().length() > 15) {
                     out.write("{\"success\": false, \"message\": \"La nueva contraseña debe tener entre 12 y 15 caracteres.\"}");
                     return;
@@ -135,8 +135,10 @@ public class EditarDocente extends HttpServlet {
                     out.write("{\"success\": false, \"message\": \"Las contraseñas no coinciden.\"}");
                     return;
                 }
+
                 contrasena = contrasena.trim();
             } else {
+                // Si no escribió nada en la nueva contraseña, se pasa como null para que el DAO no la actualice
                 contrasena = null;
             }
 

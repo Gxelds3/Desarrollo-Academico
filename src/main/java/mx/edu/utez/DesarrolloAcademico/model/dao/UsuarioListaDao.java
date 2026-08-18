@@ -49,6 +49,87 @@ public class UsuarioListaDao {
         return lista;
     }
 
+    public List<agregarEvento_co> listarEventosPorDivision1(int idDivision) {
+        List<agregarEvento_co> lista = new ArrayList<>();
+
+        // Consulta limpia: Trae TODOS los eventos de la división sin importar la fecha ni si el usuario está inscrito
+        String query = "SELECT id_evento, nombre, lugar, institucion, tipo_evento, descripcion, fecha_inicio, fecha_fin, modalidad " +
+                "FROM eventos " +
+                "WHERE id_division = ? " +
+                "ORDER BY fecha_inicio DESC";
+
+        try (Connection con = DatabaseConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(query)) {
+
+            ps.setInt(1, idDivision);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    agregarEvento_co ev = new agregarEvento_co();
+                    ev.setId(rs.getInt("id_evento"));
+                    ev.setNombre(rs.getString("nombre"));
+                    ev.setLugar(rs.getString("lugar"));
+                    ev.setInstitucion(rs.getString("institucion"));
+                    ev.setTipo(rs.getString("tipo_evento"));
+                    ev.setDescripcion(rs.getString("descripcion"));
+
+                    java.sql.Date dInicio = rs.getDate("fecha_inicio");
+                    java.sql.Date dFin    = rs.getDate("fecha_fin");
+                    ev.setFechaInicio(dInicio != null ? dInicio.toString() : "");
+                    ev.setFechaFin(dFin != null ? dFin.toString() : "");
+                    ev.setModalidad(rs.getString("modalidad"));
+
+                    lista.add(ev);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return lista;
+    }
+
+    public List<agregarEvento_co> listarEventosAsignados(int idUsuario) {
+        List<agregarEvento_co> lista = new ArrayList<>();
+
+        String query = "SELECT e.id_evento, e.nombre, e.lugar, e.institucion, e.tipo_evento, " +
+                "e.descripcion, e.fecha_inicio, e.fecha_fin, e.modalidad " +
+                "FROM eventos e " +
+                "INNER JOIN participantes_eventos pe ON e.id_evento = pe.id_evento " +
+                "WHERE pe.id_usuario = ? " +
+                "ORDER BY e.fecha_inicio DESC";
+
+        try (Connection con = DatabaseConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(query)) {
+
+            ps.setInt(1, idUsuario);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    agregarEvento_co ev = new agregarEvento_co();
+                    ev.setId(rs.getInt("id_evento"));
+                    ev.setNombre(rs.getString("nombre"));
+                    ev.setLugar(rs.getString("lugar"));
+                    ev.setInstitucion(rs.getString("institucion"));
+                    ev.setTipo(rs.getString("tipo_evento"));
+                    ev.setDescripcion(rs.getString("descripcion"));
+
+                    java.sql.Date dInicio = rs.getDate("fecha_inicio");
+                    java.sql.Date dFin    = rs.getDate("fecha_fin");
+                    ev.setFechaInicio(dInicio != null ? dInicio.toString() : "");
+                    ev.setFechaFin(dFin != null ? dFin.toString() : "");
+                    ev.setModalidad(rs.getString("modalidad"));
+
+                    lista.add(ev);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return lista;
+    }
+
+
+
     public List<agregarEvento_co> listarEventosPorUsuario(int idUsuario) {
         List<agregarEvento_co> lista = new ArrayList<>();
         String query = "SELECT e.id_evento, e.nombre, e.lugar, e.institucion, e.tipo_evento, e.descripcion, e.fecha_inicio, e.fecha_fin, e.modalidad " +
@@ -270,9 +351,8 @@ public class UsuarioListaDao {
         return total;
     }
 
-
-    public int contarDocentesPorDivision(int idDivision) {
-        String sql = "SELECT COUNT(*) FROM USUARIOS WHERE LOWER(ROL) = 'docente' AND ID_DIVISION = ?";
+    public int contarDocentesYCoordinadoresPorDivision(int idDivision) {
+        String sql = "SELECT COUNT(*) FROM USUARIOS WHERE LOWER(ROL) IN ('docente', 'coordinador') AND ID_DIVISION = ?";
         int total = 0;
 
         try (Connection con = DatabaseConnection.getConnection();
@@ -286,13 +366,33 @@ public class UsuarioListaDao {
                 }
             }
         } catch (SQLException e) {
-            System.err.println("Error al contar docentes por división: " + e.getMessage());
+            System.err.println("Error al contar docentes y coordinadores por división: " + e.getMessage());
             e.printStackTrace();
         }
 
         return total;
     }
+    public int contarDocentesYCoordinadoresPorDivision1(int idDivision) {
+        String sql = "SELECT COUNT(*) FROM USUARIOS WHERE LOWER(ROL) IN ('docente', 'coordinador') AND ID_DIVISION = ?";
+        int total = 0;
 
+        try (Connection con = DatabaseConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setInt(1, idDivision);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    total = rs.getInt(1);
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Error al contar docentes y coordinadores por división: " + e.getMessage());
+            e.printStackTrace();
+        }
+
+        return total;
+    }
 
     public int contarDocentesYCoordinadores() {
         // Busca roles 'docente' y 'coordinador' ignorando mayúsculas/minúsculas

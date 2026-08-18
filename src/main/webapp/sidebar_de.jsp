@@ -85,7 +85,7 @@
             <div class="sidebar-icon">
                 <i class="bi bi-calendar-event"></i>
             </div>
-            <span class="sidebar-text">Eventos</span>
+            <span class="sidebar-text">Historial Eventos</span>
         </a>
 
         <a href="${pageContext.request.contextPath}/gestion_periodos_carga_de.jsp"

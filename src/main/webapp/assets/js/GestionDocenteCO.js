@@ -11,6 +11,22 @@ const DIVISIONES = {
     5: 'General'
 };
 
+// Mapeo de colores por división
+const COLORES_DIVISION = {
+    'Datid': '#007BFF',    // Azul Eléctrico
+    'Datefi': '#32CD32',   // Verde Lima
+    'Dami': '#DC143C',     // Rojo Carmesí
+    'Dacea': '#DA70D6',    // Púrpura Orquídea
+    'General': '#6c757d'   // Gris (neutro, no especificado)
+};
+
+// Mapeo de colores por rol
+const COLORES_ROL = {
+    'docente': '#FF8C00',        // Naranja Mandarina
+    'coordinador': '#CCFF00',    // Amarillo Limón
+    'default': '#6c757d'        // Gris (por defecto)
+};
+
 // "Lista maestra" con todos los docentes que trae el servidor.
 let docentesOriginales = [];
 let filtroTexto = '';
@@ -105,13 +121,32 @@ function nombreCompleto(doc) {
     return [doc.nombre, doc.apellidoPaterno, doc.apellidoMaterno].filter(Boolean).join(' ');
 }
 
+// Función auxiliar para convertir el rol en su respectiva etiqueta legible
+function obtenerTextoRol(rol) {
+    const rolStr = String(rol || '').trim().toLowerCase();
+
+    if (rolStr === '1' || rolStr.includes('coord')) {
+        return 'Coordinador';
+    } else if (rolStr === '2' || rolStr.includes('docente') || rolStr.includes('prof')) {
+        return 'Docente';
+    }
+
+    return rol ? (rol.charAt(0).toUpperCase() + rol.slice(1)) : 'Docente';
+}
+
 function obtenerDocentesFiltrados() {
     const texto = normalizar(filtroTexto);
     if (texto === '') return docentesOriginales;
 
     return docentesOriginales.filter(function (doc) {
+        const divisionNombre = DIVISIONES[doc.idDivision] || doc.division || '';
+        const rolTexto = obtenerTextoRol(doc.rol);
+
         return normalizar(nombreCompleto(doc)).includes(texto) ||
-            normalizar(doc.correo).includes(texto);
+            normalizar(doc.correo).includes(texto) ||
+            normalizar(doc.numeroEmpleado).includes(texto) ||
+            normalizar(divisionNombre).includes(texto) ||
+            normalizar(rolTexto).includes(texto);
     });
 }
 
@@ -119,7 +154,7 @@ function renderDocentes(lista) {
     if (!tbody) return;
 
     if (!lista || !lista.length) {
-        tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted py-4">No se encontraron docentes.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="7" class="text-center text-muted py-4">No se encontraron docentes.</td></tr>';
         return;
     }
 
@@ -139,33 +174,42 @@ function renderDocentes(lista) {
         const activo = Number(doc.activo) === 1;
         const iconoEstado = activo ? 'bi-toggle-on text-success' : 'bi-toggle-off text-danger';
         const divisionNombre = DIVISIONES[doc.idDivision] || doc.division || '';
+        const colorDivision = COLORES_DIVISION[divisionNombre] || '#6c757d';
+
+        const rolTexto = obtenerTextoRol(doc.rol);
+        const claveRol = rolTexto.toLowerCase(); // 'coordinador' o 'docente'
+        const colorRol = COLORES_ROL[claveRol] || COLORES_ROL['default'];
+        // Ajuste de color del texto para garantizar legibilidad (texto oscuro en Amarillo Limón)
+        const colorTextoRol = claveRol === 'coordinador' ? '#000' : '#fff';
 
         const fila = document.createElement('tr');
         fila.setAttribute('data-id', doc.id);
         fila.innerHTML =
+            /* 1. NOMBRE */
             '<td class="text-start">' +
-            '<div class="docente-name-container">' +
+            '<div class="docente-name-container" style="display:flex; align-items:center; gap:8px;">' +
             '<div class="avatar-circle" style="flex-shrink:0;"></div>' +
             '<div class="docente-name" style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">' +
             escapeHtml(nombreCompleto(doc)) +
             '</div>' +
             '</div>' +
             '</td>' +
+            /* 2. CORREO */
             '<td>' + escapeHtml(doc.correo) + '</td>' +
-            '<td>' + escapeHtml(divisionNombre) + '</td>' +
+            /* 3. DIVISIÓN */
+            '<td><span class="badge" style="background-color: ' + colorDivision + '; color: #fff; padding: 6px 10px; font-size: 0.85rem;">' + escapeHtml(divisionNombre) + '</span></td>' +
+            /* 4. ROL ( Badge con color según ROL ) */
+            '<td><span class="badge" style="background-color: ' + colorRol + '; color: ' + colorTextoRol + '; padding: 6px 10px; font-size: 0.85rem;">' + escapeHtml(rolTexto) + '</span></td>' +
+            /* 5. NÚMERO DE EMPLEADO */
             '<td>' + escapeHtml(doc.numeroEmpleado) + '</td>' +
+            /* 6. ESTADO (Toggle) */
             '<td>' +
             '<i class="bi ' + iconoEstado + ' fs-4 toggle-estado" style="cursor:pointer;" data-id="' + doc.id + '" data-activo="' + (activo ? 1 : 0) + '"></i>' +
             '</td>' +
+            /* 7. ACCIONES */
             '<td class="acciones-cell" style="white-space: nowrap;">' +
-
-            /* EDITAR */
             '<a href="' + contextPath + '/editar_docente_' + sufijoRol + '.jsp?id=' + doc.id + '" class="action-btn" title="Editar"><i class="bi bi-pencil"></i></a>' +
-
-            /* VER DETALLES */
             '<a href="' + contextPath + '/verDocente?id=' + doc.id + '" class="action-btn" title="Ver"><i class="bi bi-eye"></i></a>' +
-
-            /* ELIMINAR PERMANENTE */
             '<a href="#" class="action-btn delete" title="Eliminar" data-id="' + doc.id + '"><i class="bi bi-trash"></i></a>' +
             '</td>';
         tbody.appendChild(fila);
@@ -178,7 +222,7 @@ function aplicarFiltro() {
 
 function cargarDocentes() {
     if (!tbody) return;
-    tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted py-4">Cargando...</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="7" class="text-center text-muted py-4">Cargando...</td></tr>';
 
     fetch(contextPath + '/ListarDocente_Co', { credentials: 'same-origin' })
         .then(function (response) {
@@ -195,7 +239,7 @@ function cargarDocentes() {
         })
         .catch(function (error) {
             console.error('Error al cargar docentes:', error);
-            tbody.innerHTML = '<tr><td colspan="6" class="text-center text-danger py-4">No se pudieron cargar los docentes.</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="7" class="text-center text-danger py-4">No se pudieron cargar los docentes.</td></tr>';
         });
 }
 
@@ -285,7 +329,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 }).then(function (result) {
                     if (!result.isConfirmed) return;
 
-                    // --- PRELOADER CON PORCENTAJE PARA CAMBIAR ESTADO ---
                     let porcentaje = 0;
                     let timerCarga;
 
@@ -357,7 +400,6 @@ document.addEventListener("DOMContentLoaded", function () {
             }).then(function (result) {
                 if (!result.isConfirmed) return;
 
-                // --- PRELOADER CON PORCENTAJE PARA ELIMINAR ---
                 let porcentaje = 0;
                 let timerCarga;
 

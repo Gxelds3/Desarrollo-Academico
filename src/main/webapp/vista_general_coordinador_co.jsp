@@ -11,7 +11,7 @@
     Usuario usuarioSesion = (Usuario) session.getAttribute("usuario");
     int idDivision = (usuarioSesion != null && usuarioSesion.getIdDivision() != null) ? usuarioSesion.getIdDivision() : 0;
     int totalEventos = usuarioListaDao.contarEventosPorDivision(idDivision);
-    int totalDocentes = usuarioListaDao.contarDocentesPorDivision(idDivision);
+    int totalDocentes = usuarioListaDao.contarDocentesYCoordinadoresPorDivision1(idDivision);
     List<Evento> listaEventos = usuarioDao.obtenerProximosEventos(idDivision);
 %>
 <!doctype html>
