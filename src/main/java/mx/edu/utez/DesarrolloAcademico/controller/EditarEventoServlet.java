@@ -46,8 +46,11 @@ public class EditarEventoServlet extends HttpServlet {
                     }
                 }
 
-                // Fecha límite real: la del periodo de carga de la división del usuario
-                String fechaLimite = dao.obtenerFechaLimitePorDivision(divisionParaLimite);
+
+
+                int divisionDelEvento = evento.getIdDivision();
+
+                String fechaLimite = dao.obtenerFechaLimitePorDivision(divisionDelEvento);
                 if (fechaLimite == null) {
                     fechaLimite = evento.getFechaFin(); // fallback si no hay periodo configurado
                 }

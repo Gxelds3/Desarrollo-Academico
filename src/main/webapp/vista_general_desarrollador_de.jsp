@@ -67,7 +67,10 @@
         </div>
     </div>
 
-   
+
+    <h4 class="fw-bold mb-3">Eventos próximos</h4>
+
+
 
     <div id="eventsList">
         <%

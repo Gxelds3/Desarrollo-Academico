@@ -242,13 +242,12 @@ public class UsuarioDao {
     public List<Evento> obtenerProximosEventos(Integer idDivision) {
         List<Evento> lista = new ArrayList<>();
 
-        // CORRECCIÓN SQL: Se usa TRUNC(SYSDATE) o CURDATE() y se compara contra FECHA_FIN
-        // para que no desaparezcan los eventos que están en transcurso hoy.
         StringBuilder sql = new StringBuilder("SELECT ID_EVENTO, NOMBRE, FECHA_INICIO, FECHA_FIN FROM EVENTOS ");
 
-        // Si usas Oracle: TRUNC(SYSDATE)
-        // Si usas MySQL: CURDATE() o CURRENT_DATE()
-        sql.append("WHERE FECHA_FIN >= TRUNC(SYSDATE) ");
+        // Se compara FECHA_INICIO contra SYSDATE/NOW() para filtrar eventos que aún no inician.
+        // Oracle: SYSDATE (o TRUNC(SYSDATE) si no requiere precisión de hora)
+        // MySQL: NOW() o CURRENT_TIMESTAMP (o CURDATE() si solo requiere fecha)
+        sql.append("WHERE FECHA_INICIO > SYSDATE ");
 
         if (idDivision != null && idDivision > 0) {
             sql.append("AND ID_DIVISION = ? ");
@@ -283,6 +282,7 @@ public class UsuarioDao {
         }
         return lista;
     }
+
 
     public boolean eliminarUsuario(int idUsuario) {
         String sql = "DELETE FROM USUARIOS WHERE ID_USUARIO = ?";

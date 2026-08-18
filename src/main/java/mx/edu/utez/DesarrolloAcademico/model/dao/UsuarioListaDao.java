@@ -312,7 +312,9 @@ public class UsuarioListaDao {
 
     public int contarEventos() {
         int total = 0;
-        String sql = "SELECT COUNT(ID_EVENTO) FROM EVENTOS";
+
+
+        String sql = "SELECT COUNT(ID_EVENTO) FROM EVENTOS WHERE FECHA_FIN >= SYSDATE";
 
         try (Connection con = DatabaseConnection.getConnection();
              PreparedStatement ps = con.prepareStatement(sql);
@@ -322,7 +324,7 @@ public class UsuarioListaDao {
                 total = rs.getInt(1);
             }
         } catch (SQLException e) {
-            System.err.println("Error al contar eventos: " + e.getMessage());
+            System.err.println("Error al contar eventos no vencidos: " + e.getMessage());
             e.printStackTrace();
         }
 
@@ -330,7 +332,9 @@ public class UsuarioListaDao {
     }
 
     public int contarEventosPorDivision(int idDivision) {
-        String sql = "SELECT COUNT(ID_EVENTO) FROM EVENTOS WHERE ID_DIVISION = ?";
+        // Oracle: FECHA_FIN >= SYSDATE
+        // MySQL / PostgreSQL: FECHA_FIN >= NOW()
+        String sql = "SELECT COUNT(ID_EVENTO) FROM EVENTOS WHERE ID_DIVISION = ? AND FECHA_FIN >= SYSDATE";
         int total = 0;
 
         try (Connection con = DatabaseConnection.getConnection();
