@@ -52,7 +52,6 @@ public class UsuarioListaDao {
     public List<agregarEvento_co> listarEventosPorDivision1(int idDivision) {
         List<agregarEvento_co> lista = new ArrayList<>();
 
-        // Consulta limpia: Trae TODOS los eventos de la división sin importar la fecha ni si el usuario está inscrito
         String query = "SELECT id_evento, nombre, lugar, institucion, tipo_evento, descripcion, fecha_inicio, fecha_fin, modalidad " +
                 "FROM eventos " +
                 "WHERE id_division = ? " +
@@ -128,14 +127,13 @@ public class UsuarioListaDao {
         return lista;
     }
 
-
-
     public List<agregarEvento_co> listarEventosPorUsuario(int idUsuario) {
         List<agregarEvento_co> lista = new ArrayList<>();
         String query = "SELECT e.id_evento, e.nombre, e.lugar, e.institucion, e.tipo_evento, e.descripcion, e.fecha_inicio, e.fecha_fin, e.modalidad " +
                 "FROM eventos e " +
                 "JOIN participantes_eventos pe ON e.id_evento = pe.id_evento " +
                 "WHERE pe.id_usuario = ? ORDER BY e.fecha_inicio DESC";
+
         try (Connection con = DatabaseConnection.getConnection();
              PreparedStatement ps = con.prepareStatement(query)) {
             ps.setInt(1, idUsuario);
@@ -245,7 +243,6 @@ public class UsuarioListaDao {
             ps.setString(7, u.getCorreoInstitucional());
             ps.setInt(8, u.getIdUsuario());
 
-
             int filas = ps.executeUpdate();
             estado = (filas > 0);
 
@@ -283,7 +280,6 @@ public class UsuarioListaDao {
         return false;
     }
 
-
     public int contarEventosAsignados(int idUsuario) {
         String sql = "SELECT COUNT(e.ID_EVENTO) " +
                 "FROM EVENTOS e " +
@@ -312,8 +308,6 @@ public class UsuarioListaDao {
 
     public int contarEventos() {
         int total = 0;
-
-
         String sql = "SELECT COUNT(ID_EVENTO) FROM EVENTOS WHERE FECHA_FIN >= SYSDATE";
 
         try (Connection con = DatabaseConnection.getConnection();
@@ -332,8 +326,6 @@ public class UsuarioListaDao {
     }
 
     public int contarEventosPorDivision(int idDivision) {
-        // Oracle: FECHA_FIN >= SYSDATE
-        // MySQL / PostgreSQL: FECHA_FIN >= NOW()
         String sql = "SELECT COUNT(ID_EVENTO) FROM EVENTOS WHERE ID_DIVISION = ? AND FECHA_FIN >= SYSDATE";
         int total = 0;
 
@@ -376,30 +368,12 @@ public class UsuarioListaDao {
 
         return total;
     }
+
     public int contarDocentesYCoordinadoresPorDivision1(int idDivision) {
-        String sql = "SELECT COUNT(*) FROM USUARIOS WHERE LOWER(ROL) IN ('docente', 'coordinador') AND ID_DIVISION = ?";
-        int total = 0;
-
-        try (Connection con = DatabaseConnection.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
-
-            ps.setInt(1, idDivision);
-
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    total = rs.getInt(1);
-                }
-            }
-        } catch (SQLException e) {
-            System.err.println("Error al contar docentes y coordinadores por división: " + e.getMessage());
-            e.printStackTrace();
-        }
-
-        return total;
+        return contarDocentesYCoordinadoresPorDivision(idDivision);
     }
 
     public int contarDocentesYCoordinadores() {
-        // Busca roles 'docente' y 'coordinador' ignorando mayúsculas/minúsculas
         String sql = "SELECT COUNT(*) FROM USUARIOS WHERE LOWER(ROL) IN ('docente', 'coordinador')";
         int total = 0;
 
@@ -422,7 +396,6 @@ public class UsuarioListaDao {
         List<Usuario> lista = new ArrayList<>();
         if (roles == null || roles.length == 0) return lista;
 
-        // Construcción de la consulta con filtro de división y minúsculas para roles
         StringBuilder sb = new StringBuilder(
                 "SELECT id_usuario, nombre, apellido_paterno, apellido_materno, " +
                         "correo_institucional, numero_empleado, id_division, telefono, activo, rol " +
@@ -438,10 +411,8 @@ public class UsuarioListaDao {
         try (Connection con = DatabaseConnection.getConnection();
              PreparedStatement ps = con.prepareStatement(sb.toString())) {
 
-            // Parámetro 1: ID de la división del coordinador
             ps.setInt(1, idDivision);
 
-            // Parámetros dinámicos: Convertir roles a minúsculas para coincidir con LOWER(rol)
             for (int i = 0; i < roles.length; i++) {
                 ps.setString(i + 2, roles[i] != null ? roles[i].toLowerCase() : "");
             }
@@ -473,31 +444,26 @@ public class UsuarioListaDao {
         return lista;
     }
 
-
+    // --- CORREGIDOS: Cierre Seguro de Conexiones ---
 
     public boolean registrarPeriodo(Periodo periodo, int idUsuario) {
         String sql = "INSERT INTO periodos_carga (ID_DIVISION, FECHA_INICIO, FECHA_FIN, ACTIVO, CREADO_POR) VALUES (?, ?, ?, ?, ?)";
 
-        try (Connection con = DatabaseConnection.getConnection()) {
-            // Aseguramos que la conexión guarde los cambios
-            con.setAutoCommit(true);
+        try (Connection con = DatabaseConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
 
-            try (PreparedStatement ps = con.prepareStatement(sql)) {
-                ps.setInt(1, Integer.parseInt(periodo.getDivision()));
-                ps.setDate(2, periodo.getFechaInicio());
-                ps.setDate(3, periodo.getFechaFin());
-                ps.setInt(4, periodo.isActivo() ? 1 : 0);
-                ps.setInt(5, idUsuario);
+            ps.setInt(1, Integer.parseInt(periodo.getDivision()));
+            ps.setDate(2, periodo.getFechaInicio());
+            ps.setDate(3, periodo.getFechaFin());
+            ps.setInt(4, periodo.isActivo() ? 1 : 0);
+            ps.setInt(5, idUsuario);
 
-                return ps.executeUpdate() > 0;
-            }
+            return ps.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
         }
     }
-
-
 
     public List<Periodo> obtenerTodosLosPeriodos() {
         List<Periodo> lista = new ArrayList<>();
@@ -514,9 +480,7 @@ public class UsuarioListaDao {
             while (rs.next()) {
                 Periodo p = new Periodo();
                 p.setId(rs.getInt("ID_PERIODO"));
-
                 p.setDivision(rs.getString("NOMBRE_DIVISION"));
-
                 p.setFechaInicio(rs.getDate("FECHA_INICIO"));
                 p.setFechaFin(rs.getDate("FECHA_FIN"));
                 p.setActivo(rs.getInt("ACTIVO") == 1);
@@ -530,17 +494,14 @@ public class UsuarioListaDao {
         return lista;
     }
 
-
     public boolean eliminarPeriodo(int idPeriodo) {
         String sql = "DELETE FROM periodos_carga WHERE ID_PERIODO = ?";
 
-        try (Connection con = DatabaseConnection.getConnection()) {
-            con.setAutoCommit(true); // Asegura que el cambio se guarde en Oracle
+        try (Connection con = DatabaseConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
 
-            try (PreparedStatement ps = con.prepareStatement(sql)) {
-                ps.setInt(1, idPeriodo);
-                return ps.executeUpdate() > 0;
-            }
+            ps.setInt(1, idPeriodo);
+            return ps.executeUpdate() > 0;
 
         } catch (SQLException e) {
             System.err.println("Error al eliminar el periodo " + idPeriodo + ": " + e.getMessage());
@@ -552,15 +513,13 @@ public class UsuarioListaDao {
     public boolean cambiarEstadoPeriodo(int idPeriodo, boolean nuevoEstado) {
         String sql = "UPDATE periodos_carga SET ACTIVO = ? WHERE ID_PERIODO = ?";
 
-        try (Connection con = DatabaseConnection.getConnection()) {
-            con.setAutoCommit(true);
+        try (Connection con = DatabaseConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
 
-            try (PreparedStatement ps = con.prepareStatement(sql)) {
-                ps.setInt(1, nuevoEstado ? 1 : 0);
-                ps.setInt(2, idPeriodo);
+            ps.setInt(1, nuevoEstado ? 1 : 0);
+            ps.setInt(2, idPeriodo);
 
-                return ps.executeUpdate() > 0;
-            }
+            return ps.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
@@ -568,7 +527,6 @@ public class UsuarioListaDao {
     }
 
     public boolean actualizarPeriodo(int idPeriodo, String division, String fechaInicio, String fechaFin) {
-        // Usamos AND para incluir el ROWNUM <= 1 en Oracle
         String sql = "UPDATE periodos_carga SET " +
                 "ID_DIVISION = (SELECT ID_DIVISION FROM divisiones WHERE (NOMBRE = ? OR TO_CHAR(ID_DIVISION) = ?) AND ROWNUM <= 1), " +
                 "FECHA_INICIO = TO_DATE(?, 'YYYY-MM-DD'), " +
@@ -576,20 +534,17 @@ public class UsuarioListaDao {
                 "ACTIVO = CASE WHEN TO_DATE(?, 'YYYY-MM-DD') >= TRUNC(SYSDATE) THEN 1 ELSE 0 END " +
                 "WHERE ID_PERIODO = ?";
 
-        try (Connection con = DatabaseConnection.getConnection()) {
-            con.setAutoCommit(true);
+        try (Connection con = DatabaseConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
 
-            try (PreparedStatement ps = con.prepareStatement(sql)) {
-                ps.setString(1, division);
-                ps.setString(2, division);
-                ps.setString(3, fechaInicio);
-                ps.setString(4, fechaFin);
-                ps.setString(5, fechaFin); // se repite para el CASE del ACTIVO
-                ps.setInt(6, idPeriodo);
+            ps.setString(1, division);
+            ps.setString(2, division);
+            ps.setString(3, fechaInicio);
+            ps.setString(4, fechaFin);
+            ps.setString(5, fechaFin);
+            ps.setInt(6, idPeriodo);
 
-                int filasAfectadas = ps.executeUpdate();
-                return filasAfectadas > 0;
-            }
+            return ps.executeUpdate() > 0;
 
         } catch (SQLException e) {
             System.err.println("Error al actualizar periodo " + idPeriodo + ": " + e.getMessage());
@@ -598,16 +553,7 @@ public class UsuarioListaDao {
         }
     }
 
-
-
-
-
-
-
-
-
     public boolean existeDivision(String division, int idPeriodoExcluir) {
-
         String sql = "SELECT COUNT(*) FROM periodos_carga p " +
                 "JOIN divisiones d ON p.ID_DIVISION = d.ID_DIVISION " +
                 "WHERE (d.NOMBRE = ? OR TO_CHAR(d.ID_DIVISION) = ?) " +
@@ -651,6 +597,7 @@ public class UsuarioListaDao {
         }
         return divisionOrId;
     }
+
     public void desactivarPeriodosVencidos() {
         String sql = "UPDATE periodos_carga SET activo = 0 WHERE fecha_fin < TRUNC(SYSDATE) AND activo = 1";
 
@@ -688,4 +635,3 @@ public class UsuarioListaDao {
         return false;
     }
 }
-
