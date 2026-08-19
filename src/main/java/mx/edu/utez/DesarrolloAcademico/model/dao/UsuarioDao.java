@@ -46,8 +46,11 @@ public class UsuarioDao {
     public Usuario buscarPorId(int idUsuario) {
         Usuario usuario = null;
         String query = "SELECT * FROM usuarios WHERE id_usuario = ?";
+
         try (Connection con = DatabaseConnection.getConnection();
-             PreparedStatement ps = con.prepareStatement(query)) {
+             PreparedStatement ps = con != null ? con.prepareStatement(query) : null) {
+
+            if (con == null || ps == null) return null;
 
             ps.setInt(1, idUsuario);
             try (ResultSet rs = ps.executeQuery()) {
@@ -67,7 +70,9 @@ public class UsuarioDao {
         String query = "SELECT * FROM usuarios WHERE (correo_institucional = ? OR numero_empleado = ?) AND contrasena = ? AND activo = 1";
 
         try (Connection con = DatabaseConnection.getConnection();
-             PreparedStatement ps = con.prepareStatement(query)) {
+             PreparedStatement ps = con != null ? con.prepareStatement(query) : null) {
+
+            if (con == null || ps == null) return null;
 
             ps.setString(1, credencial);
             ps.setString(2, credencial);
@@ -87,8 +92,11 @@ public class UsuarioDao {
     public Usuario buscarPorEmailOEmpleado(String credencial) {
         Usuario usuario = null;
         String query = "SELECT * FROM usuarios WHERE correo_institucional = ? OR numero_empleado = ?";
+
         try (Connection con = DatabaseConnection.getConnection();
-             PreparedStatement ps = con.prepareStatement(query)) {
+             PreparedStatement ps = con != null ? con.prepareStatement(query) : null) {
+
+            if (con == null || ps == null) return null;
 
             ps.setString(1, credencial);
             ps.setString(2, credencial);
@@ -107,8 +115,11 @@ public class UsuarioDao {
     public boolean guardarCodigoRecuperacion(int idUsuario, String codigo) {
         String query = "INSERT INTO tokens_recuperacion (id_usuario, codigo_token, utilizado, fecha_expiracion) " +
                 "VALUES (?, ?, 0, CURRENT_TIMESTAMP + INTERVAL '15' MINUTE)";
+
         try (Connection con = DatabaseConnection.getConnection();
-             PreparedStatement ps = con.prepareStatement(query)) {
+             PreparedStatement ps = con != null ? con.prepareStatement(query) : null) {
+
+            if (con == null || ps == null) return false;
 
             ps.setInt(1, idUsuario);
             ps.setString(2, codigo);
@@ -127,7 +138,9 @@ public class UsuarioDao {
                 "WHERE t.codigo_token = ? AND t.utilizado = 0 AND t.fecha_expiracion > CURRENT_TIMESTAMP";
 
         try (Connection con = DatabaseConnection.getConnection();
-             PreparedStatement ps = con.prepareStatement(query)) {
+             PreparedStatement ps = con != null ? con.prepareStatement(query) : null) {
+
+            if (con == null || ps == null) return null;
 
             ps.setString(1, codigo);
 
@@ -145,8 +158,11 @@ public class UsuarioDao {
     public boolean actualizarPasswordLimpiaCodigo(int idUsuario, String nuevaPassword) {
         Connection con = null;
         boolean exitoso = false;
+
         try {
             con = DatabaseConnection.getConnection();
+            if (con == null) return false;
+
             con.setAutoCommit(false);
 
             String queryUpdatePass = "UPDATE usuarios SET contrasena = ? WHERE id_usuario = ?";
@@ -177,10 +193,10 @@ public class UsuarioDao {
             if (con != null) {
                 try {
                     con.setAutoCommit(true);
-                    con.close();
                 } catch (SQLException ex) {
                     ex.printStackTrace();
                 }
+                DatabaseConnection.closeConnection(con);
             }
         }
         return exitoso;
@@ -192,7 +208,9 @@ public class UsuarioDao {
                 "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, 1, ?)";
 
         try (Connection con = DatabaseConnection.getConnection();
-             PreparedStatement ps = con.prepareStatement(query)) {
+             PreparedStatement ps = con != null ? con.prepareStatement(query) : null) {
+
+            if (con == null || ps == null) return false;
 
             ps.setString(1, usuario.getNombre());
             ps.setString(2, usuario.getApellidoPaterno());
@@ -225,8 +243,11 @@ public class UsuarioDao {
 
     public boolean actualizarPasswordEnCuenta(int idUsuario, String actualPassword, String nuevaPassword) {
         String query = "UPDATE usuarios SET contrasena = ? WHERE id_usuario = ? AND contrasena = ?";
+
         try (Connection con = DatabaseConnection.getConnection();
-             PreparedStatement ps = con.prepareStatement(query)) {
+             PreparedStatement ps = con != null ? con.prepareStatement(query) : null) {
+
+            if (con == null || ps == null) return false;
 
             ps.setString(1, nuevaPassword);
             ps.setInt(2, idUsuario);
@@ -241,12 +262,7 @@ public class UsuarioDao {
 
     public List<Evento> obtenerProximosEventos(Integer idDivision) {
         List<Evento> lista = new ArrayList<>();
-
         StringBuilder sql = new StringBuilder("SELECT ID_EVENTO, NOMBRE, FECHA_INICIO, FECHA_FIN FROM EVENTOS ");
-
-        // Se compara FECHA_INICIO contra SYSDATE/NOW() para filtrar eventos que aún no inician.
-        // Oracle: SYSDATE (o TRUNC(SYSDATE) si no requiere precisión de hora)
-        // MySQL: NOW() o CURRENT_TIMESTAMP (o CURDATE() si solo requiere fecha)
         sql.append("WHERE FECHA_INICIO > SYSDATE ");
 
         if (idDivision != null && idDivision > 0) {
@@ -255,7 +271,9 @@ public class UsuarioDao {
         sql.append("ORDER BY FECHA_INICIO ASC");
 
         try (Connection con = DatabaseConnection.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql.toString())) {
+             PreparedStatement ps = con != null ? con.prepareStatement(sql.toString()) : null) {
+
+            if (con == null || ps == null) return lista;
 
             if (idDivision != null && idDivision > 0) {
                 ps.setInt(1, idDivision);
@@ -283,15 +301,16 @@ public class UsuarioDao {
         return lista;
     }
 
-
     public boolean eliminarUsuario(int idUsuario) {
         String sql = "DELETE FROM USUARIOS WHERE ID_USUARIO = ?";
+
         try (Connection con = DatabaseConnection.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
+             PreparedStatement ps = con != null ? con.prepareStatement(sql) : null) {
+
+            if (con == null || ps == null) return false;
 
             ps.setInt(1, idUsuario);
             return ps.executeUpdate() > 0;
-
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
@@ -304,7 +323,9 @@ public class UsuarioDao {
                 "FROM EVENTOS WHERE CREADO_POR = ? ORDER BY FECHA_INICIO ASC";
 
         try (Connection con = DatabaseConnection.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
+             PreparedStatement ps = con != null ? con.prepareStatement(sql) : null) {
+
+            if (con == null || ps == null) return lista;
 
             ps.setInt(1, idUsuario);
 
@@ -335,8 +356,10 @@ public class UsuarioDao {
                 "FROM USUARIOS WHERE LOWER(ROL) = 'docente' ORDER BY NOMBRE ASC";
 
         try (Connection con = DatabaseConnection.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
+             PreparedStatement ps = con != null ? con.prepareStatement(sql) : null;
+             ResultSet rs = ps != null ? ps.executeQuery() : null) {
+
+            if (con == null || ps == null || rs == null) return lista;
 
             while (rs.next()) {
                 Usuario U = new Usuario();
@@ -361,8 +384,11 @@ public class UsuarioDao {
 
     public boolean cambiarEstado(int idUsuario, int nuevoEstado) {
         String query = "UPDATE usuarios SET activo = ? WHERE id_usuario = ?";
+
         try (Connection con = DatabaseConnection.getConnection();
-             PreparedStatement ps = con.prepareStatement(query)) {
+             PreparedStatement ps = con != null ? con.prepareStatement(query) : null) {
+
+            if (con == null || ps == null) return false;
 
             ps.setInt(1, nuevoEstado);
             ps.setInt(2, idUsuario);
@@ -382,7 +408,9 @@ public class UsuarioDao {
                 "FROM USUARIOS WHERE ID_USUARIO = ?";
 
         try (Connection con = DatabaseConnection.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
+             PreparedStatement ps = con != null ? con.prepareStatement(sql) : null) {
+
+            if (con == null || ps == null) return null;
 
             ps.setInt(1, idUsuario);
             try (ResultSet rs = ps.executeQuery()) {
@@ -410,8 +438,11 @@ public class UsuarioDao {
 
     public boolean cambiarEstado(int idUsuario) {
         String query = "UPDATE usuarios SET activo = CASE WHEN activo = 1 THEN 0 ELSE 1 END WHERE id_usuario = ?";
+
         try (Connection con = DatabaseConnection.getConnection();
-             PreparedStatement ps = con.prepareStatement(query)) {
+             PreparedStatement ps = con != null ? con.prepareStatement(query) : null) {
+
+            if (con == null || ps == null) return false;
 
             ps.setInt(1, idUsuario);
 
@@ -450,7 +481,9 @@ public class UsuarioDao {
         sql.append("WHERE id_usuario = ?");
 
         try (Connection con = DatabaseConnection.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql.toString())) {
+             PreparedStatement ps = con != null ? con.prepareStatement(sql.toString()) : null) {
+
+            if (con == null || ps == null) return false;
 
             int paramIndex = 1;
             if (tieneTelefono) {
@@ -469,14 +502,13 @@ public class UsuarioDao {
         return false;
     }
 
-    // =======================================================
-    // MÉTODOS CORREGIDOS CON LA TABLA PARTICIPANTES_EVENTOS
-    // =======================================================
-
     public int obtenerIdParticipante(int idEvento, int idUsuario) {
         String sql = "SELECT id_participante FROM participantes_eventos WHERE id_evento = ? AND id_usuario = ?";
+
         try (Connection con = DatabaseConnection.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
+             PreparedStatement ps = con != null ? con.prepareStatement(sql) : null) {
+
+            if (con == null || ps == null) return -1;
 
             ps.setInt(1, idEvento);
             ps.setInt(2, idUsuario);
@@ -494,7 +526,6 @@ public class UsuarioDao {
     }
 
     public int obtenerOCrearParticipante(int idEvento, int idUsuario) {
-        // 1. Consultar si el usuario ya es participante de este evento
         int idParticipante = obtenerIdParticipante(idEvento, idUsuario);
         if (idParticipante != -1) {
             return idParticipante;
@@ -504,23 +535,25 @@ public class UsuarioDao {
                 "VALUES (?, ?, ?, CURRENT_TIMESTAMP)";
 
         try (Connection con = DatabaseConnection.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql, new String[]{"ID_PARTICIPANTE"})) {
+             PreparedStatement ps = con != null ? con.prepareStatement(sql, new String[]{"ID_PARTICIPANTE"}) : null) {
 
-            ps.setInt(1, idEvento);
-            ps.setInt(2, idUsuario);
-            ps.setInt(3, idUsuario); // REGISTRADO_POR
-            ps.executeUpdate();
+            if (con != null && ps != null) {
+                ps.setInt(1, idEvento);
+                ps.setInt(2, idUsuario);
+                ps.setInt(3, idUsuario); // REGISTRADO_POR
+                ps.executeUpdate();
 
-            try (ResultSet rs = ps.getGeneratedKeys()) {
-                if (rs.next()) {
-                    return rs.getInt(1);
+                try (ResultSet rs = ps.getGeneratedKeys()) {
+                    if (rs.next()) {
+                        return rs.getInt(1);
+                    }
                 }
             }
         } catch (SQLException e) {
             System.err.println("Advertencia getGeneratedKeys Oracle: " + e.getMessage());
         }
 
-        // 3. Reconsulta de rescate por si la secuencia no devolvió el valor mediante el driver
+        // Reconsulta de rescate por si la secuencia no devolvió el valor mediante el driver
         return obtenerIdParticipante(idEvento, idUsuario);
     }
 
@@ -530,8 +563,10 @@ public class UsuarioDao {
                 "fecha_inicio, fecha_fin, modalidad FROM eventos ORDER BY id_evento DESC";
 
         try (Connection con = DatabaseConnection.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
+             PreparedStatement ps = con != null ? con.prepareStatement(sql) : null;
+             ResultSet rs = ps != null ? ps.executeQuery() : null) {
+
+            if (con == null || ps == null || rs == null) return lista;
 
             while (rs.next()) {
                 agregarEvento_co ev = new agregarEvento_co();
@@ -556,7 +591,4 @@ public class UsuarioDao {
         }
         return lista;
     }
-
-
-
 }

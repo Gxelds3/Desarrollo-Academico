@@ -9,22 +9,21 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-public class AgregarDesarrollador_Dao {
 
+public class AgregarDesarrollador_Dao {
 
     public boolean registrarDesarrollador(Usuario usuario) {
         boolean estado = false;
-        Connection con = null;
-        PreparedStatement ps = null;
+        String query = "INSERT INTO usuarios " +
+                "(nombre, apellido_paterno, apellido_materno, rol, id_division, numero_empleado, telefono, correo_institucional, contrasena, fecha_registro, activo) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, SYSDATE, 1)";
 
-        try {
-            con = DatabaseConnection.getConnection();
+        // 💡 CORREGIDO: try-with-resources para liberar la conexión al instante
+        try (Connection con = DatabaseConnection.getConnection();
+             PreparedStatement ps = con != null ? con.prepareStatement(query) : null) {
 
-            String query = "INSERT INTO usuarios " +
-                    "(nombre, apellido_paterno, apellido_materno, rol, id_division, numero_empleado, telefono, correo_institucional, contrasena, fecha_registro, activo) " +
-                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, SYSDATE, 1)";
+            if (con == null || ps == null) return false;
 
-            ps = con.prepareStatement(query);
             ps.setString(1, usuario.getNombre());
             ps.setString(2, usuario.getApellidoPaterno());
             ps.setString(3, usuario.getApellidoMaterno());
@@ -46,28 +45,24 @@ public class AgregarDesarrollador_Dao {
 
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            try { if (ps != null) ps.close(); } catch (SQLException ignored) {}
-            try { if (con != null) con.close(); } catch (SQLException ignored) {}
         }
 
         return estado;
     }
 
-    // Revisa si ya existe un usuario con ese correo o número de empleado,
-    // para no dejar que se registren duplicados (la tabla probablemente
-    // tenga una restricción UNIQUE, pero así damos un mensaje claro antes de llegar ahí).
     public boolean existeCorreoOEmpleado(String correo, String numeroEmpleado) {
         boolean existe = false;
         String query = "SELECT COUNT(*) FROM usuarios WHERE correo_institucional = ? OR numero_empleado = ?";
 
         try (Connection con = DatabaseConnection.getConnection();
-             PreparedStatement ps = con.prepareStatement(query)) {
+             PreparedStatement ps = con != null ? con.prepareStatement(query) : null) {
+
+            if (con == null || ps == null) return false;
 
             ps.setString(1, correo);
             ps.setString(2, numeroEmpleado);
 
-            try (java.sql.ResultSet rs = ps.executeQuery()) {
+            try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
                     existe = rs.getInt(1) > 0;
                 }
@@ -79,14 +74,14 @@ public class AgregarDesarrollador_Dao {
         return existe;
     }
 
-    // Igual que existeCorreoOEmpleado, pero ignora al propio usuario que se está editando
-    // (si no, se marcaría como "duplicado" contra sí mismo al guardar sin cambiar esos datos).
     public boolean existeCorreoOEmpleadoExcluyendo(String correo, String numeroEmpleado, int idUsuario) {
         boolean existe = false;
         String query = "SELECT COUNT(*) FROM usuarios WHERE (correo_institucional = ? OR numero_empleado = ?) AND id_usuario <> ?";
 
         try (Connection con = DatabaseConnection.getConnection();
-             PreparedStatement ps = con.prepareStatement(query)) {
+             PreparedStatement ps = con != null ? con.prepareStatement(query) : null) {
+
+            if (con == null || ps == null) return false;
 
             ps.setString(1, correo);
             ps.setString(2, numeroEmpleado);
@@ -104,13 +99,14 @@ public class AgregarDesarrollador_Dao {
         return existe;
     }
 
-
     public Usuario obtenerPorId(int idUsuario) {
         Usuario usuario = null;
         String query = "SELECT * FROM usuarios WHERE id_usuario = ? AND rol = 'desarrollo'";
 
         try (Connection con = DatabaseConnection.getConnection();
-             PreparedStatement ps = con.prepareStatement(query)) {
+             PreparedStatement ps = con != null ? con.prepareStatement(query) : null) {
+
+            if (con == null || ps == null) return null;
 
             ps.setInt(1, idUsuario);
 
@@ -132,7 +128,6 @@ public class AgregarDesarrollador_Dao {
                     usuario.setTelefono(rs.getString("telefono"));
                     usuario.setCorreoInstitucional(rs.getString("correo_institucional"));
                     usuario.setActivo(rs.getInt("activo"));
-
                     usuario.setContrasena(rs.getString("contrasena"));
                 }
             }
@@ -142,7 +137,6 @@ public class AgregarDesarrollador_Dao {
 
         return usuario;
     }
-
 
     public boolean actualizarDesarrollador(Usuario usuario, String nuevaContrasena) throws Exception {
         boolean estado = false;
@@ -154,8 +148,11 @@ public class AgregarDesarrollador_Dao {
 
         try {
             con = DatabaseConnection.getConnection();
-            con.setAutoCommit(true);
+            if (con == null) {
+                throw new Exception("No se pudo obtener conexión con la base de datos.");
+            }
 
+            // 1. Validar número de empleado
             String checkNumEmp = "SELECT COUNT(*) FROM usuarios WHERE numero_empleado = ? AND id_usuario != ?";
             ps = con.prepareStatement(checkNumEmp);
             ps.setString(1, usuario.getNumeroEmpleado());
@@ -167,7 +164,7 @@ public class AgregarDesarrollador_Dao {
             rs.close();
             ps.close();
 
-            // 2. VALIDAR SI EL CORREO INSTITUCIONAL YA PERTENECE A OTRO USUARIO
+            // 2. Validar correo institucional
             String checkCorreo = "SELECT COUNT(*) FROM usuarios WHERE correo_institucional = ? AND id_usuario != ?";
             ps = con.prepareStatement(checkCorreo);
             ps.setString(1, usuario.getCorreoInstitucional());
@@ -179,6 +176,7 @@ public class AgregarDesarrollador_Dao {
             rs.close();
             ps.close();
 
+            // 3. Ejecutar Update
             String query = "UPDATE usuarios SET " +
                     "nombre = ?, apellido_paterno = ?, apellido_materno = ?, id_division = ?, " +
                     "numero_empleado = ?, telefono = ?, correo_institucional = ?, rol = ?" +
@@ -215,43 +213,47 @@ public class AgregarDesarrollador_Dao {
             e.printStackTrace();
             throw new Exception("Error al consultar la base de datos: " + e.getMessage());
         } finally {
+            // 💡 CORREGIDO: Cierre adecuado devolviendo al pool de HikariCP
             try { if (rs != null) rs.close(); } catch (SQLException ignored) {}
             try { if (ps != null) ps.close(); } catch (SQLException ignored) {}
-            try { if (con != null) con.close(); } catch (SQLException ignored) {}
+            if (con != null) {
+                DatabaseConnection.closeConnection(con);
+            }
         }
 
         return estado;
     }
 
-    // Trae a todos los usuarios con rol 'desarrollo', para la tabla de "Gestión de Desarrolladores".
     public List<Usuario> listarDesarrolladores() {
         List<Usuario> lista = new ArrayList<>();
         String query = "SELECT * FROM usuarios WHERE rol = 'desarrollo' ORDER BY nombre, apellido_paterno";
 
         try (Connection con = DatabaseConnection.getConnection();
-             PreparedStatement ps = con.prepareStatement(query);
-             ResultSet rs = ps.executeQuery()) {
+             PreparedStatement ps = con != null ? con.prepareStatement(query) : null) {
 
-            while (rs.next()) {
-                Usuario usuario = new Usuario();
-                usuario.setIdUsuario(rs.getInt("id_usuario"));
-                usuario.setNombre(rs.getString("nombre"));
-                usuario.setApellidoPaterno(rs.getString("apellido_paterno"));
-                usuario.setApellidoMaterno(rs.getString("apellido_materno"));
-                usuario.setRol(rs.getString("rol"));
+            if (con == null || ps == null) return lista;
 
-                int idDivision = rs.getInt("id_division");
-                if (!rs.wasNull()) {
-                    usuario.setIdDivision(idDivision);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Usuario usuario = new Usuario();
+                    usuario.setIdUsuario(rs.getInt("id_usuario"));
+                    usuario.setNombre(rs.getString("nombre"));
+                    usuario.setApellidoPaterno(rs.getString("apellido_paterno"));
+                    usuario.setApellidoMaterno(rs.getString("apellido_materno"));
+                    usuario.setRol(rs.getString("rol"));
+
+                    int idDivision = rs.getInt("id_division");
+                    if (!rs.wasNull()) {
+                        usuario.setIdDivision(idDivision);
+                    }
+
+                    usuario.setNumeroEmpleado(rs.getString("numero_empleado"));
+                    usuario.setTelefono(rs.getString("telefono"));
+                    usuario.setCorreoInstitucional(rs.getString("correo_institucional"));
+                    usuario.setActivo(rs.getInt("activo"));
+
+                    lista.add(usuario);
                 }
-
-                usuario.setNumeroEmpleado(rs.getString("numero_empleado"));
-                usuario.setTelefono(rs.getString("telefono"));
-                usuario.setCorreoInstitucional(rs.getString("correo_institucional"));
-                usuario.setActivo(rs.getInt("activo"));
-                // No se mapea la contraseña: nunca se debe regresar al cliente.
-
-                lista.add(usuario);
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -260,13 +262,13 @@ public class AgregarDesarrollador_Dao {
         return lista;
     }
 
-    // Activa o desactiva a un desarrollador (columna "activo"), sin borrar su registro.
-    // Un usuario inactivo no puede iniciar sesión
     public boolean cambiarEstado(int idUsuario, int nuevoEstado) {
         String query = "UPDATE usuarios SET activo = ? WHERE id_usuario = ?";
 
         try (Connection con = DatabaseConnection.getConnection();
-             PreparedStatement ps = con.prepareStatement(query)) {
+             PreparedStatement ps = con != null ? con.prepareStatement(query) : null) {
+
+            if (con == null || ps == null) return false;
 
             ps.setInt(1, nuevoEstado);
             ps.setInt(2, idUsuario);
@@ -278,11 +280,13 @@ public class AgregarDesarrollador_Dao {
         return false;
     }
 
-
     public boolean validarContrasenaActual(int idUsuario, String passActualIngresada) {
         String sql = "SELECT contrasena FROM usuarios WHERE id_usuario = ?";
+
         try (Connection con = DatabaseConnection.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
+             PreparedStatement ps = con != null ? con.prepareStatement(sql) : null) {
+
+            if (con == null || ps == null) return false;
 
             ps.setInt(1, idUsuario);
             try (ResultSet rs = ps.executeQuery()) {

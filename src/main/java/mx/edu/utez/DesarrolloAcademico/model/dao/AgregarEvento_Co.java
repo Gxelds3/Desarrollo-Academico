@@ -8,7 +8,6 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +23,8 @@ public class AgregarEvento_Co {
 
         try {
             con = DatabaseConnection.getConnection();
+            if (con == null) return false;
+
             con.setAutoCommit(false);
 
             String queryEvento = "INSERT INTO eventos (nombre, lugar, institucion, tipo_evento, descripcion, fecha_inicio, fecha_fin, modalidad, id_division, creado_por, fecha_creacion) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, SYSDATE)";
@@ -74,11 +75,15 @@ public class AgregarEvento_Co {
                 ex.printStackTrace();
             }
         } finally {
+            //  IMPORTANTE: Cerrar conexión al final para devolverla al pool
             try {
                 if (rs != null) rs.close();
                 if (psEvento != null) psEvento.close();
                 if (psDocentes != null) psDocentes.close();
-                if (con != null) con.setAutoCommit(true);
+                if (con != null) {
+                    con.setAutoCommit(true);
+                    DatabaseConnection.closeConnection(con);
+                }
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -89,7 +94,6 @@ public class AgregarEvento_Co {
     public List<agregarEvento_co> listarEventos1(Integer idDivision) {
         List<agregarEvento_co> eventos = new ArrayList<>();
 
-        // Consulta base que siempre excluye los eventos vencidos (fecha_fin >= CURRENT_DATE)
         StringBuilder query = new StringBuilder(
                 "SELECT e.id_evento, e.nombre, e.lugar, e.institucion, e.tipo_evento, " +
                         "e.descripcion, e.fecha_inicio, e.fecha_fin, e.modalidad, d.nombre AS nombre_division " +
@@ -97,7 +101,6 @@ public class AgregarEvento_Co {
                         "WHERE e.fecha_fin >= CURRENT_DATE "
         );
 
-        // Si se proporciona un idDivision (es coordinador), filtramos por esa división
         if (idDivision != null) {
             query.append("AND e.id_division = ? ");
         }
@@ -105,9 +108,10 @@ public class AgregarEvento_Co {
         query.append("ORDER BY e.fecha_inicio ASC");
 
         try (Connection con = DatabaseConnection.getConnection();
-             PreparedStatement ps = con.prepareStatement(query.toString())) {
+             PreparedStatement ps = con != null ? con.prepareStatement(query.toString()) : null) {
 
-            // Si hay división, seteamos el parámetro 1
+            if (con == null || ps == null) return eventos;
+
             if (idDivision != null) {
                 ps.setInt(1, idDivision);
             }
@@ -140,22 +144,24 @@ public class AgregarEvento_Co {
     public List<agregarEvento_co> listarEventos(Integer idDivision) {
         List<agregarEvento_co> eventos = new ArrayList<>();
 
-        // Construcción de la consulta con la condición para filtrar eventos vencidos
         StringBuilder query = new StringBuilder(
                 "SELECT e.id_evento, e.nombre, e.lugar, e.institucion, e.tipo_evento, e.descripcion, e.fecha_inicio, e.fecha_fin, e.modalidad, d.nombre AS nombre_division " +
                         "FROM eventos e LEFT JOIN divisiones d ON e.id_division = d.id_division " +
                         "WHERE e.fecha_fin >= CURRENT_DATE "
         );
 
-        // Si viene idDivision, lo agregamos con AND
         if (idDivision != null) {
             query.append("AND e.id_division = ? ");
         }
 
-        query.append("ORDER BY e.fecha_inicio ASC"); // Opcional: ordenarlos por fecha de inicio próxima
+        query.append("ORDER BY e.fecha_inicio ASC");
 
-        Connection con = DatabaseConnection.getConnection();
-        try (PreparedStatement ps = con.prepareStatement(query.toString())) {
+        //  CORREGIDO: Inserción de la conexión dentro del try-with-resources
+        try (Connection con = DatabaseConnection.getConnection();
+             PreparedStatement ps = con != null ? con.prepareStatement(query.toString()) : null) {
+
+            if (con == null || ps == null) return eventos;
+
             if (idDivision != null) {
                 ps.setInt(1, idDivision);
             }
@@ -211,26 +217,34 @@ public class AgregarEvento_Co {
                 ex.printStackTrace();
             }
         } finally {
+            // 💡 IMPORTANTE: Devolver la conexión al pool
             try {
                 if (psEvento != null) psEvento.close();
-                if (con != null) con.setAutoCommit(true);
+                if (con != null) {
+                    con.setAutoCommit(true);
+                    DatabaseConnection.closeConnection(con);
+                }
             } catch (SQLException e) {
                 e.printStackTrace();
             }
         }
         return estado;
     }
+
     public String obtenerFechaLimitePorDivision(int idDivision) {
         String query = "SELECT fecha_fin FROM periodos_carga " +
                 "WHERE id_division = ? AND activo = 1 " +
                 "ORDER BY fecha_fin DESC";
 
-        Connection con = DatabaseConnection.getConnection();
-        if (con == null) {
-            System.err.println("Error al obtener fecha límite: no se pudo obtener conexión a la base de datos.");
-            return null;
-        }
-        try (PreparedStatement ps = con.prepareStatement(query)) {
+        // 💡 CORREGIDO: Declaración dentro de try-with-resources
+        try (Connection con = DatabaseConnection.getConnection();
+             PreparedStatement ps = con != null ? con.prepareStatement(query) : null) {
+
+            if (con == null || ps == null) {
+                System.err.println("Error al obtener fecha límite: no se pudo obtener conexión a la base de datos.");
+                return null;
+            }
+
             ps.setInt(1, idDivision);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
@@ -248,12 +262,15 @@ public class AgregarEvento_Co {
     public agregarEvento_co obtenerPorId(int idEvento) {
         String query = "SELECT id_evento, nombre, lugar, institucion, tipo_evento, descripcion, fecha_inicio, fecha_fin, modalidad, id_division, creado_por FROM eventos WHERE id_evento = ?";
 
-        Connection con = DatabaseConnection.getConnection();
-        if (con == null) {
-            System.err.println("Error al obtener el evento: no se pudo obtener conexión a la base de datos.");
-            return null;
-        }
-        try (PreparedStatement ps = con.prepareStatement(query)) {
+        // 💡 CORREGIDO: Declaración dentro de try-with-resources
+        try (Connection con = DatabaseConnection.getConnection();
+             PreparedStatement ps = con != null ? con.prepareStatement(query) : null) {
+
+            if (con == null || ps == null) {
+                System.err.println("Error al obtener el evento: no se pudo obtener conexión a la base de datos.");
+                return null;
+            }
+
             ps.setInt(1, idEvento);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
@@ -319,9 +336,13 @@ public class AgregarEvento_Co {
                 ex.printStackTrace();
             }
         } finally {
+            //  IMPORTANTE: Devolver la conexión al pool
             try {
                 if (psEvento != null) psEvento.close();
-                if (con != null) con.setAutoCommit(true);
+                if (con != null) {
+                    con.setAutoCommit(true);
+                    DatabaseConnection.closeConnection(con);
+                }
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -337,8 +358,12 @@ public class AgregarEvento_Co {
                 "LEFT JOIN divisiones d ON e.id_division = d.id_division " +
                 "ORDER BY e.id_evento DESC";
 
-        Connection con = DatabaseConnection.getConnection();
-        try (PreparedStatement ps = con.prepareStatement(query)) {
+        //  CORREGIDO: Declaración dentro de try-with-resources
+        try (Connection con = DatabaseConnection.getConnection();
+             PreparedStatement ps = con != null ? con.prepareStatement(query) : null) {
+
+            if (con == null || ps == null) return eventos;
+
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     agregarEvento_co evento = new agregarEvento_co();

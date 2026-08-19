@@ -1,15 +1,24 @@
 package mx.edu.utez.DesarrolloAcademico.utils;
 
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
+
+import java.io.File;
 import java.io.InputStream;
+import java.net.URL;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
 
 public class DatabaseConnection {
-    public static Connection getConnection() {
+
+    private static HikariDataSource dataSource;
+
+    static {
         try {
             Properties props = new Properties();
+
+            // 1. Cargar archivo credentials.properties
             try (InputStream in = DatabaseConnection.class.getClassLoader().getResourceAsStream("credentials.properties")) {
                 if (in != null) {
                     props.load(in);
@@ -18,26 +27,46 @@ public class DatabaseConnection {
 
             String dbUser = System.getenv("DB_USER") != null ? System.getenv("DB_USER") : props.getProperty("db.user");
             String dbPass = System.getenv("DB_PASS") != null ? System.getenv("DB_PASS") : props.getProperty("db.password");
-            
-            java.net.URL walletUrl = DatabaseConnection.class.getClassLoader().getResource("wallet");
-            String walletPath = "";
-            if (walletUrl != null) {
-                walletPath = new java.io.File(walletUrl.toURI()).getAbsolutePath();
+
+            // 2. Localizar carpeta wallet
+            URL walletUrl = DatabaseConnection.class.getClassLoader().getResource("wallet");
+            if (walletUrl == null) {
+                System.err.println("CRÍTICO: La carpeta 'wallet' no existe en src/main/resources/");
+            } else {
+                File walletDir = new File(walletUrl.toURI());
+                System.setProperty("oracle.net.tns_admin", walletDir.getAbsolutePath());
             }
-            
-            Properties info = new Properties();
-            info.put("user", dbUser);
-            info.put("password", dbPass);
-            info.put("oracle.net.tns_admin", walletPath);
 
-            Class.forName("oracle.jdbc.OracleDriver");
+            // 3. Configuración de HikariCP Pool
+            HikariConfig config = new HikariConfig();
+            config.setDriverClassName("oracle.jdbc.OracleDriver");
+            config.setJdbcUrl("jdbc:oracle:thin:@desarrolloacademico_medium");
+            config.setUsername(dbUser);
+            config.setPassword(dbPass);
 
-            String dbUrl = "jdbc:oracle:thin:@desarrolloacademico_medium";
-            Connection newConnection = DriverManager.getConnection(dbUrl, info);
-            System.out.println("Nueva conexión a Oracle exitosa!");
-            return newConnection;
+            // Ajustes optimizados para Oracle Cloud
+            config.setMaximumPoolSize(5);         // Máximo de conexiones simultáneas
+            config.setMinimumIdle(2);            // Conexiones mínimas abiertas en espera
+            config.setIdleTimeout(30000);         // 30 segundos
+            config.setConnectionTimeout(10000);   // 10 segundos de espera por conexión
+            config.setMaxLifetime(600000);       // Reciclar conexiones cada 10 mins
+
+            dataSource = new HikariDataSource(config);
+            System.out.println("✅ Pool de conexiones HikariCP iniciado correctamente.");
+
         } catch (Exception e) {
-            System.err.println("Error en la conexión a Base de Datos: " + e.getMessage());
+            System.err.println("❌ Error inicializando el Pool de Conexiones: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    public static Connection getConnection() {
+        try {
+            if (dataSource != null) {
+                return dataSource.getConnection();
+            }
+        } catch (SQLException e) {
+            System.err.println(" Error al obtener conexión del pool: " + e.getMessage());
             e.printStackTrace();
         }
         return null;
@@ -47,7 +76,6 @@ public class DatabaseConnection {
         try {
             if (con != null && !con.isClosed()) {
                 con.close();
-                System.out.println("Conexión cerrada.");
             }
         } catch (SQLException e) {
             e.printStackTrace();

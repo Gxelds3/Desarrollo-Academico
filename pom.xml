@@ -18,6 +18,14 @@
     </properties>
 
     <dependencies>
+        <!-- Pool de Conexiones HikariCP -->
+
+        <!-- Para proyectos con Java 8 -->
+        <dependency>
+            <groupId>com.zaxxer</groupId>
+            <artifactId>HikariCP</artifactId>
+            <version>4.0.3</version>
+        </dependency>
 
         <!-- Jakarta JSTL API -->
         <dependency>

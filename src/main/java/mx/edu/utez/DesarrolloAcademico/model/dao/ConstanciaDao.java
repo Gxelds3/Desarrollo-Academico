@@ -14,8 +14,15 @@ public class ConstanciaDao {
     public int obtenerIdParticipante(int idEvento, int idUsuario) {
         int idParticipante = -1;
         String query = "SELECT id_participante FROM participantes_eventos WHERE id_evento = ? AND id_usuario = ?";
+
         try (Connection con = DatabaseConnection.getConnection();
-             PreparedStatement ps = con.prepareStatement(query)) {
+             PreparedStatement ps = con != null ? con.prepareStatement(query) : null) {
+
+            if (con == null || ps == null) {
+                System.err.println("⚠️ [ConstanciaDao] Imposible obtener idParticipante: Sin conexión a la BD.");
+                return idParticipante;
+            }
+
             ps.setInt(1, idEvento);
             ps.setInt(2, idUsuario);
             try (ResultSet rs = ps.executeQuery()) {
@@ -32,8 +39,12 @@ public class ConstanciaDao {
     // Verifica si ya existe una constancia para el participante
     public boolean verificarConstanciaExistente(int idParticipante) {
         String query = "SELECT id_constancia FROM constancias WHERE id_participante = ?";
+
         try (Connection con = DatabaseConnection.getConnection();
-             PreparedStatement ps = con.prepareStatement(query)) {
+             PreparedStatement ps = con != null ? con.prepareStatement(query) : null) {
+
+            if (con == null || ps == null) return false;
+
             ps.setInt(1, idParticipante);
             try (ResultSet rs = ps.executeQuery()) {
                 return rs.next();
@@ -57,7 +68,10 @@ public class ConstanciaDao {
         }
 
         try (Connection con = DatabaseConnection.getConnection();
-             PreparedStatement ps = con.prepareStatement(query)) {
+             PreparedStatement ps = con != null ? con.prepareStatement(query) : null) {
+
+            if (con == null || ps == null) return false;
+
             ps.setInt(1, idParticipante);
             ps.setString(2, nombreArchivo);
             ps.setBytes(3, contenidoArchivo);
@@ -89,9 +103,13 @@ public class ConstanciaDao {
     public Map<String, Object> obtenerConstancia(int idParticipante) {
         Map<String, Object> datos = null;
         String query = "SELECT id_constancia, nombre_archivo, content_type, tiene_vigencia, fecha_vencimiento, fecha_subida " +
-                       "FROM constancias WHERE id_participante = ?";
+                "FROM constancias WHERE id_participante = ?";
+
         try (Connection con = DatabaseConnection.getConnection();
-             PreparedStatement ps = con.prepareStatement(query)) {
+             PreparedStatement ps = con != null ? con.prepareStatement(query) : null) {
+
+            if (con == null || ps == null) return null;
+
             ps.setInt(1, idParticipante);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
@@ -113,8 +131,12 @@ public class ConstanciaDao {
     // Obtiene el BLOB del archivo para servirlo como descarga
     public byte[] obtenerContenidoArchivo(int idConstancia) {
         String query = "SELECT contenido_archivo FROM constancias WHERE id_constancia = ?";
+
         try (Connection con = DatabaseConnection.getConnection();
-             PreparedStatement ps = con.prepareStatement(query)) {
+             PreparedStatement ps = con != null ? con.prepareStatement(query) : null) {
+
+            if (con == null || ps == null) return null;
+
             ps.setInt(1, idConstancia);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
@@ -130,8 +152,12 @@ public class ConstanciaDao {
     // Obtiene nombre y content_type de una constancia (para el servlet de descarga)
     public Map<String, String> obtenerMetaDescarga(int idConstancia) {
         String query = "SELECT nombre_archivo, content_type FROM constancias WHERE id_constancia = ?";
+
         try (Connection con = DatabaseConnection.getConnection();
-             PreparedStatement ps = con.prepareStatement(query)) {
+             PreparedStatement ps = con != null ? con.prepareStatement(query) : null) {
+
+            if (con == null || ps == null) return null;
+
             ps.setInt(1, idConstancia);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
@@ -148,11 +174,15 @@ public class ConstanciaDao {
         return null;
     }
 
-    // Elimina la constancia de la BD (ya no hay archivo físico que borrar)
+    // Elimina la constancia de la BD
     public boolean eliminarConstancia(int idConstancia, int idParticipante) {
         String queryDelete = "DELETE FROM constancias WHERE id_constancia = ? AND id_participante = ?";
+
         try (Connection con = DatabaseConnection.getConnection();
-             PreparedStatement ps = con.prepareStatement(queryDelete)) {
+             PreparedStatement ps = con != null ? con.prepareStatement(queryDelete) : null) {
+
+            if (con == null || ps == null) return false;
+
             ps.setInt(1, idConstancia);
             ps.setInt(2, idParticipante);
             return ps.executeUpdate() > 0;
@@ -165,8 +195,12 @@ public class ConstanciaDao {
     public boolean esPeriodoActivo(int idDivision) {
         boolean activo = false;
         String sql = "SELECT 1 FROM periodos_carga WHERE ID_DIVISION = ? AND ACTIVO = 1 AND TRUNC(SYSDATE) BETWEEN TRUNC(FECHA_INICIO) AND TRUNC(FECHA_FIN)";
+
         try (Connection con = DatabaseConnection.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
+             PreparedStatement ps = con != null ? con.prepareStatement(sql) : null) {
+
+            if (con == null || ps == null) return false;
+
             ps.setInt(1, idDivision);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
