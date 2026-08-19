@@ -1,4 +1,4 @@
-:root {
+﻿:root {
     --teal-main: #00847b;
     --teal-dark: #004d40;
     --teal-light: #26a69a;
@@ -573,4 +573,170 @@ body {
 .submenu-item.active {
     background-color: var(--teal-active);
     color: white;
+}
+/* =========================================
+   RESPONSIVE DESIGN (M�viles y Tablets)
+========================================= */
+@media (max-width: 991px) {
+    /* ----- BARRA LATERAL (Pasa a ser superior expandible) ----- */
+    .sidebar-hover {
+        width: 100% !important;
+        height: 60px;
+        min-height: 60px !important;
+        position: fixed;
+        top: 0;
+        left: 0;
+        flex-direction: column !important;
+        border-radius: 0;
+        padding: 0;
+        z-index: 9999;
+        overflow: hidden !important;
+        transition: height 0.3s ease;
+    }
+    
+    /* Cuando se le hace hover o tap, se expande hacia abajo */
+    .sidebar-hover:hover,
+    .sidebar-hover:active,
+    .sidebar-hover:focus-within {
+        height: 100vh;
+        overflow-y: auto !important;
+        background-color: var(--teal-main);
+    }
+
+    /* Bot�n Hamburguesa Simulado */
+    .sidebar-hover::before {
+        content: '\2630  NAV';
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 60px;
+        width: 100%;
+        background-color: var(--teal-main);
+        color: white;
+        font-size: 1.2rem;
+        font-weight: bold;
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 10;
+        cursor: pointer;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    .sidebar-avatar-container {
+        margin-top: 70px; /* Empuja debajo del men� */
+        height: auto;
+        padding: 15px;
+    }
+
+    .sidebar-menu-scroll {
+        flex-direction: column !important;
+        width: 100%;
+        margin-top: 10px;
+        opacity: 0;
+        transition: opacity 0.3s;
+    }
+
+    .sidebar-hover:hover .sidebar-menu-scroll,
+    .sidebar-hover:active .sidebar-menu-scroll,
+    .sidebar-hover:focus-within .sidebar-menu-scroll {
+        opacity: 1;
+    }
+
+    .sidebar-item {
+        width: 100%;
+        margin: 5px 0;
+        padding: 0 20px;
+        justify-content: flex-start;
+        border-radius: 0;
+        min-height: 50px;
+    }
+
+    .sidebar-text, .sidebar-info {
+        display: inline-block !important;
+        opacity: 1 !important;
+    }
+
+    .sidebar-submenu {
+        position: static;
+        padding-left: 50px;
+    }
+
+    /* ----- CONTENIDO PRINCIPAL ----- */
+    .main-content {
+        margin-left: 0 !important;
+        padding: 80px 15px 30px 15px !important; /* Espacio superior para que no lo tape la barra */
+    }
+
+    .page-title {
+        font-size: 1.4rem;
+        text-align: center;
+    }
+
+    /* ----- TABLAS RESPONSIVAS ----- */
+    .table-custom {
+        display: block;
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        white-space: nowrap;
+    }
+
+    /* ----- FORMULARIOS ----- */
+    .row {
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .col-md-4, .col-md-6, .col-md-3, .col-md-8, .col-md-12 {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin-bottom: 15px;
+    }
+
+    /* ----- TARJETAS (INFO, EVENTOS, ESTAD�STICAS) ----- */
+    .stat-card {
+        flex-direction: column;
+        text-align: center;
+        padding: 15px;
+    }
+    
+    .stat-icon {
+        margin-bottom: 10px;
+    }
+
+    .event-card {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+    
+    .event-card .d-flex {
+        flex-direction: column;
+        width: 100%;
+    }
+    
+    .event-card .btn-teal {
+        width: 100%;
+        justify-content: center;
+        margin-top: 10px;
+    }
+
+    .d-flex.justify-content-end.gap-3 {
+        flex-direction: column;
+        width: 100%;
+    }
+    
+    .d-flex.justify-content-end.gap-3 a,
+    .d-flex.justify-content-end.gap-3 button {
+        width: 100%;
+        justify-content: center;
+        margin-bottom: 10px;
+    }
+    
+    /* Modalidad en ver_mas_evento */
+    .info-card-outline {
+        margin-bottom: 15px;
+        width: 100%;
+    }
 }
