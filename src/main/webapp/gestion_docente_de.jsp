@@ -31,7 +31,7 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div class="search-box mb-0" style="max-width: 600px; flex-grow: 1; margin-right: 20px;">
             <i class="bi bi-search"></i>
-            <input type="text" id="buscarDocente" placeholder="Buscar por nombre, correo, número de empleado...">
+            <input type="text" id="buscarDocente" placeholder="Buscar por nombre o correo...">
         </div>
         <a href="${pageContext.request.contextPath}/agregar_docente_de.jsp" class="btn-teal">
             <i class="bi bi-person-plus"></i> Agregar Docente/Coordinador

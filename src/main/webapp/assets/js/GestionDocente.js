@@ -113,7 +113,7 @@ function validarFormularioDocente(datos) {
     }
 
     if (!correo.toLowerCase().endsWith('@utez.edu.mx')) {
-        mostrarAlerta('Correo no institucional', 'El correo debe terminar estrictamente en @utez.edu.mx');
+        mostrarAlerta('Correo no institucional', 'El correo debe terminar strictly en @utez.edu.mx');
         return false;
     }
 
@@ -147,6 +147,16 @@ function normalizar(texto) {
 
 function nombreCompleto(doc) {
     return [doc.nombre, doc.apellidoPaterno, doc.apellidoMaterno].filter(Boolean).join(' ');
+}
+
+// Función helper para obtener las primeras dos iniciales
+function obtenerIniciales(nombreStr) {
+    if (!nombreStr) return '';
+    const palabras = nombreStr.trim().split(/\s+/);
+    if (palabras.length === 1) {
+        return palabras[0].substring(0, 2).toUpperCase();
+    }
+    return (palabras[0][0] + palabras[1][0]).toUpperCase();
 }
 
 function obtenerDocentesFiltrados() {
@@ -192,14 +202,17 @@ function renderDocentes(lista) {
 
         const nombreRolMostrado = doc.rol ? doc.rol.charAt(0).toUpperCase() + doc.rol.slice(1) : 'Docente';
 
+        const completo = nombreCompleto(doc);
+        const iniciales = obtenerIniciales(completo);
+
         const fila = document.createElement('tr');
         fila.setAttribute('data-id', doc.id);
         fila.innerHTML =
             '<td class="text-start">' +
             '<div class="docente-name-container">' +
-            '<div class="avatar-circle" style="flex-shrink:0;"></div>' +
+            '<div class="avatar-circle" style="flex-shrink:0;">' + escapeHtml(iniciales) + '</div>' +
             '<div class="docente-name" style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">' +
-            escapeHtml(nombreCompleto(doc)) +
+            escapeHtml(completo) +
             '</div>' +
             '</div>' +
             '</td>' +

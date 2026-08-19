@@ -83,7 +83,7 @@ function validarFormularioDocente(datos) {
 
     // 6. CORREO ESTRICTAMENTE TERMINADO EN @utez.edu.mx
     if (!correo.toLowerCase().endsWith('@utez.edu.mx')) {
-        mostrarAlerta('Correo no institucional', 'El correo debe terminar estrictamente en @utez.edu.mx');
+        mostrarAlerta('Correo no institucional', 'El correo debe terminar strictly en @utez.edu.mx');
         return false;
     }
 
@@ -119,6 +119,16 @@ function normalizar(texto) {
 
 function nombreCompleto(doc) {
     return [doc.nombre, doc.apellidoPaterno, doc.apellidoMaterno].filter(Boolean).join(' ');
+}
+
+// AGREGADO: Helper para obtener las primeras dos iniciales
+function obtenerIniciales(nombreStr) {
+    if (!nombreStr) return '';
+    const palabras = nombreStr.trim().split(/\s+/);
+    if (palabras.length === 1) {
+        return palabras[0].substring(0, 2).toUpperCase();
+    }
+    return (palabras[0][0] + palabras[1][0]).toUpperCase();
 }
 
 // Función auxiliar para convertir el rol en su respectiva etiqueta legible
@@ -179,8 +189,10 @@ function renderDocentes(lista) {
         const rolTexto = obtenerTextoRol(doc.rol);
         const claveRol = rolTexto.toLowerCase(); // 'coordinador' o 'docente'
         const colorRol = COLORES_ROL[claveRol] || COLORES_ROL['default'];
-        // Ajuste de color del texto para garantizar legibilidad (texto oscuro en Amarillo Limón)
         const colorTextoRol = claveRol === 'coordinador' ? '#000' : '#fff';
+
+        const completo = nombreCompleto(doc);
+        const iniciales = obtenerIniciales(completo); // AGREGADO: Obtención de iniciales
 
         const fila = document.createElement('tr');
         fila.setAttribute('data-id', doc.id);
@@ -188,9 +200,9 @@ function renderDocentes(lista) {
             /* 1. NOMBRE */
             '<td class="text-start">' +
             '<div class="docente-name-container" style="display:flex; align-items:center; gap:8px;">' +
-            '<div class="avatar-circle" style="flex-shrink:0;"></div>' +
+            '<div class="avatar-circle" style="flex-shrink:0;">' + escapeHtml(iniciales) + '</div>' + // CORREGIDO: Se incluyó escapeHtml(iniciales)
             '<div class="docente-name" style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">' +
-            escapeHtml(nombreCompleto(doc)) +
+            escapeHtml(completo) +
             '</div>' +
             '</div>' +
             '</td>' +
@@ -198,7 +210,7 @@ function renderDocentes(lista) {
             '<td>' + escapeHtml(doc.correo) + '</td>' +
             /* 3. DIVISIÓN */
             '<td><span class="badge" style="background-color: ' + colorDivision + '; color: #fff; padding: 6px 10px; font-size: 0.85rem;">' + escapeHtml(divisionNombre) + '</span></td>' +
-            /* 4. ROL ( Badge con color según ROL ) */
+            /* 4. ROL */
             '<td><span class="badge" style="background-color: ' + colorRol + '; color: ' + colorTextoRol + '; padding: 6px 10px; font-size: 0.85rem;">' + escapeHtml(rolTexto) + '</span></td>' +
             /* 5. NÚMERO DE EMPLEADO */
             '<td>' + escapeHtml(doc.numeroEmpleado) + '</td>' +

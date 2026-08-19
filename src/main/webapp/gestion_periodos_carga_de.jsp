@@ -26,10 +26,7 @@
             <input type="text" id="inputBuscar" placeholder="Buscar periodo por división...">
         </div>
 
-        <!-- Botón Agregar -->
-        <a href="agregar_periodos_cargar_de.jsp" class="btn-teal">
-            <i class="bi bi-calendar-plus me-2"></i> Agregar periodo
-        </a>
+
     </div>
 
     <div class="data-card p-0 mb-4" style="overflow: hidden;">

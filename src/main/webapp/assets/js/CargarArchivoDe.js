@@ -4,6 +4,9 @@ const idUsuarioTarget = params.get('idUsuarioTarget');
 let constanciaIdActual = null;
 let eventoFechaFin = null;
 
+// Límite máximo en bytes (10 MB)
+const TAMANO_MAX_BYTES = 10 * 1024 * 1024;
+
 if (idEvento) {
     document.getElementById('hiddenIdEvento').value = idEvento;
     if (idUsuarioTarget) {
@@ -52,19 +55,84 @@ function mostrarConstancia(c, estaVencido) {
     document.getElementById('btnVerArchivo').href = contextPath + '/DescargarConstanciaServlet?idConstancia=' + c.idConstancia;
 
     if (estaVencido) {
-        document.getElementById('vencidoBanner').style.display = '';
         document.getElementById('btnCancelarEntrega').disabled = true;
         document.getElementById('btnCancelarEntrega').title = 'El plazo del evento ha vencido';
     }
 }
 
-// Carga de datos iniciales SIN validación de relación usuario-evento
+// ------------------------------------------------------------------
+// NUEVA FUNCIÓN: Validación de Periodos de Carga (General + División)
+// ------------------------------------------------------------------
+async function validarPeriodosCarga(idDivisionDocente) {
+    try {
+        const res = await fetch(contextPath + '/ListarPeriodosCarga?t=' + Date.now());
+        const periodos = await res.json();
+
+        if (!periodos || !Array.isArray(periodos)) {
+            return { permitido: true }; // Si no hay periodos configurados, permite por defecto
+        }
+
+        // 1. Obtener Periodo General (idDivision = 5 o nombre "General")
+        const periodoGeneral = periodos.find(p =>
+            String(p.division || '').toLowerCase() === 'general' || Number(p.idDivision) === 5
+        );
+
+        // 2. Obtener Periodo específico de la División del docente
+        const periodoDivision = periodos.find(p =>
+            String(p.division || '').toLowerCase() === String(idDivisionDocente || '').toLowerCase() ||
+            Number(p.idDivision) === Number(idDivisionDocente)
+        );
+
+        // Regla 1: Si el General está APAGADO, nadie sube nada
+        if (periodoGeneral && Number(periodoGeneral.activo) === 0) {
+            return {
+                permitido: false,
+                mensaje: 'El periodo General de carga se encuentra cerrado. No es posible subir constancias.'
+            };
+        }
+
+        // Regla 2: Si la División del Docente está APAGADA, tampoco puede subir
+        if (periodoDivision && Number(periodoDivision.activo) === 0) {
+            return {
+                permitido: false,
+                mensaje: `El periodo de carga para la división ${periodoDivision.division || 'asignada'} se encuentra cerrado.`
+            };
+        }
+
+        return { permitido: true };
+
+    } catch (err) {
+        console.error('Error al validar periodos de carga:', err);
+        return { permitido: true }; // En caso de falla en el fetch, no bloquea al usuario por error técnico
+    }
+}
+
+// Bloquea visualmente el formulario de subida de archivos
+function deshabilitarFormularioSubida(mensaje) {
+    document.getElementById('formCargaArchivo').querySelectorAll('input, button[type="submit"]').forEach(el => el.disabled = true);
+    const uploadZone = document.getElementById('uploadZone');
+    if (uploadZone) {
+        uploadZone.style.opacity = '0.4';
+        uploadZone.style.pointerEvents = 'none';
+    }
+
+    // Evitar banners duplicados
+    if (!document.querySelector('.periodo-bloqueado-banner')) {
+        const warn = document.createElement('div');
+        warn.className = 'vencido-banner periodo-bloqueado-banner mt-3';
+        warn.innerHTML = `<i class="bi bi-lock-fill me-2"></i><strong>Periodo inactivo.</strong> ${mensaje}`;
+        document.getElementById('formCargaArchivo').querySelector('.data-card').appendChild(warn);
+    }
+}
+
+// Carga de datos iniciales
 async function inicializarPagina() {
+    let divisionDocente = null;
+
     try {
         const resEvento = await fetch(contextPath + '/EditarEventoServlet?id=' + encodeURIComponent(idEvento) + '&t=' + Date.now());
         const dataEvento = await resEvento.json();
 
-        // Solo verificamos que los datos del evento hayan llegado correctamente
         if (dataEvento) {
             document.getElementById('tituloEvento').textContent = (dataEvento.nombre || '').toUpperCase();
             document.getElementById('campoTipo').textContent = capitalizar(dataEvento.tipo);
@@ -74,6 +142,9 @@ async function inicializarPagina() {
             document.getElementById('campoFechaInicio').textContent = aFechaVisible(dataEvento.fechaInicio);
             document.getElementById('campoFechaFin').textContent = aFechaVisible(dataEvento.fechaFin);
             document.getElementById('campoModalidad').textContent = capitalizar(dataEvento.modalidad);
+
+            // Guardamos la división del usuario obtenida del Servlet
+            divisionDocente = dataEvento.idDivision || dataEvento.division;
 
             if (dataEvento.fechaFin) {
                 const p = dataEvento.fechaFin.split('-');
@@ -85,7 +156,7 @@ async function inicializarPagina() {
         console.error('Error al cargar datos del evento:', err);
     }
 
-    // Paso 2: Consultar si existe constancia subida para este evento
+    // Consultar constancia existente
     try {
         let urlConstancia = contextPath + '/ObtenerConstanciaServlet?idEvento=' + encodeURIComponent(idEvento);
         if (idUsuarioTarget) {
@@ -101,14 +172,16 @@ async function inicializarPagina() {
             mostrarConstancia(result.constancia, estaVencido);
         } else {
             mostrarFormulario();
+
+            // 1. Validar expiración propia del Evento
             if (estaVencido) {
-                document.getElementById('formCargaArchivo').querySelectorAll('input, button[type="submit"]').forEach(el => el.disabled = true);
-                document.getElementById('uploadZone').style.opacity = '0.4';
-                document.getElementById('uploadZone').style.pointerEvents = 'none';
-                const warn = document.createElement('div');
-                warn.className = 'vencido-banner mt-3';
-                warn.innerHTML = '<i class="bi bi-lock-fill me-2"></i><strong>Plazo vencido.</strong> Ya no es posible subir constancias para este evento.';
-                document.getElementById('formCargaArchivo').querySelector('.data-card').appendChild(warn);
+                deshabilitarFormularioSubida('Ya no es posible subir constancias porque el plazo del evento ha vencido.');
+            } else {
+                // 2. Validar Estado de Periodos General y por División
+                const estadoPeriodos = await validarPeriodosCarga(divisionDocente);
+                if (!estadoPeriodos.permitido) {
+                    deshabilitarFormularioSubida(estadoPeriodos.mensaje);
+                }
             }
         }
     } catch (err) {
@@ -168,7 +241,7 @@ vigenciaNo.addEventListener('change', () => {
     fechaVencimiento.value = '';
 });
 
-// Subida e interacción Drag & Drop / Input File
+// Subida e interacción Drag & Drop / Input File (con validación de 10 MB)
 const archivoPdf = document.getElementById('archivoPdf');
 const uploadZone = document.getElementById('uploadZone');
 const archivoSeleccionadoInfo = document.getElementById('archivoSeleccionadoInfo');
@@ -176,8 +249,16 @@ const archivoSeleccionadoNombre = document.getElementById('archivoSeleccionadoNo
 
 archivoPdf.addEventListener('change', (e) => {
     if (e.target.files.length > 0) {
+        const archivo = e.target.files[0];
+
+        if (archivo.size > TAMANO_MAX_BYTES) {
+            Swal.fire('Error', 'El archivo excede el tamaño máximo permitido de 10 MB.', 'error');
+            e.target.value = '';
+            return;
+        }
+
         uploadZone.style.display = 'none';
-        archivoSeleccionadoNombre.textContent = e.target.files[0].name;
+        archivoSeleccionadoNombre.textContent = archivo.name;
         archivoSeleccionadoInfo.style.display = 'flex';
     }
 });
@@ -194,6 +275,13 @@ document.getElementById('formCargaArchivo').addEventListener('submit', function(
 
     if (archivoPdf.files.length === 0) {
         Swal.fire('Advertencia', 'Debes seleccionar un archivo (PDF, PNG o JPG)', 'warning');
+        return;
+    }
+
+    const archivo = archivoPdf.files[0];
+
+    if (archivo.size > TAMANO_MAX_BYTES) {
+        Swal.fire('Error', 'El archivo no puede pesar más de 10 MB.', 'error');
         return;
     }
 

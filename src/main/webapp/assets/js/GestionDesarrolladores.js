@@ -90,7 +90,7 @@ function escapeHtml(texto) {
     return String(texto)
         .replace(/&/g, '&amp;')
         .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;');
+        .replace(/>/g, '&gt;'); // CORREGIDO: > en lugar de $
 }
 
 function normalizar(texto) {
@@ -102,6 +102,16 @@ function normalizar(texto) {
 
 function nombreCompleto(dev) {
     return [dev.nombre, dev.apellidoPaterno, dev.apellidoMaterno].filter(Boolean).join(' ');
+}
+
+// Función helper para obtener las primeras dos iniciales
+function obtenerIniciales(nombreStr) {
+    if (!nombreStr) return '';
+    const palabras = nombreStr.trim().split(/\s+/);
+    if (palabras.length === 1) {
+        return palabras[0].substring(0, 2).toUpperCase();
+    }
+    return (palabras[0][0] + palabras[1][0]).toUpperCase();
 }
 
 function obtenerDesarrolladoresFiltrados() {
@@ -128,14 +138,17 @@ function renderDesarrolladores(lista) {
         const iconoEstado = activo ? 'bi-toggle-on text-success' : 'bi-toggle-off text-danger';
         const divisionNombre = DIVISIONES[dev.idDivision] || dev.division || '';
 
+        const completo = nombreCompleto(dev);
+        const iniciales = obtenerIniciales(completo);
+
         const fila = document.createElement('tr');
         fila.setAttribute('data-id', dev.id);
         fila.innerHTML =
             '<td class="text-start">' +
             '<div class="docente-name-container">' +
-            '<div class="avatar-circle" style="flex-shrink:0;"></div>' +
+            '<div class="avatar-circle" style="flex-shrink:0;">' + escapeHtml(iniciales) + '</div>' +
             '<div class="docente-name" style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">' +
-            escapeHtml(nombreCompleto(dev)) +
+            escapeHtml(completo) +
             '</div>' +
             '</div>' +
             '</td>' +

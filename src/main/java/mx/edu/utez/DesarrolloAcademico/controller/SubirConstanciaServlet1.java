@@ -25,6 +25,9 @@ import java.nio.file.Paths;
 )
 public class SubirConstanciaServlet1 extends HttpServlet {
 
+    // ID correspondiente a la división "General" en tu base de datos
+    private static final int ID_DIVISION_GENERAL = 5;
+
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("application/json;charset=UTF-8");
@@ -84,16 +87,34 @@ public class SubirConstanciaServlet1 extends HttpServlet {
             System.out.println("=== DEPURACION PERIODO ===");
             System.out.println("ID Usuario Destino: " + idUsuarioSubir);
             System.out.println("Usuario Encontrado: " + (targetUsuario != null));
-            if (targetUsuario != null) {
-                System.out.println("ID Division del Usuario Destino: " + targetUsuario.getIdDivision());
-            }
 
-            // 2. VALIDAR EL PERIODO DE CARGA PARA LA DIVISIÓN DEL DOCENTE/USUARIO DESTINO
-            if (targetUsuario != null && targetUsuario.getIdDivision() != null && !dao.esPeriodoActivo(targetUsuario.getIdDivision())) {
-                response.setStatus(HttpServletResponse.SC_OK); // SC_OK para evitar error 403 en red y mostrar alerta
-                out.write("{\"success\": false, \"message\": \"No hay un periodo de carga activo para la división del docente.\"}");
+            // ------------------------------------------------------------------
+            // 2. VALIDAR DOBLE PERIODO (GENERAL Y DIVISIÓN CORRESPONDIENTE)
+            // ------------------------------------------------------------------
+            boolean periodoGeneralActivo = dao.esPeriodoActivo(ID_DIVISION_GENERAL);
+
+            if (!periodoGeneralActivo) {
+                response.setStatus(HttpServletResponse.SC_OK);
+                out.write("{\"success\": false, \"message\": \"El periodo General de carga se encuentra deshabilitado. No es posible subir constancias.\"}");
                 out.flush();
                 return;
+            }
+
+            if (targetUsuario != null && targetUsuario.getIdDivision() != null) {
+                int idDivisionTarget = targetUsuario.getIdDivision();
+                System.out.println("ID Division del Usuario Destino: " + idDivisionTarget);
+
+                // Si la división del usuario no es la general, validamos su división específica
+                if (idDivisionTarget != ID_DIVISION_GENERAL) {
+                    boolean periodoDivisionActivo = dao.esPeriodoActivo(idDivisionTarget);
+
+                    if (!periodoDivisionActivo) {
+                        response.setStatus(HttpServletResponse.SC_OK);
+                        out.write("{\"success\": false, \"message\": \"El periodo de carga para la división del docente no está activo.\"}");
+                        out.flush();
+                        return;
+                    }
+                }
             }
 
             // 3. VINCULAR AL DOCENTE/DESTINATARIO CON EL EVENTO

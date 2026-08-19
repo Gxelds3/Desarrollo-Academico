@@ -1,7 +1,9 @@
 const params = new URLSearchParams(window.location.search);
 const idEvento = params.get('id');
 let constanciaIdActual = null;
-let eventoFechaFin = null;
+
+// Límite máximo en bytes (10 MB)
+const TAMANO_MAX_BYTES = 10 * 1024 * 1024;
 
 if (idEvento) {
     document.getElementById('hiddenIdEvento').value = idEvento;
@@ -28,7 +30,7 @@ function mostrarFormulario() {
     document.getElementById('constanciaCard').style.display = 'none';
 }
 
-function mostrarConstancia(c, estaVencido) {
+function mostrarConstancia(c, estaBloqueado) {
     document.getElementById('formCargaArchivo').style.display = 'none';
     const card = document.getElementById('constanciaCard');
     card.style.display = '';
@@ -44,17 +46,37 @@ function mostrarConstancia(c, estaVencido) {
 
     document.getElementById('btnVerArchivo').href = contextPath + '/DescargarConstanciaServlet?idConstancia=' + c.idConstancia;
 
-    if (estaVencido) {
+    if (estaBloqueado) {
         document.getElementById('vencidoBanner').style.display = '';
         document.getElementById('btnCancelarEntrega').disabled = true;
-        document.getElementById('btnCancelarEntrega').title = 'El plazo del evento ha vencido';
+        document.getElementById('btnCancelarEntrega').title = 'El periodo de recepción de constancias está cerrado';
+    }
+}
+
+function bloquearFormularioCarga(mensaje) {
+    document.getElementById('formCargaArchivo').querySelectorAll('input, button[type="submit"]').forEach(el => el.disabled = true);
+    document.getElementById('uploadZone').style.opacity = '0.4';
+    document.getElementById('uploadZone').style.pointerEvents = 'none';
+
+    // Evitar duplicar el banner de advertencia si ya existe
+    if (!document.getElementById('bannerPeriodoCerrado')) {
+        const warn = document.createElement('div');
+        warn.id = 'bannerPeriodoCerrado';
+        warn.className = 'vencido-banner mt-3';
+        warn.innerHTML = `<i class="bi bi-lock-fill me-2"></i><strong>Carga Inhabilitada.</strong> ${mensaje}`;
+        document.getElementById('formCargaArchivo').querySelector('.data-card').appendChild(warn);
     }
 }
 
 async function inicializarPagina() {
+    let estaBloqueado = false;
+    let motivoBloqueo = "El periodo de recepción de constancias no está activo.";
+
     try {
+        // 1. Obtener los datos del evento
         const resEvento = await fetch(contextPath + '/EditarEventoServlet?id=' + encodeURIComponent(idEvento) + '&t=' + Date.now());
         const dataEvento = await resEvento.json();
+
         if (dataEvento.success) {
             document.getElementById('tituloEvento').textContent = (dataEvento.nombre || '').toUpperCase();
             document.getElementById('campoTipo').textContent = capitalizar(dataEvento.tipo);
@@ -64,38 +86,44 @@ async function inicializarPagina() {
             document.getElementById('campoFechaInicio').textContent = aFechaVisible(dataEvento.fechaInicio);
             document.getElementById('campoFechaFin').textContent = aFechaVisible(dataEvento.fechaFin);
             document.getElementById('campoModalidad').textContent = capitalizar(dataEvento.modalidad);
+        }
 
-            if (dataEvento.fechaFin) {
-                const p = dataEvento.fechaFin.split('-');
-                eventoFechaFin = new Date(p[0], p[1] - 1, p[2]);
-                eventoFechaFin.setHours(23, 59, 59);
+        // 2. VALIDACIÓN DE PERIODOS: General + División
+        // Nota: Asegúrate de tener este Servlet (o ajusta la URL al Servlet que devuelva el estado de tus periodos)
+        const resPeriodo = await fetch(contextPath + '/VerificarPeriodoCargaServlet?idEvento=' + encodeURIComponent(idEvento) + '&t=' + Date.now());
+        const dataPeriodo = await resPeriodo.json();
+
+        // Se requiere estricta confirmación de que AMBOS están prendidos/activos
+        const periodoGeneralActivo = dataPeriodo.periodoGeneralActivo === true;
+        const periodoDivisionActivo = dataPeriodo.periodoDivisionActivo === true;
+
+        if (!periodoGeneralActivo || !periodoDivisionActivo) {
+            estaBloqueado = true;
+
+            if (!periodoGeneralActivo && !periodoDivisionActivo) {
+                motivoBloqueo = "El periodo general y el de tu división están cerrados.";
+            } else if (!periodoGeneralActivo) {
+                motivoBloqueo = "El periodo general de carga de constancias está cerrado.";
+            } else {
+                motivoBloqueo = "El periodo de carga para tu división no está habilitado.";
             }
         }
-    } catch (err) {
-        console.error('Error al cargar evento:', err);
-    }
 
-    try {
+        // 3. Consultar si el docente ya subió una constancia para este evento
         const resConst = await fetch(contextPath + '/ObtenerConstanciaServlet?idEvento=' + encodeURIComponent(idEvento) + '&t=' + Date.now());
         const result = await resConst.json();
-        const estaVencido = eventoFechaFin ? new Date() > eventoFechaFin : false;
 
         if (result && result.success && result.constancia) {
-            mostrarConstancia(result.constancia, estaVencido);
+            mostrarConstancia(result.constancia, estaBloqueado);
         } else {
             mostrarFormulario();
-            if (estaVencido) {
-                document.getElementById('formCargaArchivo').querySelectorAll('input, button[type="submit"]').forEach(el => el.disabled = true);
-                document.getElementById('uploadZone').style.opacity = '0.4';
-                document.getElementById('uploadZone').style.pointerEvents = 'none';
-                const warn = document.createElement('div');
-                warn.className = 'vencido-banner mt-3';
-                warn.innerHTML = '<i class="bi bi-lock-fill me-2"></i><strong>Plazo vencido.</strong> Ya no es posible subir constancias para este evento.';
-                document.getElementById('formCargaArchivo').querySelector('.data-card').appendChild(warn);
+            if (estaBloqueado) {
+                bloquearFormularioCarga(motivoBloqueo);
             }
         }
+
     } catch (err) {
-        console.error('Error al verificar constancia:', err);
+        console.error('Error al inicializar la página:', err);
         mostrarFormulario();
     }
 }
@@ -151,10 +179,19 @@ const uploadZone = document.getElementById('uploadZone');
 const archivoSeleccionadoInfo = document.getElementById('archivoSeleccionadoInfo');
 const archivoSeleccionadoNombre = document.getElementById('archivoSeleccionadoNombre');
 
+// Selección de archivo con validación de 10 MB
 archivoPdf.addEventListener('change', (e) => {
     if (e.target.files.length > 0) {
+        const archivo = e.target.files[0];
+
+        if (archivo.size > TAMANO_MAX_BYTES) {
+            Swal.fire('Error', 'El archivo excede el tamaño máximo permitido de 10 MB.', 'error');
+            e.target.value = ''; // Limpia la selección
+            return;
+        }
+
         uploadZone.style.display = 'none';
-        archivoSeleccionadoNombre.textContent = e.target.files[0].name;
+        archivoSeleccionadoNombre.textContent = archivo.name;
         archivoSeleccionadoInfo.style.display = 'flex';
     }
 });
@@ -165,6 +202,7 @@ document.getElementById('btnQuitarArchivo').addEventListener('click', () => {
     archivoSeleccionadoInfo.style.display = 'none';
 });
 
+// Envío del formulario vía AJAX
 document.getElementById('formCargaArchivo').addEventListener('submit', function(e) {
     e.preventDefault();
 
@@ -173,12 +211,19 @@ document.getElementById('formCargaArchivo').addEventListener('submit', function(
         return;
     }
 
-    const formData = new FormData(this);
+    const archivo = archivoPdf.files[0];
+
+    if (archivo.size > TAMANO_MAX_BYTES) {
+        Swal.fire('Error', 'El archivo no puede pesar más de 10 MB.', 'error');
+        return;
+    }
 
     if (vigenciaSi.checked && !fechaVencimiento.value) {
         Swal.fire('Advertencia', 'Debes elegir una fecha de vigencia', 'warning');
         return;
     }
+
+    const formData = new FormData(this);
 
     Swal.fire({
         title: 'Subiendo archivo...',
