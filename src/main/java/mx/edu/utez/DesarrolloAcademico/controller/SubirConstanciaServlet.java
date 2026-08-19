@@ -17,10 +17,11 @@ import java.io.PrintWriter;
 import java.nio.file.Paths;
 
 @WebServlet(name = "SubirConstanciaServlet", value = "/SubirConstanciaServlet")
+
 @MultipartConfig(
-        fileSizeThreshold = 1024 * 1024 * 2, // 2MB
-        maxFileSize = 1024 * 1024 * 10,      // 10MB
-        maxRequestSize = 1024 * 1024 * 15    // 15MB
+        fileSizeThreshold = 1024 * 1024 * 2, // 2MB (Límite para guardar en memoria RAM antes de disco)
+        maxFileSize = 1024 * 1024 * 25,      // 25MB (Tamaño máximo de un solo archivo)
+        maxRequestSize = 1024 * 1024 * 30    // 30MB (Tamaño máximo total de la petición HTTP)
 )
 public class SubirConstanciaServlet extends HttpServlet {
 

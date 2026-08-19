@@ -4,8 +4,8 @@ const idUsuarioTarget = params.get('idUsuarioTarget');
 let constanciaIdActual = null;
 let eventoFechaFin = null;
 
-// Límite máximo en bytes (10 MB)
-const TAMANO_MAX_BYTES = 10 * 1024 * 1024;
+// Límite máximo en bytes (25 MB)
+const TAMANO_MAX_BYTES = 25 * 1024 * 1024;
 
 if (idEvento) {
     document.getElementById('hiddenIdEvento').value = idEvento;
@@ -61,7 +61,7 @@ function mostrarConstancia(c, estaVencido) {
 }
 
 // ------------------------------------------------------------------
-// NUEVA FUNCIÓN: Validación de Periodos de Carga (General + División)
+// Validación de Periodos de Carga (General + División)
 // ------------------------------------------------------------------
 async function validarPeriodosCarga(idDivisionDocente) {
     try {
@@ -103,7 +103,7 @@ async function validarPeriodosCarga(idDivisionDocente) {
 
     } catch (err) {
         console.error('Error al validar periodos de carga:', err);
-        return { permitido: true }; // En caso de falla en el fetch, no bloquea al usuario por error técnico
+        return { permitido: true };
     }
 }
 
@@ -241,7 +241,7 @@ vigenciaNo.addEventListener('change', () => {
     fechaVencimiento.value = '';
 });
 
-// Subida e interacción Drag & Drop / Input File (con validación de 10 MB)
+// Subida e interacción Drag & Drop / Input File (con validación de 25 MB)
 const archivoPdf = document.getElementById('archivoPdf');
 const uploadZone = document.getElementById('uploadZone');
 const archivoSeleccionadoInfo = document.getElementById('archivoSeleccionadoInfo');
@@ -252,7 +252,7 @@ archivoPdf.addEventListener('change', (e) => {
         const archivo = e.target.files[0];
 
         if (archivo.size > TAMANO_MAX_BYTES) {
-            Swal.fire('Error', 'El archivo excede el tamaño máximo permitido de 10 MB.', 'error');
+            Swal.fire('Error', 'El archivo excede el tamaño máximo permitido de 25 MB.', 'error');
             e.target.value = '';
             return;
         }
@@ -281,7 +281,7 @@ document.getElementById('formCargaArchivo').addEventListener('submit', function(
     const archivo = archivoPdf.files[0];
 
     if (archivo.size > TAMANO_MAX_BYTES) {
-        Swal.fire('Error', 'El archivo no puede pesar más de 10 MB.', 'error');
+        Swal.fire('Error', 'El archivo no puede pesar más de 25 MB.', 'error');
         return;
     }
 

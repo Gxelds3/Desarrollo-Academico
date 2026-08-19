@@ -4,8 +4,8 @@ const idUsuarioTarget = params.get('idUsuarioTarget');
 let constanciaIdActual = null;
 let eventoFechaFin = null;
 
-// Límite máximo permitido en bytes (10 MB)
-const TAMANO_MAX_BYTES = 10 * 1024 * 1024;
+// Límite máximo permitido en bytes (25 MB)
+const TAMANO_MAX_BYTES = 25 * 1024 * 1024;
 
 if (idEvento) {
     document.getElementById('hiddenIdEvento').value = idEvento;
@@ -104,7 +104,7 @@ async function validarPeriodosCarga(idDivisionDocente) {
 
     } catch (err) {
         console.error('Error al consultar periodos de carga:', err);
-        return { permitido: true }; // En caso de excepción de red no interrumpe el flujo predeterminado
+        return { permitido: true };
     }
 }
 
@@ -240,7 +240,7 @@ vigenciaNo.addEventListener('change', () => {
     fechaVencimiento.value = '';
 });
 
-// Al seleccionar archivo: ocultar la zona y mostrar el nombre (con validación de 10 MB)
+// Al seleccionar archivo: ocultar la zona y mostrar el nombre (con validación de 25 MB)
 const archivoPdf = document.getElementById('archivoPdf');
 const uploadZone = document.getElementById('uploadZone');
 const archivoSeleccionadoInfo = document.getElementById('archivoSeleccionadoInfo');
@@ -252,7 +252,7 @@ archivoPdf.addEventListener('change', (e) => {
 
         // Validar tamaño al seleccionar el archivo
         if (archivo.size > TAMANO_MAX_BYTES) {
-            Swal.fire('Error', 'El archivo excede el tamaño máximo permitido de 10 MB.', 'error');
+            Swal.fire('Error', 'El archivo excede el tamaño máximo permitido de 25 MB.', 'error');
             e.target.value = '';
             return;
         }
@@ -281,7 +281,7 @@ document.getElementById('formCargaArchivo').addEventListener('submit', function(
     const archivo = archivoPdf.files[0];
 
     if (archivo.size > TAMANO_MAX_BYTES) {
-        Swal.fire('Error', 'El archivo no puede pesar más de 10 MB.', 'error');
+        Swal.fire('Error', 'El archivo no puede pesar más de 25 MB.', 'error');
         return;
     }
 
