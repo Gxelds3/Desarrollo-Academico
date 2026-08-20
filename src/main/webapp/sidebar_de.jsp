@@ -80,7 +80,7 @@
         </div>
 
         <!-- Mis Eventos -->
-        <a href="${pageContext.request.contextPath}/mi_evento_de.jsp"
+        <a href="${pageContext.request.contextPath}/historial_eventos_de.jsp"
            class="sidebar-item ${param.active == 'mi_evento' ? 'active' : ''}">
             <div class="sidebar-icon">
                 <i class="bi bi-calendar-event"></i>
