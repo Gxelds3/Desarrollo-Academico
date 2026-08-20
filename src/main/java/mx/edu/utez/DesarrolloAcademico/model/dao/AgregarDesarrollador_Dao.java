@@ -14,7 +14,7 @@ public class AgregarDesarrollador_Dao {
 
     public boolean registrarDesarrollador(Usuario usuario) {
         boolean estado = false;
-        String query = "INSERT INTO usuarios " +
+        String query = "INSERT INTO usuario " +
                 "(nombre, apellido_paterno, apellido_materno, rol, id_division, numero_empleado, telefono, correo_institucional, contrasena, fecha_registro, activo) " +
                 "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, SYSDATE, 1)";
 
@@ -52,7 +52,7 @@ public class AgregarDesarrollador_Dao {
 
     public boolean existeCorreoOEmpleado(String correo, String numeroEmpleado) {
         boolean existe = false;
-        String query = "SELECT COUNT(*) FROM usuarios WHERE correo_institucional = ? OR numero_empleado = ?";
+        String query = "SELECT COUNT(*) FROM usuario WHERE correo_institucional = ? OR numero_empleado = ?";
 
         try (Connection con = DatabaseConnection.getConnection();
              PreparedStatement ps = con != null ? con.prepareStatement(query) : null) {
@@ -76,7 +76,7 @@ public class AgregarDesarrollador_Dao {
 
     public boolean existeCorreoOEmpleadoExcluyendo(String correo, String numeroEmpleado, int idUsuario) {
         boolean existe = false;
-        String query = "SELECT COUNT(*) FROM usuarios WHERE (correo_institucional = ? OR numero_empleado = ?) AND id_usuario <> ?";
+        String query = "SELECT COUNT(*) FROM usuario WHERE (correo_institucional = ? OR numero_empleado = ?) AND id_usuario <> ?";
 
         try (Connection con = DatabaseConnection.getConnection();
              PreparedStatement ps = con != null ? con.prepareStatement(query) : null) {
@@ -101,7 +101,7 @@ public class AgregarDesarrollador_Dao {
 
     public Usuario obtenerPorId(int idUsuario) {
         Usuario usuario = null;
-        String query = "SELECT * FROM usuarios WHERE id_usuario = ? AND rol = 'desarrollo'";
+        String query = "SELECT * FROM usuario WHERE id_usuario = ? AND rol = 'desarrollo'";
 
         try (Connection con = DatabaseConnection.getConnection();
              PreparedStatement ps = con != null ? con.prepareStatement(query) : null) {
@@ -153,7 +153,7 @@ public class AgregarDesarrollador_Dao {
             }
 
             // 1. Validar número de empleado
-            String checkNumEmp = "SELECT COUNT(*) FROM usuarios WHERE numero_empleado = ? AND id_usuario != ?";
+            String checkNumEmp = "SELECT COUNT(*) FROM usuario WHERE numero_empleado = ? AND id_usuario != ?";
             ps = con.prepareStatement(checkNumEmp);
             ps.setString(1, usuario.getNumeroEmpleado());
             ps.setInt(2, usuario.getIdUsuario());
@@ -165,7 +165,7 @@ public class AgregarDesarrollador_Dao {
             ps.close();
 
             // 2. Validar correo institucional
-            String checkCorreo = "SELECT COUNT(*) FROM usuarios WHERE correo_institucional = ? AND id_usuario != ?";
+            String checkCorreo = "SELECT COUNT(*) FROM usuario WHERE correo_institucional = ? AND id_usuario != ?";
             ps = con.prepareStatement(checkCorreo);
             ps.setString(1, usuario.getCorreoInstitucional());
             ps.setInt(2, usuario.getIdUsuario());
@@ -177,7 +177,7 @@ public class AgregarDesarrollador_Dao {
             ps.close();
 
             // 3. Ejecutar Update
-            String query = "UPDATE usuarios SET " +
+            String query = "UPDATE usuario SET " +
                     "nombre = ?, apellido_paterno = ?, apellido_materno = ?, id_division = ?, " +
                     "numero_empleado = ?, telefono = ?, correo_institucional = ?, rol = ?" +
                     (cambiaPassword ? ", contrasena = ?" : "") +
@@ -226,7 +226,7 @@ public class AgregarDesarrollador_Dao {
 
     public List<Usuario> listarDesarrolladores() {
         List<Usuario> lista = new ArrayList<>();
-        String query = "SELECT * FROM usuarios WHERE rol = 'desarrollo' ORDER BY nombre, apellido_paterno";
+        String query = "SELECT * FROM usuario WHERE rol = 'desarrollo' ORDER BY nombre, apellido_paterno";
 
         try (Connection con = DatabaseConnection.getConnection();
              PreparedStatement ps = con != null ? con.prepareStatement(query) : null) {
@@ -263,7 +263,7 @@ public class AgregarDesarrollador_Dao {
     }
 
     public boolean cambiarEstado(int idUsuario, int nuevoEstado) {
-        String query = "UPDATE usuarios SET activo = ? WHERE id_usuario = ?";
+        String query = "UPDATE usuario SET activo = ? WHERE id_usuario = ?";
 
         try (Connection con = DatabaseConnection.getConnection();
              PreparedStatement ps = con != null ? con.prepareStatement(query) : null) {
@@ -281,7 +281,7 @@ public class AgregarDesarrollador_Dao {
     }
 
     public boolean validarContrasenaActual(int idUsuario, String passActualIngresada) {
-        String sql = "SELECT contrasena FROM usuarios WHERE id_usuario = ?";
+        String sql = "SELECT contrasena FROM usuario WHERE id_usuario = ?";
 
         try (Connection con = DatabaseConnection.getConnection();
              PreparedStatement ps = con != null ? con.prepareStatement(sql) : null) {

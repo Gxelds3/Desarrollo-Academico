@@ -27,7 +27,7 @@ public class AgregarEvento_Co {
 
             con.setAutoCommit(false);
 
-            String queryEvento = "INSERT INTO eventos (nombre, lugar, institucion, tipo_evento, descripcion, fecha_inicio, fecha_fin, modalidad, id_division, creado_por, fecha_creacion) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, SYSDATE)";
+            String queryEvento = "INSERT INTO evento (nombre, lugar, institucion, tipo_evento, descripcion, fecha_inicio, fecha_fin, modalidad, id_division, creado_por, fecha_creacion) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, SYSDATE)";
             String[] returnId = { "ID_EVENTO" };
             psEvento = con.prepareStatement(queryEvento, returnId);
 
@@ -50,7 +50,7 @@ public class AgregarEvento_Co {
                     int idEventoGenerado = rs.getInt(1);
 
                     if (evento.getDocentesAsignados() != null && !evento.getDocentesAsignados().isEmpty()) {
-                        String queryDocentes = "INSERT INTO participantes_eventos (id_evento, id_usuario, registrado_por, fecha_registro) VALUES (?, ?, ?, SYSDATE)";
+                        String queryDocentes = "INSERT INTO participante_evento (id_evento, id_usuario, registrado_por, fecha_registro) VALUES (?, ?, ?, SYSDATE)";
                         psDocentes = con.prepareStatement(queryDocentes);
 
                         for (Integer idDocente : evento.getDocentesAsignados()) {
@@ -97,7 +97,7 @@ public class AgregarEvento_Co {
         StringBuilder query = new StringBuilder(
                 "SELECT e.id_evento, e.nombre, e.lugar, e.institucion, e.tipo_evento, " +
                         "e.descripcion, e.fecha_inicio, e.fecha_fin, e.modalidad, d.nombre AS nombre_division " +
-                        "FROM eventos e LEFT JOIN divisiones d ON e.id_division = d.id_division " +
+                        "FROM evento e LEFT JOIN division d ON e.id_division = d.id_division " +
                         "WHERE e.fecha_fin >= CURRENT_DATE "
         );
 
@@ -146,7 +146,7 @@ public class AgregarEvento_Co {
 
         StringBuilder query = new StringBuilder(
                 "SELECT e.id_evento, e.nombre, e.lugar, e.institucion, e.tipo_evento, e.descripcion, e.fecha_inicio, e.fecha_fin, e.modalidad, d.nombre AS nombre_division " +
-                        "FROM eventos e LEFT JOIN divisiones d ON e.id_division = d.id_division " +
+                        "FROM evento e LEFT JOIN division d ON e.id_division = d.id_division " +
                         "WHERE e.fecha_fin >= CURRENT_DATE "
         );
 
@@ -202,7 +202,7 @@ public class AgregarEvento_Co {
             }
             con.setAutoCommit(false);
 
-            psEvento = con.prepareStatement("DELETE FROM eventos WHERE id_evento = ?");
+            psEvento = con.prepareStatement("DELETE FROM evento WHERE id_evento = ?");
             psEvento.setInt(1, idEvento);
             int filasAfectadas = psEvento.executeUpdate();
 
@@ -232,7 +232,7 @@ public class AgregarEvento_Co {
     }
 
     public String obtenerFechaLimitePorDivision(int idDivision) {
-        String query = "SELECT fecha_fin FROM periodos_carga " +
+        String query = "SELECT fecha_fin FROM periodo_carga " +
                 "WHERE id_division = ? AND activo = 1 " +
                 "ORDER BY fecha_fin DESC";
 
@@ -260,7 +260,7 @@ public class AgregarEvento_Co {
     }
 
     public agregarEvento_co obtenerPorId(int idEvento) {
-        String query = "SELECT id_evento, nombre, lugar, institucion, tipo_evento, descripcion, fecha_inicio, fecha_fin, modalidad, id_division, creado_por FROM eventos WHERE id_evento = ?";
+        String query = "SELECT id_evento, nombre, lugar, institucion, tipo_evento, descripcion, fecha_inicio, fecha_fin, modalidad, id_division, creado_por FROM evento WHERE id_evento = ?";
 
         // 💡 CORREGIDO: Declaración dentro de try-with-resources
         try (Connection con = DatabaseConnection.getConnection();
@@ -310,7 +310,7 @@ public class AgregarEvento_Co {
             }
             con.setAutoCommit(false);
 
-            String query = "UPDATE eventos SET nombre = ?, lugar = ?, institucion = ?, tipo_evento = ?, descripcion = ?, fecha_inicio = ?, fecha_fin = ?, modalidad = ? WHERE id_evento = ?";
+            String query = "UPDATE evento SET nombre = ?, lugar = ?, institucion = ?, tipo_evento = ?, descripcion = ?, fecha_inicio = ?, fecha_fin = ?, modalidad = ? WHERE id_evento = ?";
             psEvento = con.prepareStatement(query);
 
             psEvento.setString(1, evento.getNombre());
@@ -354,8 +354,8 @@ public class AgregarEvento_Co {
         List<agregarEvento_co> eventos = new ArrayList<>();
         String query = "SELECT e.id_evento, e.nombre, e.lugar, e.institucion, e.tipo_evento, " +
                 "e.descripcion, e.fecha_inicio, e.fecha_fin, e.modalidad, d.nombre AS nombre_division " +
-                "FROM eventos e " +
-                "LEFT JOIN divisiones d ON e.id_division = d.id_division " +
+                "FROM evento e " +
+                "LEFT JOIN division d ON e.id_division = d.id_division " +
                 "ORDER BY e.id_evento DESC";
 
         //  CORREGIDO: Declaración dentro de try-with-resources

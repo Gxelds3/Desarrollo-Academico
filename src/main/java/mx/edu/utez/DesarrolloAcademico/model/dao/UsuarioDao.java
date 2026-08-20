@@ -45,7 +45,7 @@ public class UsuarioDao {
 
     public Usuario buscarPorId(int idUsuario) {
         Usuario usuario = null;
-        String query = "SELECT * FROM usuarios WHERE id_usuario = ?";
+        String query = "SELECT * FROM usuario WHERE id_usuario = ?";
 
         try (Connection con = DatabaseConnection.getConnection();
              PreparedStatement ps = con != null ? con.prepareStatement(query) : null) {
@@ -67,7 +67,7 @@ public class UsuarioDao {
 
     public Usuario login(String credencial, String contrasena) {
         Usuario usuario = null;
-        String query = "SELECT * FROM usuarios WHERE (correo_institucional = ? OR numero_empleado = ?) AND contrasena = ? AND activo = 1";
+        String query = "SELECT * FROM usuario WHERE (correo_institucional = ? OR numero_empleado = ?) AND contrasena = ? AND activo = 1";
 
         try (Connection con = DatabaseConnection.getConnection();
              PreparedStatement ps = con != null ? con.prepareStatement(query) : null) {
@@ -91,7 +91,7 @@ public class UsuarioDao {
 
     public Usuario buscarPorEmailOEmpleado(String credencial) {
         Usuario usuario = null;
-        String query = "SELECT * FROM usuarios WHERE correo_institucional = ? OR numero_empleado = ?";
+        String query = "SELECT * FROM usuario WHERE correo_institucional = ? OR numero_empleado = ?";
 
         try (Connection con = DatabaseConnection.getConnection();
              PreparedStatement ps = con != null ? con.prepareStatement(query) : null) {
@@ -113,7 +113,7 @@ public class UsuarioDao {
     }
 
     public boolean guardarCodigoRecuperacion(int idUsuario, String codigo) {
-        String query = "INSERT INTO tokens_recuperacion (id_usuario, codigo_token, utilizado, fecha_expiracion) " +
+        String query = "INSERT INTO token_recuperacion (id_usuario, codigo_token, utilizado, fecha_expiracion) " +
                 "VALUES (?, ?, 0, CURRENT_TIMESTAMP + INTERVAL '15' MINUTE)";
 
         try (Connection con = DatabaseConnection.getConnection();
@@ -133,8 +133,8 @@ public class UsuarioDao {
 
     public Usuario verificarCodigo(String codigo) {
         Usuario usuario = null;
-        String query = "SELECT u.* FROM usuarios u " +
-                "JOIN tokens_recuperacion t ON u.id_usuario = t.id_usuario " +
+        String query = "SELECT u.* FROM usuario u " +
+                "JOIN token_recuperacion t ON u.id_usuario = t.id_usuario " +
                 "WHERE t.codigo_token = ? AND t.utilizado = 0 AND t.fecha_expiracion > CURRENT_TIMESTAMP";
 
         try (Connection con = DatabaseConnection.getConnection();
@@ -165,14 +165,14 @@ public class UsuarioDao {
 
             con.setAutoCommit(false);
 
-            String queryUpdatePass = "UPDATE usuarios SET contrasena = ? WHERE id_usuario = ?";
+            String queryUpdatePass = "UPDATE usuario SET contrasena = ? WHERE id_usuario = ?";
             try (PreparedStatement ps1 = con.prepareStatement(queryUpdatePass)) {
                 ps1.setString(1, nuevaPassword);
                 ps1.setInt(2, idUsuario);
                 ps1.executeUpdate();
             }
 
-            String queryUpdateToken = "UPDATE tokens_recuperacion SET utilizado = 1 WHERE id_usuario = ?";
+            String queryUpdateToken = "UPDATE token_recuperacion SET utilizado = 1 WHERE id_usuario = ?";
             try (PreparedStatement ps2 = con.prepareStatement(queryUpdateToken)) {
                 ps2.setInt(1, idUsuario);
                 ps2.executeUpdate();
@@ -204,7 +204,7 @@ public class UsuarioDao {
 
     public boolean registrarUsuario(Usuario usuario) {
         boolean estado = false;
-        String query = "INSERT INTO usuarios (nombre, apellido_paterno, apellido_materno, rol, id_division, numero_empleado, telefono, correo_institucional, contrasena, fecha_registro, activo, creado_por) " +
+        String query = "INSERT INTO usuario (nombre, apellido_paterno, apellido_materno, rol, id_division, numero_empleado, telefono, correo_institucional, contrasena, fecha_registro, activo, creado_por) " +
                 "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, 1, ?)";
 
         try (Connection con = DatabaseConnection.getConnection();
@@ -242,7 +242,7 @@ public class UsuarioDao {
     }
 
     public boolean actualizarPasswordEnCuenta(int idUsuario, String actualPassword, String nuevaPassword) {
-        String query = "UPDATE usuarios SET contrasena = ? WHERE id_usuario = ? AND contrasena = ?";
+        String query = "UPDATE usuario SET contrasena = ? WHERE id_usuario = ? AND contrasena = ?";
 
         try (Connection con = DatabaseConnection.getConnection();
              PreparedStatement ps = con != null ? con.prepareStatement(query) : null) {
@@ -262,7 +262,7 @@ public class UsuarioDao {
 
     public List<Evento> obtenerProximosEventos(Integer idDivision) {
         List<Evento> lista = new ArrayList<>();
-        StringBuilder sql = new StringBuilder("SELECT ID_EVENTO, NOMBRE, FECHA_INICIO, FECHA_FIN FROM EVENTOS ");
+        StringBuilder sql = new StringBuilder("SELECT ID_EVENTO, NOMBRE, FECHA_INICIO, FECHA_FIN FROM EVENTO ");
         sql.append("WHERE FECHA_INICIO > SYSDATE ");
 
         if (idDivision != null && idDivision > 0) {
@@ -302,7 +302,7 @@ public class UsuarioDao {
     }
 
     public boolean eliminarUsuario(int idUsuario) {
-        String sql = "DELETE FROM USUARIOS WHERE ID_USUARIO = ?";
+        String sql = "DELETE FROM usuario WHERE ID_USUARIO = ?";
 
         try (Connection con = DatabaseConnection.getConnection();
              PreparedStatement ps = con != null ? con.prepareStatement(sql) : null) {
@@ -320,7 +320,7 @@ public class UsuarioDao {
     public List<Evento> obtenerMisEventos(int idUsuario) {
         List<Evento> lista = new ArrayList<>();
         String sql = "SELECT ID_EVENTO, NOMBRE, FECHA_INICIO, FECHA_FIN, TIPO_EVENTO, INSTITUCION " +
-                "FROM EVENTOS WHERE CREADO_POR = ? ORDER BY FECHA_INICIO ASC";
+                "FROM EVENTO WHERE CREADO_POR = ? ORDER BY FECHA_INICIO ASC";
 
         try (Connection con = DatabaseConnection.getConnection();
              PreparedStatement ps = con != null ? con.prepareStatement(sql) : null) {
@@ -353,7 +353,7 @@ public class UsuarioDao {
         List<Usuario> lista = new ArrayList<>();
         String sql = "SELECT ID_USUARIO, NOMBRE, APELLIDO_PATERNO, APELLIDO_MATERNO, " +
                 "CORREO_INSTITUCIONAL, ID_DIVISION, NUMERO_EMPLEADO, ACTIVO, CONTRASENA " +
-                "FROM USUARIOS WHERE LOWER(ROL) = 'docente' ORDER BY NOMBRE ASC";
+                "FROM usuario WHERE LOWER(ROL) = 'docente' ORDER BY NOMBRE ASC";
 
         try (Connection con = DatabaseConnection.getConnection();
              PreparedStatement ps = con != null ? con.prepareStatement(sql) : null;
@@ -383,7 +383,7 @@ public class UsuarioDao {
     }
 
     public boolean cambiarEstado(int idUsuario, int nuevoEstado) {
-        String query = "UPDATE usuarios SET activo = ? WHERE id_usuario = ?";
+        String query = "UPDATE usuario SET activo = ? WHERE id_usuario = ?";
 
         try (Connection con = DatabaseConnection.getConnection();
              PreparedStatement ps = con != null ? con.prepareStatement(query) : null) {
@@ -405,7 +405,7 @@ public class UsuarioDao {
         Usuario u = null;
         String sql = "SELECT ID_USUARIO, NOMBRE, APELLIDO_PATERNO, APELLIDO_MATERNO, " +
                 "CORREO_INSTITUCIONAL, ID_DIVISION, NUMERO_EMPLEADO, TELEFONO, ACTIVO, CONTRASENA, ROL " +
-                "FROM USUARIOS WHERE ID_USUARIO = ?";
+                "FROM usuario WHERE ID_USUARIO = ?";
 
         try (Connection con = DatabaseConnection.getConnection();
              PreparedStatement ps = con != null ? con.prepareStatement(sql) : null) {
@@ -437,7 +437,7 @@ public class UsuarioDao {
     }
 
     public boolean cambiarEstado(int idUsuario) {
-        String query = "UPDATE usuarios SET activo = CASE WHEN activo = 1 THEN 0 ELSE 1 END WHERE id_usuario = ?";
+        String query = "UPDATE usuario SET activo = CASE WHEN activo = 1 THEN 0 ELSE 1 END WHERE id_usuario = ?";
 
         try (Connection con = DatabaseConnection.getConnection();
              PreparedStatement ps = con != null ? con.prepareStatement(query) : null) {
@@ -463,7 +463,7 @@ public class UsuarioDao {
     }
 
     public boolean actualizarPerfil(int idUsuario, String telefono, String nuevaContrasena) {
-        StringBuilder sql = new StringBuilder("UPDATE usuarios SET ");
+        StringBuilder sql = new StringBuilder("UPDATE usuario SET ");
         boolean tieneTelefono = (telefono != null && !telefono.trim().isEmpty());
         boolean tienePass = (nuevaContrasena != null && !nuevaContrasena.trim().isEmpty());
 
@@ -503,7 +503,7 @@ public class UsuarioDao {
     }
 
     public int obtenerIdParticipante(int idEvento, int idUsuario) {
-        String sql = "SELECT id_participante FROM participantes_eventos WHERE id_evento = ? AND id_usuario = ?";
+        String sql = "SELECT id_participante FROM participante_evento WHERE id_evento = ? AND id_usuario = ?";
 
         try (Connection con = DatabaseConnection.getConnection();
              PreparedStatement ps = con != null ? con.prepareStatement(sql) : null) {
@@ -531,7 +531,7 @@ public class UsuarioDao {
             return idParticipante;
         }
 
-        String sql = "INSERT INTO participantes_eventos (id_evento, id_usuario, registrado_por, fecha_registro) " +
+        String sql = "INSERT INTO participante_evento (id_evento, id_usuario, registrado_por, fecha_registro) " +
                 "VALUES (?, ?, ?, CURRENT_TIMESTAMP)";
 
         try (Connection con = DatabaseConnection.getConnection();
@@ -560,7 +560,7 @@ public class UsuarioDao {
     public List<agregarEvento_co> listarTodosEventos() {
         List<agregarEvento_co> lista = new ArrayList<>();
         String sql = "SELECT id_evento, nombre, tipo_evento, institucion, lugar, descripcion, " +
-                "fecha_inicio, fecha_fin, modalidad FROM eventos ORDER BY id_evento DESC";
+                "fecha_inicio, fecha_fin, modalidad FROM evento ORDER BY id_evento DESC";
 
         try (Connection con = DatabaseConnection.getConnection();
              PreparedStatement ps = con != null ? con.prepareStatement(sql) : null;

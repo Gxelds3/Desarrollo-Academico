@@ -15,7 +15,7 @@ public class UsuarioListaDao {
         List<Usuario> lista = new ArrayList<>();
         if (roles == null || roles.length == 0) return lista;
 
-        StringBuilder sb = new StringBuilder("SELECT id_usuario, nombre, apellido_paterno, apellido_materno, correo_institucional, numero_empleado, id_division, telefono, activo, rol FROM usuarios WHERE LOWER(rol) IN (");
+        StringBuilder sb = new StringBuilder("SELECT id_usuario, nombre, apellido_paterno, apellido_materno, correo_institucional, numero_empleado, id_division, telefono, activo, rol FROM usuario WHERE LOWER(rol) IN (");
         for (int i = 0; i < roles.length; i++) {
             sb.append(i == 0 ? "?" : ",?");
         }
@@ -56,7 +56,7 @@ public class UsuarioListaDao {
         List<agregarEvento_co> lista = new ArrayList<>();
 
         String query = "SELECT id_evento, nombre, lugar, institucion, tipo_evento, descripcion, fecha_inicio, fecha_fin, modalidad " +
-                "FROM eventos " +
+                "FROM evento " +
                 "WHERE id_division = ? " +
                 "ORDER BY fecha_inicio DESC";
 
@@ -97,8 +97,8 @@ public class UsuarioListaDao {
 
         String query = "SELECT e.id_evento, e.nombre, e.lugar, e.institucion, e.tipo_evento, " +
                 "e.descripcion, e.fecha_inicio, e.fecha_fin, e.modalidad " +
-                "FROM eventos e " +
-                "INNER JOIN participantes_eventos pe ON e.id_evento = pe.id_evento " +
+                "FROM evento e " +
+                "INNER JOIN participante_evento pe ON e.id_evento = pe.id_evento " +
                 "WHERE pe.id_usuario = ? " +
                 "ORDER BY e.fecha_inicio DESC";
 
@@ -137,8 +137,8 @@ public class UsuarioListaDao {
     public List<agregarEvento_co> listarEventosPorUsuario(int idUsuario) {
         List<agregarEvento_co> lista = new ArrayList<>();
         String query = "SELECT e.id_evento, e.nombre, e.lugar, e.institucion, e.tipo_evento, e.descripcion, e.fecha_inicio, e.fecha_fin, e.modalidad " +
-                "FROM eventos e " +
-                "JOIN participantes_eventos pe ON e.id_evento = pe.id_evento " +
+                "FROM evento e " +
+                "JOIN participante_evento pe ON e.id_evento = pe.id_evento " +
                 "WHERE pe.id_usuario = ? ORDER BY e.fecha_inicio DESC";
 
         try (Connection con = DatabaseConnection.getConnection();
@@ -175,10 +175,10 @@ public class UsuarioListaDao {
         String query = "SELECT u.id_usuario, u.nombre, u.apellido_paterno, u.apellido_materno, " +
                 "u.correo_institucional, u.numero_empleado, u.activo, u.rol, " +
                 "CASE WHEN EXISTS (" +
-                "    SELECT 1 FROM constancias c WHERE c.id_participante = pe.id_participante" +
+                "    SELECT 1 FROM constancia c WHERE c.id_participante = pe.id_participante" +
                 ") THEN 1 ELSE 0 END AS entregado " +
-                "FROM usuarios u " +
-                "JOIN participantes_eventos pe ON u.id_usuario = pe.id_usuario " +
+                "FROM usuario u " +
+                "JOIN participante_evento pe ON u.id_usuario = pe.id_usuario " +
                 "WHERE pe.id_evento = ? " +
                 "ORDER BY u.nombre";
 
@@ -210,7 +210,7 @@ public class UsuarioListaDao {
     }
 
     public boolean asignarParticipante(int idEvento, int idUsuario, int idRegistrador) {
-        String query = "INSERT INTO participantes_eventos (id_evento, id_usuario, registrado_por, fecha_registro) VALUES (?, ?, ?, SYSDATE)";
+        String query = "INSERT INTO participante_evento (id_evento, id_usuario, registrado_por, fecha_registro) VALUES (?, ?, ?, SYSDATE)";
         try (Connection con = DatabaseConnection.getConnection();
              PreparedStatement ps = con != null ? con.prepareStatement(query) : null) {
 
@@ -227,7 +227,7 @@ public class UsuarioListaDao {
     }
 
     public boolean removerParticipante(int idEvento, int idUsuario) {
-        String query = "DELETE FROM participantes_eventos WHERE id_evento = ? AND id_usuario = ?";
+        String query = "DELETE FROM participante_evento WHERE id_evento = ? AND id_usuario = ?";
         try (Connection con = DatabaseConnection.getConnection();
              PreparedStatement ps = con != null ? con.prepareStatement(query) : null) {
 
@@ -244,7 +244,7 @@ public class UsuarioListaDao {
 
     public boolean actualizarUsuario(Usuario u) {
         boolean estado = false;
-        String query = "UPDATE usuarios SET nombre = ?, apellido_paterno = ?, apellido_materno = ?, id_division = ?, numero_empleado = ?, telefono = ?, correo_institucional = ? WHERE id_usuario = ?";
+        String query = "UPDATE usuario SET nombre = ?, apellido_paterno = ?, apellido_materno = ?, id_division = ?, numero_empleado = ?, telefono = ?, correo_institucional = ? WHERE id_usuario = ?";
 
         try (Connection con = DatabaseConnection.getConnection();
              PreparedStatement ps = con != null ? con.prepareStatement(query) : null) {
@@ -275,7 +275,7 @@ public class UsuarioListaDao {
     }
 
     public boolean eliminarUsuario(int idUsuario) {
-        String query = "DELETE FROM usuarios WHERE id_usuario = ?";
+        String query = "DELETE FROM usuario WHERE id_usuario = ?";
         try (Connection con = DatabaseConnection.getConnection();
              PreparedStatement ps = con != null ? con.prepareStatement(query) : null) {
 
@@ -291,7 +291,7 @@ public class UsuarioListaDao {
     }
 
     public boolean cambiarEstado(int idUsuario, int nuevoEstado) {
-        String query = "UPDATE usuarios SET activo = ? WHERE id_usuario = ?";
+        String query = "UPDATE usuario SET activo = ? WHERE id_usuario = ?";
         try (Connection con = DatabaseConnection.getConnection();
              PreparedStatement ps = con != null ? con.prepareStatement(query) : null) {
 
@@ -309,8 +309,8 @@ public class UsuarioListaDao {
 
     public int contarEventosAsignados(int idUsuario) {
         String sql = "SELECT COUNT(e.ID_EVENTO) " +
-                "FROM EVENTOS e " +
-                "INNER JOIN PARTICIPANTES_EVENTOS pe ON e.ID_EVENTO = pe.ID_EVENTO " +
+                "FROM EVENTO e " +
+                "INNER JOIN PARTICIPANTE_EVENTO pe ON e.ID_EVENTO = pe.ID_EVENTO " +
                 "WHERE pe.ID_USUARIO = ? AND e.FECHA_FIN >= SYSDATE";
 
         int total = 0;
@@ -337,7 +337,7 @@ public class UsuarioListaDao {
 
     public int contarEventos() {
         int total = 0;
-        String sql = "SELECT COUNT(ID_EVENTO) FROM EVENTOS WHERE FECHA_FIN >= SYSDATE";
+        String sql = "SELECT COUNT(ID_EVENTO) FROM EVENTO WHERE FECHA_FIN >= SYSDATE";
 
         try (Connection con = DatabaseConnection.getConnection();
              PreparedStatement ps = con != null ? con.prepareStatement(sql) : null;
@@ -357,7 +357,7 @@ public class UsuarioListaDao {
     }
 
     public int contarEventosPorDivision(int idDivision) {
-        String sql = "SELECT COUNT(ID_EVENTO) FROM EVENTOS WHERE ID_DIVISION = ? AND FECHA_FIN >= SYSDATE";
+        String sql = "SELECT COUNT(ID_EVENTO) FROM EVENTO WHERE ID_DIVISION = ? AND FECHA_FIN >= SYSDATE";
         int total = 0;
 
         try (Connection con = DatabaseConnection.getConnection();
@@ -381,7 +381,7 @@ public class UsuarioListaDao {
     }
 
     public int contarDocentesYCoordinadoresPorDivision(int idDivision) {
-        String sql = "SELECT COUNT(*) FROM USUARIOS WHERE LOWER(ROL) IN ('docente', 'coordinador') AND ID_DIVISION = ?";
+        String sql = "SELECT COUNT(*) FROM USUARIO WHERE LOWER(ROL) IN ('docente', 'coordinador') AND ID_DIVISION = ?";
         int total = 0;
 
         try (Connection con = DatabaseConnection.getConnection();
@@ -409,7 +409,7 @@ public class UsuarioListaDao {
     }
 
     public int contarDocentesYCoordinadores() {
-        String sql = "SELECT COUNT(*) FROM USUARIOS WHERE LOWER(ROL) IN ('docente', 'coordinador')";
+        String sql = "SELECT COUNT(*) FROM USUARIO WHERE LOWER(ROL) IN ('docente', 'coordinador')";
         int total = 0;
 
         try (Connection con = DatabaseConnection.getConnection();
@@ -436,7 +436,7 @@ public class UsuarioListaDao {
         StringBuilder sb = new StringBuilder(
                 "SELECT id_usuario, nombre, apellido_paterno, apellido_materno, " +
                         "correo_institucional, numero_empleado, id_division, telefono, activo, rol " +
-                        "FROM usuarios " +
+                        "FROM usuario " +
                         "WHERE id_division = ? AND LOWER(rol) IN ("
         );
 
@@ -484,7 +484,7 @@ public class UsuarioListaDao {
     }
 
     public boolean registrarPeriodo(Periodo periodo, int idUsuario) {
-        String sql = "INSERT INTO periodos_carga (ID_DIVISION, FECHA_INICIO, FECHA_FIN, ACTIVO, CREADO_POR) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO periodo_carga (ID_DIVISION, FECHA_INICIO, FECHA_FIN, ACTIVO, CREADO_POR) VALUES (?, ?, ?, ?, ?)";
 
         try (Connection con = DatabaseConnection.getConnection();
              PreparedStatement ps = con != null ? con.prepareStatement(sql) : null) {
@@ -508,8 +508,8 @@ public class UsuarioListaDao {
         List<Periodo> lista = new ArrayList<>();
 
         String sql = "SELECT p.ID_PERIODO, d.NOMBRE AS NOMBRE_DIVISION, p.FECHA_INICIO, p.FECHA_FIN, p.ACTIVO " +
-                "FROM periodos_carga p " +
-                "JOIN divisiones d ON p.ID_DIVISION = d.ID_DIVISION " +
+                "FROM periodo_carga p " +
+                "JOIN division d ON p.ID_DIVISION = d.ID_DIVISION " +
                 "ORDER BY p.ID_PERIODO DESC";
 
         try (Connection con = DatabaseConnection.getConnection();
@@ -536,7 +536,7 @@ public class UsuarioListaDao {
     }
 
     public boolean eliminarPeriodo(int idPeriodo) {
-        String sql = "DELETE FROM periodos_carga WHERE ID_PERIODO = ?";
+        String sql = "DELETE FROM periodo_carga WHERE ID_PERIODO = ?";
 
         try (Connection con = DatabaseConnection.getConnection();
              PreparedStatement ps = con != null ? con.prepareStatement(sql) : null) {
@@ -554,7 +554,7 @@ public class UsuarioListaDao {
     }
 
     public boolean cambiarEstadoPeriodo(int idPeriodo, boolean nuevoEstado) {
-        String sql = "UPDATE periodos_carga SET ACTIVO = ? WHERE ID_PERIODO = ?";
+        String sql = "UPDATE periodo_carga SET ACTIVO = ? WHERE ID_PERIODO = ?";
 
         try (Connection con = DatabaseConnection.getConnection();
              PreparedStatement ps = con != null ? con.prepareStatement(sql) : null) {
@@ -572,8 +572,8 @@ public class UsuarioListaDao {
     }
 
     public boolean actualizarPeriodo(int idPeriodo, String division, String fechaInicio, String fechaFin) {
-        String sql = "UPDATE periodos_carga SET " +
-                "ID_DIVISION = (SELECT ID_DIVISION FROM divisiones WHERE (NOMBRE = ? OR TO_CHAR(ID_DIVISION) = ?) AND ROWNUM <= 1), " +
+        String sql = "UPDATE periodo_carga SET " +
+                "ID_DIVISION = (SELECT ID_DIVISION FROM division WHERE (NOMBRE = ? OR TO_CHAR(ID_DIVISION) = ?) AND ROWNUM <= 1), " +
                 "FECHA_INICIO = TO_DATE(?, 'YYYY-MM-DD'), " +
                 "FECHA_FIN = TO_DATE(?, 'YYYY-MM-DD'), " +
                 "ACTIVO = CASE WHEN TO_DATE(?, 'YYYY-MM-DD') >= TRUNC(SYSDATE) THEN 1 ELSE 0 END " +
@@ -601,8 +601,8 @@ public class UsuarioListaDao {
     }
 
     public boolean existeDivision(String division, int idPeriodoExcluir) {
-        String sql = "SELECT COUNT(*) FROM periodos_carga p " +
-                "JOIN divisiones d ON p.ID_DIVISION = d.ID_DIVISION " +
+        String sql = "SELECT COUNT(*) FROM periodo_carga p " +
+                "JOIN division d ON p.ID_DIVISION = d.ID_DIVISION " +
                 "WHERE (d.NOMBRE = ? OR TO_CHAR(d.ID_DIVISION) = ?) " +
                 "AND (? = 0 OR p.ID_PERIODO != ?)";
 
@@ -629,7 +629,7 @@ public class UsuarioListaDao {
     }
 
     public String obtenerNombreDivision(String divisionOrId) {
-        String sql = "SELECT NOMBRE FROM divisiones WHERE NOMBRE = ? OR TO_CHAR(ID_DIVISION) = ?";
+        String sql = "SELECT NOMBRE FROM division WHERE NOMBRE = ? OR TO_CHAR(ID_DIVISION) = ?";
         try (Connection con = DatabaseConnection.getConnection();
              PreparedStatement ps = con != null ? con.prepareStatement(sql) : null) {
 
@@ -650,7 +650,7 @@ public class UsuarioListaDao {
     }
 
     public void desactivarPeriodosVencidos() {
-        String sql = "UPDATE periodos_carga SET activo = 0 WHERE fecha_fin < TRUNC(SYSDATE) AND activo = 1";
+        String sql = "UPDATE periodo_carga SET activo = 0 WHERE fecha_fin < TRUNC(SYSDATE) AND activo = 1";
 
         try (Connection con = DatabaseConnection.getConnection();
              PreparedStatement ps = con != null ? con.prepareStatement(sql) : null) {
@@ -670,7 +670,7 @@ public class UsuarioListaDao {
 
     public boolean periodoYaVencio(int idPeriodo) {
         String sql = "SELECT CASE WHEN fecha_fin < TRUNC(SYSDATE) THEN 1 ELSE 0 END AS vencido " +
-                "FROM periodos_carga WHERE id_periodo = ?";
+                "FROM periodo_carga WHERE id_periodo = ?";
 
         try (Connection con = DatabaseConnection.getConnection();
              PreparedStatement ps = con != null ? con.prepareStatement(sql) : null) {
