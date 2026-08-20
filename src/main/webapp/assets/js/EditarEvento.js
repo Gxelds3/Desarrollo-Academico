@@ -32,6 +32,18 @@ function escHtml(texto) {
 function normString(t) {
     return String(t || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
 }
+function getDivisionName(id) {
+    if (!id) return 'N/A';
+    const num = Number(id);
+    switch(num) {
+        case 1: return 'DATID';
+        case 2: return 'DACEA';
+        case 3: return 'DATEFI';
+        case 4: return 'DAMI';
+        case 5: return 'General';
+        default: return 'N/A';
+    }
+}
 function getNombreCompleto(u) {
     return [u.nombre, u.apellidoPaterno, u.apellidoMaterno].filter(Boolean).join(' ');
 }
@@ -207,7 +219,7 @@ function renderParticipantes(lista) {
                 '</div>' +
             '</td>' +
             '<td>' + escHtml(userCorreo) + '</td>' +
-            '<td style="color:' + estadoColor + '; font-weight:600;">' + estadoTexto + '</td>' +
+            '<td><span class="badge" style="background-color:' + estadoColor + ';">' + estadoTexto + '</span></td>' +
             '<td style="white-space: nowrap;">' +
                 '<a href="' + contextPath + '/verDocente?id=' + userId + '" class="action-btn" title="Ver detalles"><i class="bi bi-eye"></i></a>' +
                 '<a href="' + contextPath + '/cargar_archivo_' + rolSuffix + '.jsp?id=' + idEvento + '&idUsuarioTarget=' + userId + '" class="action-btn" title="Subir archivo"><i class="bi bi-cloud-upload"></i></a>' +
@@ -299,7 +311,7 @@ function renderBusquedaDocentes(filtro) {
     }
 
     if (resultados.length === 0) {
-        tbodyBusquedaDocentes.innerHTML = '<tr><td colspan="4" class="text-center text-muted py-3">No se encontraron docentes disponibles.</td></tr>';
+        tbodyBusquedaDocentes.innerHTML = '<tr><td colspan="5" class="text-center text-muted py-3">No se encontraron docentes disponibles.</td></tr>';
         return;
     }
 
@@ -315,6 +327,7 @@ function renderBusquedaDocentes(filtro) {
         tr.innerHTML =
             '<td>' + escHtml(getNombreCompleto(u)) + '</td>' +
             '<td>' + escHtml(getCorreoUsuario(u)) + '</td>' +
+            '<td>' + escHtml(getDivisionName(u.idDivision || u.division)) + '</td>' +
             '<td><span class="badge bg-secondary">' + escHtml(rolDisplay) + '</span></td>' +
             '<td><button type="button" class="btn btn-sm btn-outline-success btn-asignar-docente" data-id="' + userId + '"><i class="bi bi-plus-circle me-1"></i>Añadir</button></td>';
         tbodyBusquedaDocentes.appendChild(tr);
@@ -322,7 +335,7 @@ function renderBusquedaDocentes(filtro) {
 
     if (resultados.length > 20) {
         var trMore = document.createElement('tr');
-        trMore.innerHTML = '<td colspan="4" class="text-center text-muted small py-2">Mostrando 20 de ' + resultados.length + '. Refina tu búsqueda.</td>';
+        trMore.innerHTML = '<td colspan="5" class="text-center text-muted small py-2">Mostrando 20 de ' + resultados.length + '. Refina tu búsqueda.</td>';
         tbodyBusquedaDocentes.appendChild(trMore);
     }
 }

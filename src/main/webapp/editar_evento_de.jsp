@@ -139,12 +139,13 @@
                         <tr>
                             <th>Nombre</th>
                             <th>Correo</th>
+                            <th>División</th>
                             <th>Rol</th>
                             <th></th>
                         </tr>
                         </thead>
                         <tbody id="tbodyBusquedaDocentes">
-                        <tr><td colspan="4" class="text-center text-muted py-3">Escribe para buscar docentes...</td></tr>
+                        <tr><td colspan="5" class="text-center text-muted py-3">Escribe para buscar docentes...</td></tr>
                         </tbody>
                     </table>
                 </div>
