@@ -60,7 +60,7 @@ public class EliminarEventoServlet extends HttpServlet {
             con.setAutoCommit(false);
 
             // Primero se eliminan las tablas hijas (llaves foráneas hacia eventos)
-            psParticipantes = con.prepareStatement("DELETE FROM participantes_eventos WHERE id_evento = ?");
+            psParticipantes = con.prepareStatement("DELETE FROM participante_evento WHERE id_evento = ?");
             psParticipantes.setInt(1, idEvento);
             psParticipantes.executeUpdate();
 
@@ -68,7 +68,7 @@ public class EliminarEventoServlet extends HttpServlet {
             psDocentes.setInt(1, idEvento);
             psDocentes.executeUpdate();
 
-            psEvento = con.prepareStatement("DELETE FROM eventos WHERE id_evento = ?");
+            psEvento = con.prepareStatement("DELETE FROM evento WHERE id_evento = ?");
             psEvento.setInt(1, idEvento);
             int filasAfectadas = psEvento.executeUpdate();
 

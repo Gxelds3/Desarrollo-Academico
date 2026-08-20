@@ -193,6 +193,13 @@ const fechaVencimiento = document.getElementById('fechaVencimiento');
 vigenciaSi.addEventListener('change', () => {
     document.getElementById('bloqueFechaVigencia').classList.remove('d-none');
     fechaVencimiento.required = true;
+    // Bloquear fechas pasadas en el calendario
+    const hoyMin = new Date();
+    hoyMin.setHours(0, 0, 0, 0);
+    const yyyy = hoyMin.getFullYear();
+    const mm = String(hoyMin.getMonth() + 1).padStart(2, '0');
+    const dd = String(hoyMin.getDate()).padStart(2, '0');
+    fechaVencimiento.setAttribute('min', yyyy + '-' + mm + '-' + dd);
 });
 
 vigenciaNo.addEventListener('change', () => {
@@ -248,6 +255,17 @@ document.getElementById('formCargaArchivo').addEventListener('submit', function(
     if (vigenciaSi.checked && !fechaVencimiento.value) {
         Swal.fire('Advertencia', 'Debes elegir una fecha de vigencia', 'warning');
         return;
+    }
+
+    if (vigenciaSi.checked && fechaVencimiento.value) {
+        const hoy = new Date();
+        hoy.setHours(0, 0, 0, 0);
+        const partes = fechaVencimiento.value.split('-');
+        const fechaSeleccionada = new Date(partes[0], partes[1] - 1, partes[2]);
+        if (fechaSeleccionada < hoy) {
+            Swal.fire('Fecha inválida', 'La fecha de vigencia no puede ser una fecha que ya expiró. Elige una fecha de hoy en adelante.', 'warning');
+            return;
+        }
     }
 
     const formData = new FormData(this);

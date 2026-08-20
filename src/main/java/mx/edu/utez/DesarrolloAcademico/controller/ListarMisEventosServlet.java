@@ -36,7 +36,12 @@ public class ListarMisEventosServlet extends HttpServlet {
 
         Usuario usuario = (Usuario) session.getAttribute("usuario");
 
-        List<agregarEvento_co> eventos = dao.listarEventosPorDivision1(usuario.getIdDivision());
+        List<agregarEvento_co> eventos;
+        if ("desarrollo".equalsIgnoreCase(usuario.getRol())) {
+            eventos = new mx.edu.utez.DesarrolloAcademico.model.dao.UsuarioDao().listarTodosEventos();
+        } else {
+            eventos = dao.listarEventosPorDivision1(usuario.getIdDivision());
+        }
 
         StringBuilder json = new StringBuilder("[");
         for (int i = 0; i < eventos.size(); i++) {

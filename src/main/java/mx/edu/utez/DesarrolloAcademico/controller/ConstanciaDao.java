@@ -13,7 +13,7 @@ public class ConstanciaDao {
 
 
     public boolean verificarConstanciaExistente(int idParticipante) {
-        String sql = "SELECT COUNT(*) FROM constancias WHERE id_participante = ?";
+        String sql = "SELECT COUNT(*) FROM constancia WHERE id_participante = ?";
         try (Connection con = DatabaseConnection.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
@@ -34,10 +34,10 @@ public class ConstanciaDao {
 
         String query;
         if (tieneVigencia && fechaVencimiento != null && !fechaVencimiento.trim().isEmpty()) {
-            query = "INSERT INTO constancias (id_participante, ruta_archivo, nombre_archivo, tiene_vigencia, fecha_vencimiento, subido_por) " +
+            query = "INSERT INTO constancia (id_participante, ruta_archivo, nombre_archivo, tiene_vigencia, fecha_vencimiento, subido_por) " +
                     "VALUES (?, ?, ?, 1, TO_DATE(?, 'YYYY-MM-DD'), ?)";
         } else {
-            query = "INSERT INTO constancias (id_participante, ruta_archivo, nombre_archivo, tiene_vigencia, subido_por) " +
+            query = "INSERT INTO constancia (id_participante, ruta_archivo, nombre_archivo, tiene_vigencia, subido_por) " +
                     "VALUES (?, ?, ?, 0, ?)";
         }
 

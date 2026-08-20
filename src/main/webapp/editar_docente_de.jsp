@@ -52,7 +52,6 @@
                     <option value="2">DACEA</option>
                     <option value="3">DATEFI</option>
                     <option value="4">DAMI</option>
-                    <option value="5">General</option>
                 </select>
                 <input type="hidden" id="campoDivisionHidden" name="division">
             </div>

@@ -74,7 +74,7 @@ public class LoginServlet extends HttpServlet {
      * Verifica si el usuario existe con esas credenciales pero su cuenta está inactiva.
      */
     private boolean estaInactivo(String credencial, String contrasena) {
-        String query = "SELECT activo FROM usuarios WHERE (correo_institucional = ? OR numero_empleado = ?) AND contrasena = ?";
+        String query = "SELECT activo FROM usuario WHERE (correo_institucional = ? OR numero_empleado = ?) AND contrasena = ?";
         try (Connection con = DatabaseConnection.getConnection();
              PreparedStatement ps = con.prepareStatement(query)) {
             ps.setString(1, credencial);

@@ -47,12 +47,7 @@
             <div class="col-md-4">
                 <label for="campoDivision" class="form-label">División Académica <span class="text-danger">*</span> :</label>
                 <select class="form-select" id="campoDivision" name="division" required>
-                    <option value="" disabled selected>Seleccione división</option>
-                    <option value="1">DATID</option>
-                    <option value="2">DACEA</option>
-                    <option value="3">DATEFI</option>
-                    <option value="4">DAMI</option>
-                    <option value="5">General</option>
+                    <option value="5" selected>General</option>
                 </select>
                 <input type="hidden" id="campoDivisionHidden" name="idDivision">
             </div>
