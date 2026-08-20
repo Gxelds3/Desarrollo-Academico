@@ -226,7 +226,7 @@ public class UsuarioDao {
             ps.setString(6, usuario.getNumeroEmpleado());
             ps.setString(7, usuario.getTelefono());
             ps.setString(8, usuario.getCorreoInstitucional());
-            ps.setString(9, usuario.getContrasena());
+            ps.setString(9, mx.edu.utez.DesarrolloAcademico.utils.HashUtils.hashSHA256(usuario.getContrasena()));
 
             if (usuario.getCreadoPor() != null) {
                 ps.setInt(10, usuario.getCreadoPor());
@@ -249,9 +249,9 @@ public class UsuarioDao {
 
             if (con == null || ps == null) return false;
 
-            ps.setString(1, nuevaPassword);
+            ps.setString(1, mx.edu.utez.DesarrolloAcademico.utils.HashUtils.hashSHA256(nuevaPassword));
             ps.setInt(2, idUsuario);
-            ps.setString(3, actualPassword);
+            ps.setString(3, mx.edu.utez.DesarrolloAcademico.utils.HashUtils.hashSHA256(actualPassword));
 
             return ps.executeUpdate() > 0;
         } catch (SQLException e) {
@@ -490,7 +490,7 @@ public class UsuarioDao {
                 ps.setString(paramIndex++, telefono.trim());
             }
             if (tienePass) {
-                ps.setString(paramIndex++, nuevaContrasena.trim());
+                ps.setString(paramIndex++, mx.edu.utez.DesarrolloAcademico.utils.HashUtils.hashSHA256(nuevaContrasena.trim()));
             }
             ps.setInt(paramIndex, idUsuario);
 

@@ -29,13 +29,15 @@ public class LoginServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String credencial = request.getParameter("email");
-        String contra = request.getParameter("contra");
+        String contraPlana = request.getParameter("contra");
 
-        if (credencial == null || credencial.trim().isEmpty() || contra == null || contra.trim().isEmpty()) {
+        if (credencial == null || credencial.trim().isEmpty() || contraPlana == null || contraPlana.trim().isEmpty()) {
             request.setAttribute("error", "Por favor ingresa tus credenciales.");
             request.getRequestDispatcher("login.jsp").forward(request, response);
             return;
         }
+
+        String contra = mx.edu.utez.DesarrolloAcademico.utils.HashUtils.hashSHA256(contraPlana);
 
         Usuario usuario = usuarioDao.login(credencial, contra);
 

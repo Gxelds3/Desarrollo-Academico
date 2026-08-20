@@ -69,7 +69,7 @@ public class ActualizarMiCuentaServlet extends HttpServlet {
             UsuarioDao usuarioDao = new UsuarioDao();
 
             // 5. Verificar que la contraseña actual sea correcta (comparando contra sesión)
-            if (!usuarioSesion.getContrasena().equals(passActual)) {
+            if (!usuarioSesion.getContrasena().equals(mx.edu.utez.DesarrolloAcademico.utils.HashUtils.hashSHA256(passActual))) {
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 out.write("{\"success\": false, \"message\": \"La contraseña actual es incorrecta.\"}");
                 out.flush();
@@ -93,7 +93,7 @@ public class ActualizarMiCuentaServlet extends HttpServlet {
 
                 if (cambioExitoso) {
                     usuarioSesion.setTelefono(telefono);
-                    usuarioSesion.setContrasena(passNueva);
+                    usuarioSesion.setContrasena(mx.edu.utez.DesarrolloAcademico.utils.HashUtils.hashSHA256(passNueva));
                     session.setAttribute("usuario", usuarioSesion);
                 } else {
                     mensajeError = "Ocurrió un error en la base de datos al actualizar la contraseña y teléfono.";

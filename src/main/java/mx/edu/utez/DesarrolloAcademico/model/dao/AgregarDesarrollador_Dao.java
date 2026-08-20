@@ -38,7 +38,7 @@ public class AgregarDesarrollador_Dao {
             ps.setString(6, usuario.getNumeroEmpleado());
             ps.setString(7, usuario.getTelefono());
             ps.setString(8, usuario.getCorreoInstitucional());
-            ps.setString(9, usuario.getContrasena());
+            ps.setString(9, mx.edu.utez.DesarrolloAcademico.utils.HashUtils.hashSHA256(usuario.getContrasena()));
 
             int filas = ps.executeUpdate();
             estado = filas > 0;
@@ -201,7 +201,7 @@ public class AgregarDesarrollador_Dao {
             ps.setString(i++, usuario.getRol());
 
             if (cambiaPassword) {
-                ps.setString(i++, nuevaContrasena);
+                ps.setString(i++, mx.edu.utez.DesarrolloAcademico.utils.HashUtils.hashSHA256(nuevaContrasena));
             }
 
             ps.setInt(i, usuario.getIdUsuario());
@@ -292,7 +292,8 @@ public class AgregarDesarrollador_Dao {
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
                     String passBD = rs.getString("contrasena");
-                    return passBD != null && passBD.equals(passActualIngresada);
+                    String passHash = mx.edu.utez.DesarrolloAcademico.utils.HashUtils.hashSHA256(passActualIngresada);
+                    return passBD != null && passBD.equals(passHash);
                 }
             }
         } catch (Exception e) {

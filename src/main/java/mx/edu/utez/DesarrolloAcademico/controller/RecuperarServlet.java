@@ -125,7 +125,8 @@ public class RecuperarServlet extends HttpServlet {
             return;
         }
 
-        boolean actualizado = usuarioDao.actualizarPasswordLimpiaCodigo(idUsuario, pass1);
+        String passHash = mx.edu.utez.DesarrolloAcademico.utils.HashUtils.hashSHA256(pass1);
+        boolean actualizado = usuarioDao.actualizarPasswordLimpiaCodigo(idUsuario, passHash);
 
         if (actualizado) {
             emailService.enviarConfirmacionCambio(email);
