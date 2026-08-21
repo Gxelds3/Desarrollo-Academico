@@ -25,7 +25,7 @@
         <a href="#" class="nav-pill" data-tipo="conferencia">Conferencia</a>
         <a href="#" class="nav-pill" data-tipo="taller">Taller</a>
         <a href="#" class="nav-pill" data-tipo="curso">Curso</a>
-        <a href="#" class="nav-pill" data-tipo="certificacion">Certificacion</a>
+        <a href="#" class="nav-pill" data-tipo="certificacion">Certificación</a>
     </div>
 
     <div class="d-flex justify-content-between align-items-center mb-4">
