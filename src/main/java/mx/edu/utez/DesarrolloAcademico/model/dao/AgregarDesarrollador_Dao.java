@@ -226,7 +226,7 @@ public class AgregarDesarrollador_Dao {
 
     public List<Usuario> listarDesarrolladores() {
         List<Usuario> lista = new ArrayList<>();
-        String query = "SELECT * FROM usuario WHERE rol = 'desarrollo' ORDER BY nombre, apellido_paterno";
+        String query = "SELECT * FROM usuario WHERE rol = 'desarrollo' ORDER BY id_usuario DESC";
 
         try (Connection con = DatabaseConnection.getConnection();
              PreparedStatement ps = con != null ? con.prepareStatement(query) : null) {

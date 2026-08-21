@@ -85,6 +85,8 @@
         </table>
     </div>
 
+    
+    <div class='pagination-container my-3' id='paginationContainer'></div>
 </main>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -94,7 +96,8 @@
     window.contextPath = '${pageContext.request.contextPath}';
 </script>
 
-<script src="${pageContext.request.contextPath}/assets/js/coordinador.js"></script>
-<script src="${pageContext.request.contextPath}/assets/js/GestionDocente.js?v=3"></script>
+<script src="assets/js/paginator.js" charset="UTF-8"></script>
+<script src="${pageContext.request.contextPath}/assets/js/coordinador.js" charset="UTF-8"></script>
+<script src="${pageContext.request.contextPath}/assets/js/GestionDocente.js?v=3" charset="UTF-8"></script>
 </body>
 </html>

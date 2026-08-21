@@ -2,6 +2,7 @@ package mx.edu.utez.DesarrolloAcademico.controller;
 
 import mx.edu.utez.DesarrolloAcademico.model.agregarEvento_co;
 import mx.edu.utez.DesarrolloAcademico.model.dao.AgregarEvento_Co;
+import mx.edu.utez.DesarrolloAcademico.model.dao.UsuarioListaDao;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -19,20 +20,33 @@ public class ListarEventosServlet extends HttpServlet {
         PrintWriter out = response.getWriter();
 
         HttpSession session = request.getSession(false);
-        Integer idDivision = null;
-
+        mx.edu.utez.DesarrolloAcademico.model.Usuario u = null;
         if (session != null) {
-            mx.edu.utez.DesarrolloAcademico.model.Usuario u = (mx.edu.utez.DesarrolloAcademico.model.Usuario) session.getAttribute("usuario");
-            if (u != null) {
-
-                if ("coordinador".equalsIgnoreCase(u.getRol())) {
-                    idDivision = u.getIdDivision();
-                }
-            }
+            u = (mx.edu.utez.DesarrolloAcademico.model.Usuario) session.getAttribute("usuario");
         }
 
+        if (u == null) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            out.write("{\"error\":\"No autenticado\"}");
+            out.flush();
+            return;
+        }
+
+        String rol = u.getRol() != null ? u.getRol().toLowerCase() : "";
         AgregarEvento_Co dao = new AgregarEvento_Co();
-        List<agregarEvento_co> eventos = dao.listarEventos1(idDivision);
+        UsuarioListaDao listaDao = new UsuarioListaDao();
+
+        List<agregarEvento_co> eventos;
+        if ("docente".equals(rol)) {
+            // Docente: solo próximos eventos en los que está asignado
+            eventos = listaDao.listarProximosEventosDocente(u.getIdUsuario());
+        } else if ("coordinador".equals(rol)) {
+            // Coordinador: próximos de su división
+            eventos = dao.listarEventos1(u.getIdDivision());
+        } else {
+            // Desarrollo: todos los próximos
+            eventos = dao.listarEventos1(null);
+        }
 
         StringBuilder json = new StringBuilder("[");
         for (int i = 0; i < eventos.size(); i++) {

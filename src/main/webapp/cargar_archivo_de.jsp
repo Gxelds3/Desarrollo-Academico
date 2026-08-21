@@ -92,6 +92,18 @@
         </div>
     </div>
 
+
+    <!-- Bloque visible cuando el periodo de carga está deshabilitado o ya venció -->
+    <div id="periodoDeshabilitadoBloque" style="display:none;" class="data-card mb-5" style="padding: 25px;">
+        <div class="d-flex flex-column align-items-center justify-content-center text-center py-5">
+            <div style="display: inline-flex; justify-content: center; align-items: center; width: 70px; height: 70px; background-color: #f0f0f0; border-radius: 50%; color: #999; margin-bottom: 1.5rem;">
+                <i class="bi bi-lock-fill fs-2"></i>
+            </div>
+            <h5 class="fw-bold mb-2" style="color: #555;" id="tituloPeriodoDeshabilitado">Periodo de carga deshabilitado</h5>
+            <p class="text-muted mb-0" id="mensajePeriodoDeshabilitado">El periodo de carga para tu división se encuentra cerrado en este momento.</p>
+        </div>
+    </div>
+
     <!-- Formulario para Cargar Archivo (Oculto por defecto) -->
     <form id="formCargaArchivo" style="display:none;">
         <input type="hidden" name="idEvento" id="hiddenIdEvento" value="">
@@ -153,9 +165,9 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script src="assets/js/coordinador.js"></script>
+<script src="assets/js/coordinador.js" charset="UTF-8"></script>
 <script>window.contextPath = '<%= request.getContextPath() %>';</script>
-<script src="assets/js/CargarArchivoDe.js">
+<script src="assets/js/CargarArchivoDe.js" charset="UTF-8">
 
 </script>
 </body>

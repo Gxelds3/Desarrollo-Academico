@@ -69,6 +69,7 @@
     <!-- Paginación dinámica -->
     <div class="pagination-container" id="paginacionContainer"></div>
 
+    <div class='pagination-container my-3' id='paginationContainer'></div>
 </main>
 
 <script>
@@ -76,6 +77,6 @@
     window.sufijoRol   = 'co';
 </script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script src="assets/js/historial_eventos_de.js"></script>
+<script src="assets/js/historial_eventos_de.js" charset="UTF-8"></script>
 </body>
 </html>

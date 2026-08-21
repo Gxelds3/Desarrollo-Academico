@@ -14,7 +14,7 @@
 <body>
 
 <jsp:include page="sidebar_de.jsp">
-    <jsp:param name="active" value="eventos" />
+    <jsp:param name="active" value="mi_evento" />
 </jsp:include>
 
 <main class="main-content">
@@ -67,13 +67,10 @@
         </table>
     </div>
 
-    <!-- Paginador -->
-    <div class="pagination-container" id="paginacionContainer">
-        <a href="#" class="page-btn"><i class="bi bi-chevron-left"></i></a>
-        <a href="#" class="page-btn active">1</a>
-        <a href="#" class="page-btn"><i class="bi bi-chevron-right"></i></a>
-    </div>
+    
 
+    
+    <div class='pagination-container my-3' id='paginationContainer'></div>
 </main>
 
 <script>
@@ -82,6 +79,7 @@
     window.sufijoRol = 'de';
 </script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script src="assets/js/historial_eventos_de.js"></script>
+<script src="assets/js/paginator.js" charset="UTF-8"></script>
+<script src="assets/js/historial_eventos_de.js" charset="UTF-8"></script>
 </body>
 </html>

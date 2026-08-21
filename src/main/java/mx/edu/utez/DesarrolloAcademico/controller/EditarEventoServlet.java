@@ -66,7 +66,8 @@ public class EditarEventoServlet extends HttpServlet {
                         + "\"fechaInicio\":\"" + escapar(evento.getFechaInicio()) + "\","
                         + "\"fechaFin\":\"" + escapar(evento.getFechaFin()) + "\","
                         + "\"modalidad\":\"" + escapar(evento.getModalidad()) + "\","
-                        + "\"fechaLimiteEntrega\":\"" + escapar(fechaLimite) + "\""
+                        + "\"fechaLimiteEntrega\":\"" + escapar(fechaLimite) + "\","
+                        + "\"idDivisionDocente\":" + divisionParaLimite
                         + "}");
             }
         } catch (Exception e) {

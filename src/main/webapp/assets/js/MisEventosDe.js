@@ -1,4 +1,4 @@
-// MisEventos.js - Carga los eventos del usuario autenticado desde la BD
+﻿// MisEventos.js - Carga los eventos del usuario autenticado desde la BD
 const contextPathMisEventos = window.contextPath || '';
 const tbodyMisEventos = document.getElementById('tablaMisEventosBody');
 const inputBuscarMisEventos = document.getElementById('buscarMisEventos');
@@ -58,7 +58,7 @@ function aplicarFiltrosMisEventos() {
     const filtrados = misEventosOriginales.filter(function (ev) {
         return texto === '' || normEv(ev.nombre).includes(texto) || normEv(ev.tipo).includes(texto);
     });
-    renderMisEventos(filtrados);
+    window.renderPaginator(filtrados, 20, 'paginationContainer', renderMisEventos);
 }
 
 function cargarMisEventos() {

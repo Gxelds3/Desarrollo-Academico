@@ -23,15 +23,15 @@
         <div class="row mb-3">
             <div class="col-md-4">
                 <label class="form-label text-muted">Nombre del evento:</label>
-                <input type="text" class="form-control" id="campoNombre" name="nombre" required>
+                <input type="text" class="form-control" id="campoNombre" name="nombre" required oninput="this.value = this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ0-9\s.,-]/g, '')" maxlength="255">
             </div>
             <div class="col-md-4">
                 <label class="form-label text-muted">Lugar:</label>
-                <input type="text" class="form-control" id="campoLugar" name="lugar" required>
+                <input type="text" class="form-control" id="campoLugar" name="lugar" required oninput="this.value = this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ0-9\s.,-]/g, '')" maxlength="255">
             </div>
             <div class="col-md-4">
                 <label class="form-label text-muted">Institución / Empresa:</label>
-                <input type="text" class="form-control" id="campoInstitucion" name="institucion">
+                <input type="text" class="form-control" id="campoInstitucion" name="institucion" oninput="this.value = this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ0-9\s.,-]/g, '')" maxlength="255">
             </div>
         </div>
 
@@ -49,7 +49,7 @@
             </div>
             <div class="col-md-8">
                 <label class="form-label text-muted">Descripción del evento:</label>
-                <textarea class="form-control" id="campoDescripcion" name="descripcion" rows="3" style="resize: vertical;"></textarea>
+                <textarea class="form-control" id="campoDescripcion" name="descripcion" rows="3" oninput="this.value = this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ0-9\s.,]/g, '')" style="resize: vertical;"></textarea>
             </div>
         </div>
 
@@ -155,7 +155,7 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>window.contextPath = '<%= request.getContextPath() %>';</script>
-<script src="assets/js/coordinador.js"></script>
-<script src="assets/js/EditarEvento.js?v=5"></script>
+<script src="assets/js/coordinador.js" charset="UTF-8"></script>
+<script src="assets/js/EditarEvento.js?v=5" charset="UTF-8"></script>
 </body>
 </html>

@@ -39,9 +39,7 @@ function obtenerUsuariosFiltrados() {
             normalizar(u.correo || u.correoInstitucional || '').includes(texto) ||
             normalizar(u.numeroEmpleado || '').includes(texto);
     });
-    filtrados.sort(function (a, b) {
-        return normalizar(a.nombre).localeCompare(normalizar(b.nombre));
-    });
+    
     return filtrados;
 }
 

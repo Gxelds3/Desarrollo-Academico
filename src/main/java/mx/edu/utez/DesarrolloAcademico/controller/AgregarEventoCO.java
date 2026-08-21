@@ -109,13 +109,13 @@ public class AgregarEventoCO extends HttpServlet {
         nuevoEvento.setCreadoPor(creadoPor);
 
         AgregarEvento_Co dao = new AgregarEvento_Co();
-        boolean exito = dao.registrarEvento(nuevoEvento);
+        String errorMsg = dao.registrarEventoError(nuevoEvento);
 
-        if (exito) {
+        if (errorMsg == null) {
             out.write("{\"success\": true, \"message\": \"Evento registrado correctamente.\"}");
         } else {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            out.write("{\"success\": false, \"message\": \"No se pudo guardar el evento en la base de datos.\"}");
+            out.write("{\"success\": false, \"message\": \"No se pudo guardar: " + errorMsg.replace("\"", "\\\"").replace("\n", " ") + "\"}");
         }
         out.flush();
     }

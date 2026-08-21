@@ -35,6 +35,7 @@ public class ListarPeriodosServlet extends HttpServlet {
                 String fechaFin = p.getFechaFin()    != null ? p.getFechaFin().toString()    : "";
                 json.append("{")
                         .append("\"idPeriodo\":").append(p.getId()).append(",")
+                        .append("\"idDivision\":").append(p.getIdDivision()).append(",")
                         .append("\"division\":\"").append(p.getDivision() != null ? p.getDivision().replace("\"","\\\"") : "").append("\",")
                         .append("\"fechaInicio\":\"").append(fechaIni).append("\",")
                         .append("\"fechaFin\":\"").append(fechaFin).append("\",")

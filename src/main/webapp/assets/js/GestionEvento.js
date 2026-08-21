@@ -67,9 +67,7 @@ function obtenerEventosFiltrados() {
         return coincideTipo && coincideTexto;
     });
 
-    filtrados.sort(function (a, b) {
-        return normalizar(a.nombre).localeCompare(normalizar(b.nombre));
-    });
+    
 
     return filtrados;
 }
@@ -117,20 +115,29 @@ function renderEventos(eventos) {
 }
 
 function aplicarFiltros() {
-    renderEventos(obtenerEventosFiltrados());
+    window.renderPaginator(obtenerEventosFiltrados(), 20, 'paginationContainer', renderEventos);
 }
 
 function cargarEventos() {
-    fetch(contextPath + '/ListarEventosServlet')
+    fetch(contextPath + '/ListarEventosServlet', { credentials: 'same-origin' })
         .then(function (response) {
+            if (response.redirected || (response.url && response.url.includes('login.jsp'))) {
+                window.location.href = contextPath + '/login.jsp';
+                return null;
+            }
             const contentType = response.headers.get("content-type");
             if (contentType && contentType.indexOf("application/json") !== -1) {
                 return response.json();
             } else {
-                throw new Error("El servidor no devolvió un JSON.");
+                throw new Error("El servidor no devolviÃ³ un JSON.");
             }
         })
         .then(function (eventos) {
+            if (!eventos) return;
+            if (eventos.error) {
+                window.location.href = contextPath + '/login.jsp';
+                return;
+            }
             eventosOriginales = eventos || [];
             aplicarFiltros();
         })
@@ -173,12 +180,12 @@ if (tbody) {
 
         Swal.fire({
             icon: 'warning',
-            title: '¿Deseas eliminar este evento?',
-            text: 'Esta acción no se puede deshacer.',
+            title: 'Â¿Deseas eliminar este evento?',
+            text: 'Esta acciÃ³n no se puede deshacer.',
             showCancelButton: true,
             confirmButtonColor: '#00847b',
             cancelButtonColor: '#aaaaaa',
-            confirmButtonText: 'Sí, eliminar',
+            confirmButtonText: 'SÃ­, eliminar',
             cancelButtonText: 'Cancelar'
         }).then(function (result) {
             if (!result.isConfirmed) return;
@@ -197,7 +204,7 @@ if (tbody) {
                             return { ok: response.ok, data: data };
                         });
                     } else {
-                        throw new Error("El servidor devolvió un error HTML al intentar eliminar.");
+                        throw new Error("El servidor devolviÃ³ un error HTML al intentar eliminar.");
                     }
                 })
                 .then(function (resultado) {
@@ -205,7 +212,7 @@ if (tbody) {
                         Swal.fire({
                             icon: 'success',
                             title: 'Evento eliminado',
-                            text: 'El evento se eliminó correctamente.',
+                            text: 'El evento se eliminÃ³ correctamente.',
                             confirmButtonColor: '#00847b'
                         });
                         cargarEventos();
@@ -213,7 +220,7 @@ if (tbody) {
                         Swal.fire({
                             icon: 'error',
                             title: 'No se pudo eliminar',
-                            text: resultado.data.message || 'Ocurrió un error al eliminar el evento.',
+                            text: resultado.data.message || 'OcurriÃ³ un error al eliminar el evento.',
                             confirmButtonColor: '#00847b'
                         });
                     }
@@ -222,7 +229,7 @@ if (tbody) {
                     console.error('Error al eliminar el evento:', error);
                     Swal.fire({
                         icon: 'error',
-                        title: 'Error de conexión',
+                        title: 'Error de conexiÃ³n',
                         text: 'No fue posible comunicarse con el servidor.',
                         confirmButtonColor: '#00847b'
                     });

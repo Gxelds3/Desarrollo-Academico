@@ -35,6 +35,18 @@ public class EditarPeriodoServlet extends HttpServlet {
             int id = Integer.parseInt(idStr);
             UsuarioListaDao dao = new UsuarioListaDao();
 
+            // VALIDACIÓN: si General está activo, solo se puede editar el periodo de General
+            boolean generalActivo = dao.esGeneralActivo();
+            if (generalActivo) {
+                // Obtener la división a la que pertenece este periodo
+                String divisionDelPeriodo = dao.obtenerDivisionDePeriodo(id);
+                if (divisionDelPeriodo != null && !divisionDelPeriodo.equalsIgnoreCase("General")) {
+                    response.setStatus(HttpServletResponse.SC_CONFLICT);
+                    response.getWriter().write("{\"status\":\"error\", \"message\":\"El periodo General está activo. Primero apaga la división General antes de editar otra división individualmente.\"}");
+                    return;
+                }
+            }
+
             // Validar Duplicado en Editar (Excluyendo ID actual)
             if (dao.existeDivision(division, id)) {
                 String nombreDivision = dao.obtenerNombreDivision(division);
@@ -43,14 +55,14 @@ public class EditarPeriodoServlet extends HttpServlet {
                 return;
             }
 
-            boolean actualizado = dao.actualizarPeriodo(id, division, fechaInicio, fechaFin);
+            String errorMsg = dao.actualizarPeriodoError(id, division, fechaInicio, fechaFin);
 
-            if (actualizado) {
+            if (errorMsg == null) {
                 response.setStatus(HttpServletResponse.SC_OK);
                 response.getWriter().write("{\"status\":\"success\", \"message\":\"Periodo actualizado correctamente.\"}");
             } else {
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                response.getWriter().write("{\"status\":\"error\", \"message\":\"No se pudo actualizar el periodo en la base de datos.\"}");
+                response.getWriter().write("{\"status\":\"error\", \"message\":\"" + errorMsg + "\"}");
             }
 
         } catch (Exception e) {

@@ -157,7 +157,7 @@
 </main>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script src="assets/js/coordinador.js"></script>
+<script src="assets/js/coordinador.js" charset="UTF-8"></script>
 <script>
     function togglePassword(inputId) {
         const input = document.getElementById(inputId);
@@ -178,6 +178,6 @@
 </script>
 <script>window.contextPath = '<%= request.getContextPath() %>';</script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script src="assets/js/MiCuenta.js"></script>
+<script src="assets/js/MiCuenta.js" charset="UTF-8"></script>
 </body>
 </html>

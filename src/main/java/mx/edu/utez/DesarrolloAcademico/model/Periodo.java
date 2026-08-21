@@ -4,12 +4,16 @@ import java.sql.Date;
 
 public class Periodo {
     private int id;
+    private int idDivision; // NUEVO CAMPO
     private String division;
     private Date fechaInicio;
     private Date fechaFin;
     private boolean activo;
 
     public Periodo() {}
+
+    public int getIdDivision() { return idDivision; }
+    public void setIdDivision(int idDivision) { this.idDivision = idDivision; }
 
     public Periodo(String division, Date fechaInicio, Date fechaFin, boolean activo) {
         this.division = division;

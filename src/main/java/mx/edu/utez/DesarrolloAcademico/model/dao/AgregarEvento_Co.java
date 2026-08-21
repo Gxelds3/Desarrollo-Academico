@@ -14,6 +14,80 @@ import java.util.List;
 
 public class AgregarEvento_Co {
 
+    public String registrarEventoError(agregarEvento_co evento) {
+        Connection con = null;
+        PreparedStatement psEvento = null;
+        PreparedStatement psDocentes = null;
+        ResultSet rs = null;
+
+        try {
+            con = DatabaseConnection.getConnection();
+            if (con == null) return "No se pudo obtener conexion a la BD";
+
+            con.setAutoCommit(false);
+
+            String queryEvento = "INSERT INTO evento (nombre, lugar, institucion, tipo_evento, descripcion, fecha_inicio, fecha_fin, modalidad, id_division, creado_por, fecha_creacion) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, SYSDATE)";
+            String[] returnId = { "ID_EVENTO" };
+            psEvento = con.prepareStatement(queryEvento, returnId);
+
+            psEvento.setString(1, evento.getNombre());
+            psEvento.setString(2, evento.getLugar());
+            psEvento.setString(3, evento.getInstitucion());
+            psEvento.setString(4, evento.getTipo());
+            psEvento.setString(5, evento.getDescripcion());
+            psEvento.setDate(6, Date.valueOf(LocalDate.parse(evento.getFechaInicio())));
+            psEvento.setDate(7, Date.valueOf(LocalDate.parse(evento.getFechaFin())));
+            psEvento.setString(8, evento.getModalidad());
+            psEvento.setInt(9, evento.getIdDivision());
+            psEvento.setInt(10, evento.getCreadoPor());
+
+            psEvento.executeUpdate();
+            rs = psEvento.getGeneratedKeys();
+
+            if (rs.next()) {
+                int idEventoGenerado = rs.getInt(1);
+
+                if (evento.getDocentesAsignados() != null && !evento.getDocentesAsignados().isEmpty()) {
+                    String queryDocentes = "INSERT INTO participante_evento (id_evento, id_usuario, registrado_por, fecha_registro) VALUES (?, ?, ?, SYSDATE)";
+                    psDocentes = con.prepareStatement(queryDocentes);
+
+                    for (Integer idDocente : evento.getDocentesAsignados()) {
+                        psDocentes.setInt(1, idEventoGenerado);
+                        psDocentes.setInt(2, idDocente);
+                        psDocentes.setInt(3, evento.getCreadoPor());
+                        psDocentes.addBatch();
+                    }
+                    psDocentes.executeBatch();
+                }
+
+                con.commit();
+                return null; // OK
+            }
+            return "No se generó el ID del evento";
+        } catch (SQLException e) {
+            System.err.println("Error al registrar el evento: " + e.getMessage());
+            e.printStackTrace();
+            try {
+                if (con != null) con.rollback();
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+            return e.getMessage();
+        } finally {
+            try {
+                if (rs != null) rs.close();
+                if (psEvento != null) psEvento.close();
+                if (psDocentes != null) psDocentes.close();
+                if (con != null) {
+                    con.setAutoCommit(true);
+                    DatabaseConnection.closeConnection(con);
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     public boolean registrarEvento(agregarEvento_co evento) {
         boolean estado = false;
         Connection con = null;
@@ -105,7 +179,7 @@ public class AgregarEvento_Co {
             query.append("AND e.id_division = ? ");
         }
 
-        query.append("ORDER BY e.fecha_inicio ASC");
+        query.append("ORDER BY e.id_evento DESC");
 
         try (Connection con = DatabaseConnection.getConnection();
              PreparedStatement ps = con != null ? con.prepareStatement(query.toString()) : null) {
@@ -154,7 +228,7 @@ public class AgregarEvento_Co {
             query.append("AND e.id_division = ? ");
         }
 
-        query.append("ORDER BY e.fecha_inicio ASC");
+        query.append("ORDER BY e.id_evento DESC");
 
         //  CORREGIDO: Inserción de la conexión dentro del try-with-resources
         try (Connection con = DatabaseConnection.getConnection();

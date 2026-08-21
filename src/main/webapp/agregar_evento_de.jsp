@@ -28,15 +28,15 @@
         <div class="row mb-3">
             <div class="col-md-4">
                 <label class="form-label">Nombre del evento <span class="text-danger">*</span></label>
-                <input type="text" class="form-control" name="nombre" required>
+                <input type="text" class="form-control" name="nombre" required oninput="this.value = this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ0-9\s.,-]/g, '')" maxlength="255">
             </div>
             <div class="col-md-4">
                 <label class="form-label">Lugar <span class="text-danger">*</span></label>
-                <input type="text" class="form-control" name="lugar" required>
+                <input type="text" class="form-control" name="lugar" required oninput="this.value = this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ0-9\s.,-]/g, '')" maxlength="255">
             </div>
             <div class="col-md-4">
                 <label class="form-label">Institución / Empresa</label>
-                <input type="text" class="form-control" name="institucion">
+                <input type="text" class="form-control" name="institucion" oninput="this.value = this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ0-9\s.,-]/g, '')" maxlength="255">
             </div>
         </div>
 
@@ -54,7 +54,7 @@
             </div>
             <div class="col-md-8">
                 <label class="form-label text-muted">Descripción del evento:</label>
-                <textarea class="form-control" id="campoDescripcion" name="descripcion" rows="3" style="resize: vertical;"></textarea>
+                <textarea class="form-control" id="campoDescripcion" name="descripcion" rows="3" oninput="this.value = this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ0-9\s.,]/g, '')" style="resize: vertical;"></textarea>
             </div>
         </div>
 
@@ -73,7 +73,7 @@
                     <option value="" disabled selected>Selecciona una opción</option>
                     <option value="presencial">Presencial</option>
                     <option value="virtual">Virtual</option>
-                    <option value="mixta">Mixto</option>
+                    <option value="mixto">Mixta</option>
                 </select>
             </div>
             <div class="col-md-3">
@@ -88,7 +88,37 @@
             </div>
         </div>
 
-        <div class="d-flex justify-content-end gap-3">
+          <hr class="my-4">
+          <h5 class="fw-bold mb-3" style="color: var(--teal-main);">Docentes Asignados</h5>
+
+          <div class="d-flex justify-content-between align-items-center mb-4">
+              <div class="search-box mb-0" style="max-width: 500px;">
+                  <i class="bi bi-search"></i>
+                  <input type="text" id="buscarParticipante" placeholder="Buscar Docente asignado...">
+              </div>
+              <button type="button" class="btn-teal-outline" data-bs-toggle="modal" data-bs-target="#modalAsignarDocente">Agregar docente</button>
+          </div>
+
+          <div class="data-card p-0 mb-4" style="overflow: hidden;">
+              <table class="table-custom mb-0">
+                  <thead>
+                  <tr>
+                      <th>Nombre</th>
+                      <th>Correo</th>
+                      <th>Estado</th>
+                      <th>Acciones</th>
+                  </tr>
+                  </thead>
+                  <tbody id="tablaParticipantesBody">
+                  <tr>
+                      <td colspan="4" class="text-center text-muted py-4">Aun no hay docentes asignados.</td>
+                  </tr>
+                  </tbody>
+              </table>
+          </div>
+          <div id="hiddenDocentesContainer"></div>
+
+<div class="d-flex justify-content-end gap-3">
             <a href="gestion_eventos_de.jsp" class="btn btn-outline-teal px-4 py-2 fw-semibold d-flex align-items-center" style="border: 2px solid var(--teal-main); color: var(--teal-main); border-radius: 6px;">
                 <i class="bi bi-chevron-left me-2"></i> Volver
             </a>
@@ -97,11 +127,46 @@
             </button>
         </div>
     </form>
+
+<!-- Modal Asignar Docente con buscador -->
+<div class="modal fade" id="modalAsignarDocente" tabindex="-1" aria-labelledby="modalAsignarDocenteLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content" style="border-radius: 12px; border: none; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+            <div class="modal-header" style="background-color: var(--teal-main); color: white; border-top-left-radius: 12px; border-top-right-radius: 12px;">
+                <h5 class="modal-title" id="modalAsignarDocenteLabel">Asignar Docente al Evento</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <div class="mb-3">
+                    <label class="form-label text-muted mb-2">Buscar por nombre, correo o numero de empleado:</label>
+                    <input type="text" class="form-control" id="inputBuscarDocente" placeholder="Escribe para buscar..." autocomplete="off">
+                </div>
+                <div style="max-height: 300px; overflow-y: auto;">
+                    <table class="table table-hover table-sm" id="tablaResultadosBusqueda">
+                        <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Correo</th>
+                            <th>Division</th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody id="tbodyBusquedaDocentes">
+                        <tr><td colspan="4" class="text-center text-muted py-3">Escribe para buscar docentes...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 </main>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>window.contextPath = '<%= request.getContextPath() %>';</script>
-<script src="assets/js/coordinador.js"></script>
-<script src="assets/js/agregarEvento.js">  </script>
+<script src="assets/js/coordinador.js" charset="UTF-8"></script>
+<script src="assets/js/agregarEvento.js" charset="UTF-8">  </script>
 </body>
 </html>

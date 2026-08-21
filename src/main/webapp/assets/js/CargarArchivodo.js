@@ -62,17 +62,21 @@ function mostrarConstancia(c, estaBloqueado) {
     }
 }
 
-function bloquearFormularioCarga(mensaje) {
-    document.getElementById('formCargaArchivo').querySelectorAll('input, button[type="submit"]').forEach(el => el.disabled = true);
-    document.getElementById('uploadZone').style.opacity = '0.4';
-    document.getElementById('uploadZone').style.pointerEvents = 'none';
-
-    if (!document.getElementById('bannerPeriodoCerrado')) {
-        const warn = document.createElement('div');
-        warn.id = 'bannerPeriodoCerrado';
-        warn.className = 'vencido-banner mt-3';
-        warn.innerHTML = `<i class="bi bi-lock-fill me-2"></i><strong>Carga Inhabilitada.</strong> ${mensaje}`;
-        document.getElementById('formCargaArchivo').querySelector('.data-card').appendChild(warn);
+function bloquearFormularioCarga(mensaje, titulo) {
+    // Ocultar el data-card de subida dentro del form
+    const form = document.getElementById('formCargaArchivo');
+    if (form) {
+        const dataCard = form.querySelector('.data-card');
+        if (dataCard) dataCard.style.display = 'none';
+    }
+    // Mostrar el bloque de periodo deshabilitado
+    const bloqueDisabled = document.getElementById('periodoDeshabilitadoBloque');
+    if (bloqueDisabled) {
+        bloqueDisabled.style.display = '';
+        const tituloEl = document.getElementById('tituloPeriodoDeshabilitado');
+        const msgEl = document.getElementById('mensajePeriodoDeshabilitado');
+        if (tituloEl && titulo) tituloEl.textContent = titulo;
+        if (msgEl) msgEl.textContent = mensaje;
     }
 }
 
@@ -94,28 +98,64 @@ async function inicializarPagina() {
             document.getElementById('campoFechaInicio').textContent = aFechaVisible(dataEvento.fechaInicio);
             document.getElementById('campoFechaFin').textContent = aFechaVisible(dataEvento.fechaFin);
             document.getElementById('campoModalidad').textContent = capitalizar(dataEvento.modalidad);
+            window._divisionDocenteActual = dataEvento.idDivisionDocente;
         }
     } catch (err) {
         console.error('Error al cargar datos del evento:', err);
     }
 
-    // 2. Validar Estado de Periodos
+    // 2. Validar Estado de Periodos (lógica correcta)
     try {
-        const resPeriodo = await fetch(contextPath + '/VerificarPeriodoCargaServlet?idEvento=' + encodeURIComponent(idEvento) + '&t=' + Date.now());
-        const dataPeriodo = await resPeriodo.json();
+        const resPeriodo = await fetch(contextPath + '/ListarPeriodosServlet?t=' + Date.now());
+        const periodos = await resPeriodo.json();
 
-        const periodoGeneralActivo = dataPeriodo.periodoGeneralActivo === true;
-        const periodoDivisionActivo = dataPeriodo.periodoDivisionActivo === true;
+        if (periodos && Array.isArray(periodos)) {
+            const hoy = new Date();
+            hoy.setHours(0, 0, 0, 0);
 
-        if (!periodoGeneralActivo || !periodoDivisionActivo) {
-            estaBloqueado = true;
+            const periodoGeneral = periodos.find(p => String(p.division || '').toLowerCase() === 'general' || Number(p.idDivision) === 5);
 
-            if (!periodoGeneralActivo && !periodoDivisionActivo) {
-                motivoBloqueo = "El periodo general y el de tu división están cerrados.";
-            } else if (!periodoGeneralActivo) {
-                motivoBloqueo = "El periodo general de carga de constancias está cerrado.";
+            // Obtener la división del usuario desde la sesión (viene en el evento cargado previamente)
+            // Para el docente, la división del evento no es la del usuario, hay que leer la sesión.
+            // Usamos el id_division del evento como referencia divisional.
+            const divisionDocente = window._divisionDocenteActual || null;
+            const periodoDivision = divisionDocente ? periodos.find(p => Number(p.idDivision) === Number(divisionDocente) || String(p.division || '').toLowerCase() === String(divisionDocente).toLowerCase()) : null;
+
+            if (periodoGeneral && Number(periodoGeneral.activo) === 1) {
+                // MODO SINCRONIZADO: General activo → verificar fechas del General
+                const fechaFin = periodoGeneral.fechaFin ? new Date(periodoGeneral.fechaFin) : null;
+                if (fechaFin) {
+                    fechaFin.setHours(23, 59, 59, 999);
+                    if (hoy > fechaFin) {
+                        estaBloqueado = true;
+                        motivoBloqueo = 'El periodo General de carga ha vencido. Ya no es posible subir constancias.';
+                        window._tituloPeriodoBloqueo = 'Fecha de entrega ya pasó';
+                    }
+                }
             } else {
-                motivoBloqueo = "El periodo de carga para tu división no está habilitado.";
+                // MODO AUTÓNOMO: General inactivo → verificar la división del docente
+                if (periodoDivision) {
+                    if (Number(periodoDivision.activo) === 0) {
+                        estaBloqueado = true;
+                        motivoBloqueo = 'El periodo de carga para tu división se encuentra cerrado en este momento.';
+                        window._tituloPeriodoBloqueo = 'Periodo de carga deshabilitado';
+                    } else {
+                        const fechaFin = periodoDivision.fechaFin ? new Date(periodoDivision.fechaFin) : null;
+                        if (fechaFin) {
+                            fechaFin.setHours(23, 59, 59, 999);
+                            if (hoy > fechaFin) {
+                                estaBloqueado = true;
+                                motivoBloqueo = 'El periodo de carga para tu división ha vencido.';
+                                window._tituloPeriodoBloqueo = 'Fecha de entrega ya pasó';
+                            }
+                        }
+                    }
+                } else if (!periodoGeneral) {
+                    // Sin ningún periodo configurado
+                    estaBloqueado = true;
+                    motivoBloqueo = 'No hay periodo de carga configurado para tu división.';
+                    window._tituloPeriodoBloqueo = 'Periodo no configurado';
+                }
             }
         }
     } catch (err) {
@@ -140,7 +180,7 @@ async function inicializarPagina() {
             // Si NO existe -> Mostrar el formulario de subida
             mostrarFormulario();
             if (estaBloqueado) {
-                bloquearFormularioCarga(motivoBloqueo);
+                bloquearFormularioCarga(motivoBloqueo, 'Periodo de carga deshabilitado');
             }
         }
 

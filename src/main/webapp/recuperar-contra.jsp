@@ -340,6 +340,6 @@
   </div>
 </div>
 
-<script src="${pageContext.request.contextPath}/assets/js/bootstrap.js"></script>
+<script src="${pageContext.request.contextPath}/assets/js/bootstrap.js" charset="UTF-8"></script>
 </body>
 </html>

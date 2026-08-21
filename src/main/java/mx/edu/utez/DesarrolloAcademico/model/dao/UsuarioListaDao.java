@@ -11,6 +11,38 @@ import java.util.List;
 
 public class UsuarioListaDao {
 
+    private static final int ID_DIVISION_GENERAL = 5;
+
+    /** Devuelve true si el periodo de la división General está ACTIVO (independiente de fechas) */
+    public boolean esGeneralActivo() {
+        String sql = "SELECT ACTIVO FROM periodo_carga WHERE ID_DIVISION = " + ID_DIVISION_GENERAL + " AND ROWNUM = 1";
+        try (Connection con = DatabaseConnection.getConnection();
+             PreparedStatement ps = con != null ? con.prepareStatement(sql) : null;
+             ResultSet rs = ps != null ? ps.executeQuery() : null) {
+            if (con == null || ps == null || rs == null) return false;
+            if (rs.next()) return rs.getInt("ACTIVO") == 1;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    /** Devuelve el nombre de la división que tiene el periodo con ese id */
+    public String obtenerDivisionDePeriodo(int idPeriodo) {
+        String sql = "SELECT d.NOMBRE FROM periodo_carga p JOIN division d ON p.ID_DIVISION = d.ID_DIVISION WHERE p.ID_PERIODO = ?";
+        try (Connection con = DatabaseConnection.getConnection();
+             PreparedStatement ps = con != null ? con.prepareStatement(sql) : null) {
+            if (con == null || ps == null) return null;
+            ps.setInt(1, idPeriodo);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) return rs.getString("NOMBRE");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     public List<Usuario> listarPorRoles(String... roles) {
         List<Usuario> lista = new ArrayList<>();
         if (roles == null || roles.length == 0) return lista;
@@ -19,7 +51,7 @@ public class UsuarioListaDao {
         for (int i = 0; i < roles.length; i++) {
             sb.append(i == 0 ? "?" : ",?");
         }
-        sb.append(") ORDER BY nombre");
+        sb.append(") ORDER BY id_usuario DESC");
 
         try (Connection con = DatabaseConnection.getConnection();
              PreparedStatement ps = con != null ? con.prepareStatement(sb.toString()) : null) {
@@ -58,7 +90,7 @@ public class UsuarioListaDao {
         String query = "SELECT id_evento, nombre, lugar, institucion, tipo_evento, descripcion, fecha_inicio, fecha_fin, modalidad " +
                 "FROM evento " +
                 "WHERE id_division = ? " +
-                "ORDER BY fecha_inicio DESC";
+                "ORDER BY id_evento DESC";
 
         try (Connection con = DatabaseConnection.getConnection();
              PreparedStatement ps = con != null ? con.prepareStatement(query) : null) {
@@ -100,7 +132,7 @@ public class UsuarioListaDao {
                 "FROM evento e " +
                 "INNER JOIN participante_evento pe ON e.id_evento = pe.id_evento " +
                 "WHERE pe.id_usuario = ? " +
-                "ORDER BY e.fecha_inicio DESC";
+                "ORDER BY e.id_evento DESC";
 
         try (Connection con = DatabaseConnection.getConnection();
              PreparedStatement ps = con != null ? con.prepareStatement(query) : null) {
@@ -134,12 +166,50 @@ public class UsuarioListaDao {
         return lista;
     }
 
+    /**
+     * Próximos eventos para Docente: solo los eventos futuros/en curso a los que está asignado.
+     */
+    public List<agregarEvento_co> listarProximosEventosDocente(int idUsuario) {
+        List<agregarEvento_co> lista = new ArrayList<>();
+        String query = "SELECT e.id_evento, e.nombre, e.lugar, e.institucion, e.tipo_evento, " +
+                "e.descripcion, e.fecha_inicio, e.fecha_fin, e.modalidad " +
+                "FROM evento e " +
+                "INNER JOIN participante_evento pe ON e.id_evento = pe.id_evento " +
+                "WHERE pe.id_usuario = ? AND e.fecha_fin >= CURRENT_DATE " +
+                "ORDER BY e.id_evento DESC";
+        try (Connection con = DatabaseConnection.getConnection();
+             PreparedStatement ps = con != null ? con.prepareStatement(query) : null) {
+            if (con == null || ps == null) return lista;
+            ps.setInt(1, idUsuario);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    agregarEvento_co ev = new agregarEvento_co();
+                    ev.setId(rs.getInt("id_evento"));
+                    ev.setNombre(rs.getString("nombre"));
+                    ev.setLugar(rs.getString("lugar"));
+                    ev.setInstitucion(rs.getString("institucion"));
+                    ev.setTipo(rs.getString("tipo_evento"));
+                    ev.setDescripcion(rs.getString("descripcion"));
+                    java.sql.Date dInicio = rs.getDate("fecha_inicio");
+                    java.sql.Date dFin    = rs.getDate("fecha_fin");
+                    ev.setFechaInicio(dInicio != null ? dInicio.toString() : "");
+                    ev.setFechaFin(dFin != null ? dFin.toString() : "");
+                    ev.setModalidad(rs.getString("modalidad"));
+                    lista.add(ev);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return lista;
+    }
+
     public List<agregarEvento_co> listarEventosPorUsuario(int idUsuario) {
         List<agregarEvento_co> lista = new ArrayList<>();
         String query = "SELECT e.id_evento, e.nombre, e.lugar, e.institucion, e.tipo_evento, e.descripcion, e.fecha_inicio, e.fecha_fin, e.modalidad " +
                 "FROM evento e " +
                 "JOIN participante_evento pe ON e.id_evento = pe.id_evento " +
-                "WHERE pe.id_usuario = ? ORDER BY e.fecha_inicio DESC";
+                "WHERE pe.id_usuario = ? ORDER BY e.id_evento DESC";
 
         try (Connection con = DatabaseConnection.getConnection();
              PreparedStatement ps = con != null ? con.prepareStatement(query) : null) {
@@ -180,7 +250,7 @@ public class UsuarioListaDao {
                 "FROM usuario u " +
                 "JOIN participante_evento pe ON u.id_usuario = pe.id_usuario " +
                 "WHERE pe.id_evento = ? " +
-                "ORDER BY u.nombre";
+                "ORDER BY u.id_usuario DESC";
 
         try (Connection con = DatabaseConnection.getConnection();
              PreparedStatement ps = con != null ? con.prepareStatement(query) : null) {
@@ -275,14 +345,26 @@ public class UsuarioListaDao {
     }
 
     public boolean eliminarUsuario(int idUsuario) {
-        String query = "DELETE FROM usuario WHERE id_usuario = ?";
-        try (Connection con = DatabaseConnection.getConnection();
-             PreparedStatement ps = con != null ? con.prepareStatement(query) : null) {
-
-            if (con == null || ps == null) return false;
-
-            ps.setInt(1, idUsuario);
-            return ps.executeUpdate() > 0;
+        String deleteParticipante = "DELETE FROM participante_evento WHERE id_usuario = ?";
+        String deleteUsuario = "DELETE FROM usuario WHERE id_usuario = ?";
+        try (Connection con = DatabaseConnection.getConnection()) {
+            if (con == null) return false;
+            con.setAutoCommit(false);
+            try (PreparedStatement ps1 = con.prepareStatement(deleteParticipante);
+                 PreparedStatement ps2 = con.prepareStatement(deleteUsuario)) {
+                ps1.setInt(1, idUsuario);
+                ps1.executeUpdate();
+                ps2.setInt(1, idUsuario);
+                boolean ok = ps2.executeUpdate() > 0;
+                con.commit();
+                return ok;
+            } catch (SQLException e) {
+                con.rollback();
+                System.err.println("Error al eliminar usuario: " + e.getMessage());
+                e.printStackTrace();
+            } finally {
+                con.setAutoCommit(true);
+            }
         } catch (SQLException e) {
             System.err.println("Error al eliminar usuario: " + e.getMessage());
             e.printStackTrace();
@@ -292,14 +374,30 @@ public class UsuarioListaDao {
 
     public boolean cambiarEstado(int idUsuario, int nuevoEstado) {
         String query = "UPDATE usuario SET activo = ? WHERE id_usuario = ?";
-        try (Connection con = DatabaseConnection.getConnection();
-             PreparedStatement ps = con != null ? con.prepareStatement(query) : null) {
-
-            if (con == null || ps == null) return false;
-
-            ps.setInt(1, nuevoEstado);
-            ps.setInt(2, idUsuario);
-            return ps.executeUpdate() > 0;
+        try (Connection con = DatabaseConnection.getConnection()) {
+            if (con == null) return false;
+            con.setAutoCommit(false);
+            try (PreparedStatement ps = con.prepareStatement(query)) {
+                ps.setInt(1, nuevoEstado);
+                ps.setInt(2, idUsuario);
+                boolean ok = ps.executeUpdate() > 0;
+                // Si se desactiva (nuevoEstado=0), quitar de todos los eventos
+                if (ok && nuevoEstado == 0) {
+                    try (PreparedStatement psDel = con.prepareStatement(
+                            "DELETE FROM participante_evento WHERE id_usuario = ?")) {
+                        psDel.setInt(1, idUsuario);
+                        psDel.executeUpdate();
+                    }
+                }
+                con.commit();
+                return ok;
+            } catch (SQLException e) {
+                con.rollback();
+                System.err.println("Error al cambiar estado del usuario: " + e.getMessage());
+                e.printStackTrace();
+            } finally {
+                con.setAutoCommit(true);
+            }
         } catch (SQLException e) {
             System.err.println("Error al cambiar estado del usuario: " + e.getMessage());
             e.printStackTrace();
@@ -443,7 +541,7 @@ public class UsuarioListaDao {
         for (int i = 0; i < roles.length; i++) {
             sb.append(i == 0 ? "?" : ", ?");
         }
-        sb.append(") ORDER BY nombre ASC");
+        sb.append(") ORDER BY id_usuario DESC");
 
         try (Connection con = DatabaseConnection.getConnection();
              PreparedStatement ps = con != null ? con.prepareStatement(sb.toString()) : null) {
@@ -507,7 +605,7 @@ public class UsuarioListaDao {
     public List<Periodo> obtenerTodosLosPeriodos() {
         List<Periodo> lista = new ArrayList<>();
 
-        String sql = "SELECT p.ID_PERIODO, d.NOMBRE AS NOMBRE_DIVISION, p.FECHA_INICIO, p.FECHA_FIN, p.ACTIVO " +
+        String sql = "SELECT p.ID_PERIODO, p.ID_DIVISION, d.NOMBRE AS NOMBRE_DIVISION, p.FECHA_INICIO, p.FECHA_FIN, p.ACTIVO " +
                 "FROM periodo_carga p " +
                 "JOIN division d ON p.ID_DIVISION = d.ID_DIVISION " +
                 "ORDER BY p.ID_PERIODO DESC";
@@ -521,6 +619,7 @@ public class UsuarioListaDao {
             while (rs.next()) {
                 Periodo p = new Periodo();
                 p.setId(rs.getInt("ID_PERIODO"));
+                p.setIdDivision(rs.getInt("ID_DIVISION"));
                 p.setDivision(rs.getString("NOMBRE_DIVISION"));
                 p.setFechaInicio(rs.getDate("FECHA_INICIO"));
                 p.setFechaFin(rs.getDate("FECHA_FIN"));
@@ -553,7 +652,62 @@ public class UsuarioListaDao {
         }
     }
 
+
+    public String cambiarEstadoPeriodoError(int idPeriodo, boolean nuevoEstado) {
+        try (Connection con = DatabaseConnection.getConnection()) {
+            if (con == null) return "Sin conexion";
+
+            // Obtener division de este periodo
+            int idDivision = 0;
+            try (PreparedStatement psDiv = con.prepareStatement("SELECT ID_DIVISION, FECHA_INICIO, FECHA_FIN FROM periodo_carga WHERE ID_PERIODO = ?")) {
+                psDiv.setInt(1, idPeriodo);
+                try (ResultSet rs = psDiv.executeQuery()) {
+                    if (rs.next()) {
+                        idDivision = rs.getInt("ID_DIVISION");
+                    } else {
+                        return "Periodo no encontrado";
+                    }
+                }
+            }
+
+            if (!nuevoEstado && idDivision != 5) {
+                // Check if General is active
+                try (PreparedStatement psGen = con.prepareStatement("SELECT ACTIVO FROM periodo_carga WHERE ID_DIVISION = 5 AND ROWNUM = 1")) {
+                    try (ResultSet rsGen = psGen.executeQuery()) {
+                        if (rsGen.next() && rsGen.getInt("ACTIVO") == 1) {
+                            return "Primero apaga la division General";
+                        }
+                    }
+                }
+            }
+
+            // Actualizar este periodo
+            try (PreparedStatement psUpd = con.prepareStatement("UPDATE periodo_carga SET ACTIVO = ? WHERE ID_PERIODO = ?")) {
+                psUpd.setInt(1, nuevoEstado ? 1 : 0);
+                psUpd.setInt(2, idPeriodo);
+                psUpd.executeUpdate();
+            }
+
+            // Si es General y se enciende, encender y sincronizar fechas de todas las demas
+            if (idDivision == 5 && nuevoEstado) {
+                try (PreparedStatement psSync = con.prepareStatement(
+                        "UPDATE periodo_carga SET ACTIVO = 1, FECHA_INICIO = (SELECT FECHA_INICIO FROM periodo_carga WHERE ID_PERIODO = ?), FECHA_FIN = (SELECT FECHA_FIN FROM periodo_carga WHERE ID_PERIODO = ?) WHERE ID_DIVISION != 5"
+                )) {
+                    psSync.setInt(1, idPeriodo);
+                    psSync.setInt(2, idPeriodo);
+                    psSync.executeUpdate();
+                }
+            }
+
+            return null; // Exito
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return e.getMessage();
+        }
+    }
+
     public boolean cambiarEstadoPeriodo(int idPeriodo, boolean nuevoEstado) {
+
         String sql = "UPDATE periodo_carga SET ACTIVO = ? WHERE ID_PERIODO = ?";
 
         try (Connection con = DatabaseConnection.getConnection();
@@ -571,7 +725,69 @@ public class UsuarioListaDao {
         }
     }
 
+
+    public String actualizarPeriodoError(int idPeriodo, String division, String fechaInicio, String fechaFin) {
+        try (Connection con = DatabaseConnection.getConnection()) {
+            if (con == null) return "Sin conexion";
+
+            // Obtener division destino
+            int idDivDestino = 0;
+            try (PreparedStatement psDiv = con.prepareStatement("SELECT ID_DIVISION FROM division WHERE (NOMBRE = ? OR TO_CHAR(ID_DIVISION) = ?) AND ROWNUM <= 1")) {
+                psDiv.setString(1, division);
+                psDiv.setString(2, division);
+                try (ResultSet rs = psDiv.executeQuery()) {
+                    if (rs.next()) idDivDestino = rs.getInt("ID_DIVISION");
+                }
+            }
+
+            // Obtener estado actual (antes de actualizar) y si es general activo
+            if (idDivDestino != 5) {
+                try (PreparedStatement psGen = con.prepareStatement("SELECT ACTIVO FROM periodo_carga WHERE ID_DIVISION = 5 AND ROWNUM = 1")) {
+                    try (ResultSet rsGen = psGen.executeQuery()) {
+                        if (rsGen.next() && rsGen.getInt("ACTIVO") == 1) {
+                            return "No puedes modificar una division individual si General esta encendido. Modifica General.";
+                        }
+                    }
+                }
+            }
+
+            String sql = "UPDATE periodo_carga SET " +
+                    "ID_DIVISION = ?, " +
+                    "FECHA_INICIO = TO_DATE(?, 'YYYY-MM-DD'), " +
+                    "FECHA_FIN = TO_DATE(?, 'YYYY-MM-DD'), " +
+                    "ACTIVO = CASE WHEN TO_DATE(?, 'YYYY-MM-DD') >= TRUNC(SYSDATE) THEN 1 ELSE 0 END " +
+                    "WHERE ID_PERIODO = ?";
+                    
+            try (PreparedStatement ps = con.prepareStatement(sql)) {
+                ps.setInt(1, idDivDestino);
+                ps.setString(2, fechaInicio);
+                ps.setString(3, fechaFin);
+                ps.setString(4, fechaFin);
+                ps.setInt(5, idPeriodo);
+                ps.executeUpdate();
+            }
+
+            // Si se actualizo general, sincronizar a los demas
+            if (idDivDestino == 5) {
+                try (PreparedStatement psSync = con.prepareStatement(
+                        "UPDATE periodo_carga SET ACTIVO = CASE WHEN TO_DATE(?, 'YYYY-MM-DD') >= TRUNC(SYSDATE) THEN 1 ELSE 0 END, FECHA_INICIO = TO_DATE(?, 'YYYY-MM-DD'), FECHA_FIN = TO_DATE(?, 'YYYY-MM-DD') WHERE ID_DIVISION != 5"
+                )) {
+                    psSync.setString(1, fechaFin);
+                    psSync.setString(2, fechaInicio);
+                    psSync.setString(3, fechaFin);
+                    psSync.executeUpdate();
+                }
+            }
+
+            return null;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return e.getMessage();
+        }
+    }
+
     public boolean actualizarPeriodo(int idPeriodo, String division, String fechaInicio, String fechaFin) {
+
         String sql = "UPDATE periodo_carga SET " +
                 "ID_DIVISION = (SELECT ID_DIVISION FROM division WHERE (NOMBRE = ? OR TO_CHAR(ID_DIVISION) = ?) AND ROWNUM <= 1), " +
                 "FECHA_INICIO = TO_DATE(?, 'YYYY-MM-DD'), " +

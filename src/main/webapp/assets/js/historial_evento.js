@@ -1,4 +1,4 @@
-const contextPath = window.contextPath || '';
+﻿const contextPath = window.contextPath || '';
 const tbody = document.getElementById('tablaEventosBody');
 const inputBuscar = document.getElementById('buscarEvento');
 const filtrosTipo = document.getElementById('filtrosTipo');
@@ -8,9 +8,9 @@ let eventosOriginales = [];
 let filtroTexto = '';
 let filtroTipo = 'todos';
 
-// Configuración de Paginación
+// ConfiguraciÃ³n de PaginaciÃ³n
 let paginaActual = 1;
-const eventosPorPagina = 5; // Cambia este valor según cuántos registros quieras ver por página
+const eventosPorPagina = 5; // Cambia este valor segÃºn cuÃ¡ntos registros quieras ver por pÃ¡gina
 
 function escapeHtml(texto) {
     if (texto === null || texto === undefined) return '';
@@ -43,14 +43,12 @@ function obtenerEventosFiltrados() {
         return coincideTipo && coincideTexto;
     });
 
-    filtrados.sort(function (a, b) {
-        return normalizar(a.nombre).localeCompare(normalizar(b.nombre));
-    });
+    
 
     return filtrados;
 }
 
-// Renderiza los registros correspondientes a la página activa
+// Renderiza los registros correspondientes a la pÃ¡gina activa
 function renderEventos(eventos) {
     if (!eventos.length) {
         tbody.innerHTML = '<tr><td colspan="5" class="text-center text-muted py-4">No se encontraron eventos.</td></tr>';
@@ -58,16 +56,16 @@ function renderEventos(eventos) {
         return;
     }
 
-    // Lógica para cortar la lista según la página actual
+    // LÃ³gica para cortar la lista segÃºn la pÃ¡gina actual
     const totalPaginas = Math.ceil(eventos.length / eventosPorPagina);
     if (paginaActual > totalPaginas) paginaActual = 1;
 
     const inicio = (paginaActual - 1) * eventosPorPagina;
     const fin = inicio + eventosPorPagina;
-    const eventosPágina = eventos.slice(inicio, fin);
+    const eventosPÃ¡gina = eventos.slice(inicio, fin);
 
     tbody.innerHTML = '';
-    eventosPágina.forEach(function (ev) {
+    eventosPÃ¡gina.forEach(function (ev) {
         const fila = document.createElement('tr');
         fila.setAttribute('data-id', ev.id);
         fila.innerHTML =
@@ -90,14 +88,14 @@ function renderEventos(eventos) {
     renderPaginacion(totalPaginas);
 }
 
-// Renderiza los botones dinámicos de paginación
+// Renderiza los botones dinÃ¡micos de paginaciÃ³n
 function renderPaginacion(totalPaginas) {
     if (!contenedorPaginacion) return;
     contenedorPaginacion.innerHTML = '';
 
-    if (totalPaginas <= 1) return; // Si es 1 página o menos, oculta los botones
+    if (totalPaginas <= 1) return; // Si es 1 pÃ¡gina o menos, oculta los botones
 
-    // Botón Anterior
+    // BotÃ³n Anterior
     const btnAnt = document.createElement('a');
     btnAnt.href = '#';
     btnAnt.className = 'page-btn' + (paginaActual === 1 ? ' disabled' : '');
@@ -139,7 +137,7 @@ function renderPaginacion(totalPaginas) {
         }
     }
 
-    // Botón Siguiente
+    // BotÃ³n Siguiente
     const btnSig = document.createElement('a');
     btnSig.href = '#';
     btnSig.className = 'page-btn' + (paginaActual === totalPaginas ? ' disabled' : '');
@@ -155,7 +153,7 @@ function renderPaginacion(totalPaginas) {
 }
 
 function aplicarFiltros() {
-    renderEventos(obtenerEventosFiltrados());
+    window.renderPaginator(obtenerEventosFiltrados(), 20, 'paginationContainer', renderEventos);
 }
 
 function cargarEventos() {
@@ -167,7 +165,7 @@ function cargarEventos() {
             if (contentType && contentType.indexOf("application/json") !== -1) {
                 return response.json();
             } else {
-                throw new Error("El servidor no devolvió un JSON.");
+                throw new Error("El servidor no devolviÃ³ un JSON.");
             }
         })
         .then(function (eventos) {
@@ -184,7 +182,7 @@ function cargarEventos() {
 if (inputBuscar) {
     inputBuscar.addEventListener('input', function () {
         filtroTexto = inputBuscar.value;
-        paginaActual = 1; // Reinicia a la página 1 al buscar
+        paginaActual = 1; // Reinicia a la pÃ¡gina 1 al buscar
         aplicarFiltros();
     });
 }
@@ -201,7 +199,7 @@ if (filtrosTipo) {
         pill.classList.add('active');
 
         filtroTipo = pill.getAttribute('data-tipo') || 'todos';
-        paginaActual = 1; // Reinicia a la página 1 al cambiar de filtro
+        paginaActual = 1; // Reinicia a la pÃ¡gina 1 al cambiar de filtro
         aplicarFiltros();
     });
 }

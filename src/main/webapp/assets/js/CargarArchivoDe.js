@@ -63,65 +63,99 @@ function mostrarConstancia(c, estaVencido) {
 // ------------------------------------------------------------------
 // Validación de Periodos de Carga (General + División)
 // ------------------------------------------------------------------
+// Validación de Periodos de Carga (lógica corregida)
+// ------------------------------------------------------------------
 async function validarPeriodosCarga(idDivisionDocente) {
     try {
-        const res = await fetch(contextPath + '/ListarPeriodosCarga?t=' + Date.now());
+        const res = await fetch(contextPath + '/ListarPeriodosServlet?t=' + Date.now());
         const periodos = await res.json();
 
         if (!periodos || !Array.isArray(periodos)) {
-            return { permitido: true }; // Si no hay periodos configurados, permite por defecto
+            return { permitido: true };
         }
 
-        // 1. Obtener Periodo General (idDivision = 5 o nombre "General")
-        const periodoGeneral = periodos.find(p =>
-            String(p.division || '').toLowerCase() === 'general' || Number(p.idDivision) === 5
-        );
+        const hoy = new Date();
+        hoy.setHours(0, 0, 0, 0);
 
-        // 2. Obtener Periodo específico de la División del docente
-        const periodoDivision = periodos.find(p =>
-            String(p.division || '').toLowerCase() === String(idDivisionDocente || '').toLowerCase() ||
-            Number(p.idDivision) === Number(idDivisionDocente)
-        );
+        // Periodo General
+        const periodoGeneral = periodos.find(p => String(p.division || '').toLowerCase() === 'general' || Number(p.idDivision) === 5);
 
-        // Regla 1: Si el General está APAGADO, nadie sube nada
-        if (periodoGeneral && Number(periodoGeneral.activo) === 0) {
-            return {
-                permitido: false,
-                mensaje: 'El periodo General de carga se encuentra cerrado. No es posible subir constancias.'
-            };
+        // Periodo de la división específica del docente
+        const periodoDivision = periodos.find(p => Number(p.idDivision) === Number(idDivisionDocente) || String(p.division || '').toLowerCase() === String(idDivisionDocente || '').toLowerCase());
+
+        // ── MODO SINCRONIZADO: General ACTIVO ───────────────────────────
+        // Cuando General está activo, todas las divisiones siguen sus fechas.
+        // Solo hay que verificar que las fechas de General no hayan vencido.
+        if (periodoGeneral && Number(periodoGeneral.activo) === 1) {
+            const fechaFin = periodoGeneral.fechaFin ? new Date(periodoGeneral.fechaFin) : null;
+            if (fechaFin) {
+                fechaFin.setHours(23, 59, 59, 999);
+                if (hoy > fechaFin) {
+                    return {
+                        permitido: false,
+                        titulo: 'Fecha de entrega ya pasó',
+                        mensaje: 'El periodo General de carga ha vencido. Ya no es posible subir constancias.'
+                    };
+                }
+            }
+            // General activo y dentro de fechas → subida permitida para todos
+            return { permitido: true };
         }
 
-        // Regla 2: Si la División del Docente está APAGADA, tampoco puede subir
-        if (periodoDivision && Number(periodoDivision.activo) === 0) {
-            return {
-                permitido: false,
-                mensaje: `El periodo de carga para la división ${periodoDivision.division || 'asignada'} se encuentra cerrado.`
-            };
+        // ── MODO AUTÓNOMO: General INACTIVO ─────────────────────────────
+        // Cada división es independiente. Solo revisamos la división del docente.
+        if (periodoDivision) {
+            if (Number(periodoDivision.activo) === 0) {
+                return {
+                    permitido: false,
+                    titulo: 'Periodo de carga deshabilitado',
+                    mensaje: `El periodo de carga para tu división se encuentra cerrado en este momento.`
+                };
+            }
+            // División activa → verificar que las fechas no hayan vencido
+            const fechaFin = periodoDivision.fechaFin ? new Date(periodoDivision.fechaFin) : null;
+            if (fechaFin) {
+                fechaFin.setHours(23, 59, 59, 999);
+                if (hoy > fechaFin) {
+                    return {
+                        permitido: false,
+                        titulo: 'Fecha de entrega ya pasó',
+                        mensaje: 'El periodo de carga para tu división ha vencido. Ya no es posible subir constancias.'
+                    };
+                }
+            }
+            return { permitido: true };
         }
 
-        return { permitido: true };
+        // Sin periodo configurado para esta división
+        return {
+            permitido: false,
+            titulo: 'Periodo de carga no configurado',
+            mensaje: 'No hay periodo de carga configurado para tu división.'
+        };
 
     } catch (err) {
         console.error('Error al validar periodos de carga:', err);
-        return { permitido: true };
+        return { permitido: true }; // Ante error de red, no bloquear
     }
 }
 
-// Bloquea visualmente el formulario de subida de archivos
-function deshabilitarFormularioSubida(mensaje) {
-    document.getElementById('formCargaArchivo').querySelectorAll('input, button[type="submit"]').forEach(el => el.disabled = true);
-    const uploadZone = document.getElementById('uploadZone');
-    if (uploadZone) {
-        uploadZone.style.opacity = '0.4';
-        uploadZone.style.pointerEvents = 'none';
+// Oculta el formulario de subida y muestra el bloque "Periodo deshabilitado"
+function deshabilitarFormularioSubida(mensaje, titulo) {
+    // Ocultar completamente el data-card de subida dentro del form
+    const form = document.getElementById('formCargaArchivo');
+    if (form) {
+        const dataCard = form.querySelector('.data-card');
+        if (dataCard) dataCard.style.display = 'none';
     }
-
-    // Evitar banners duplicados
-    if (!document.querySelector('.periodo-bloqueado-banner')) {
-        const warn = document.createElement('div');
-        warn.className = 'vencido-banner periodo-bloqueado-banner mt-3';
-        warn.innerHTML = `<i class="bi bi-lock-fill me-2"></i><strong>Periodo inactivo.</strong> ${mensaje}`;
-        document.getElementById('formCargaArchivo').querySelector('.data-card').appendChild(warn);
+    // Mostrar el bloque de periodo deshabilitado
+    const bloqueDisabled = document.getElementById('periodoDeshabilitadoBloque');
+    if (bloqueDisabled) {
+        bloqueDisabled.style.display = '';
+        const tituloEl = document.getElementById('tituloPeriodoDeshabilitado');
+        const msgEl = document.getElementById('mensajePeriodoDeshabilitado');
+        if (tituloEl && titulo) tituloEl.textContent = titulo;
+        if (msgEl) msgEl.textContent = mensaje;
     }
 }
 
@@ -144,7 +178,7 @@ async function inicializarPagina() {
             document.getElementById('campoModalidad').textContent = capitalizar(dataEvento.modalidad);
 
             // Guardamos la división del usuario obtenida del Servlet
-            divisionDocente = dataEvento.idDivision || dataEvento.division;
+            divisionDocente = dataEvento.idDivisionDocente || dataEvento.idDivision || dataEvento.division;
 
             if (dataEvento.fechaFin) {
                 const p = dataEvento.fechaFin.split('-');
@@ -175,7 +209,7 @@ async function inicializarPagina() {
 
             // 1. Validar expiración propia del Evento
             if (estaVencido) {
-                deshabilitarFormularioSubida('Ya no es posible subir constancias porque el plazo del evento ha vencido.');
+                deshabilitarFormularioSubida('La fecha límite de entrega ya pasó. Ya no es posible subir constancias para este evento.', 'Fecha de entrega ya pasó');
             } else {
                 // 2. Validar Estado de Periodos General y por División
                 const estadoPeriodos = await validarPeriodosCarga(divisionDocente);

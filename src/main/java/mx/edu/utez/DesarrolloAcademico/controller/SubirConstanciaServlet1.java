@@ -90,31 +90,44 @@ public class SubirConstanciaServlet1 extends HttpServlet {
             System.out.println("Usuario Encontrado: " + (targetUsuario != null));
 
             // ------------------------------------------------------------------
-            // 2. VALIDAR DOBLE PERIODO (GENERAL Y DIVISIÓN CORRESPONDIENTE)
+            // 2. VALIDAR PERIODO DE CARGA (LÓGICA CORRECTA)
             // ------------------------------------------------------------------
             boolean periodoGeneralActivo = dao.esPeriodoActivo(ID_DIVISION_GENERAL);
 
-            if (!periodoGeneralActivo) {
-                response.setStatus(HttpServletResponse.SC_OK);
-                out.write("{\"success\": false, \"message\": \"El periodo General de carga se encuentra deshabilitado. No es posible subir constancias.\"}");
-                out.flush();
-                return;
-            }
+            if (periodoGeneralActivo) {
+                // MODO SINCRONIZADO: General activo → todas las divisiones siguen a General.
+                // esPeriodoActivo ya valida ACTIVO=1 AND SYSDATE BETWEEN fechas → si General pasa, OK.
+                // No hace falta checar la división individual.
+                System.out.println("Modo SINCRONIZADO (General activo): subida permitida.");
+            } else {
+                // MODO AUTÓNOMO: General apagado → cada división es independiente.
+                // Hay que validar SÓLO la división del usuario destino.
+                if (targetUsuario != null && targetUsuario.getIdDivision() != null) {
+                    int idDivisionTarget = targetUsuario.getIdDivision();
+                    System.out.println("Modo AUTÓNOMO: revisando division " + idDivisionTarget);
 
-            if (targetUsuario != null && targetUsuario.getIdDivision() != null) {
-                int idDivisionTarget = targetUsuario.getIdDivision();
-                System.out.println("ID Division del Usuario Destino: " + idDivisionTarget);
-
-                // Si la división del usuario no es la general, validamos su división específica
-                if (idDivisionTarget != ID_DIVISION_GENERAL) {
-                    boolean periodoDivisionActivo = dao.esPeriodoActivo(idDivisionTarget);
-
-                    if (!periodoDivisionActivo) {
+                    // No validar si el usuario es de la division "General" (id 5)
+                    if (idDivisionTarget != ID_DIVISION_GENERAL) {
+                        boolean periodoDivisionActivo = dao.esPeriodoActivo(idDivisionTarget);
+                        if (!periodoDivisionActivo) {
+                            response.setStatus(HttpServletResponse.SC_OK);
+                            out.write("{\"success\": false, \"message\": \"El periodo de carga para tu división está cerrado o ha vencido. No es posible subir constancias.\"}");
+                            out.flush();
+                            return;
+                        }
+                    } else {
+                        // Usuario de división General pero General está apagado → bloquear
                         response.setStatus(HttpServletResponse.SC_OK);
-                        out.write("{\"success\": false, \"message\": \"El periodo de carga para la división del docente no está activo.\"}");
+                        out.write("{\"success\": false, \"message\": \"El periodo General de carga está deshabilitado.\"}");
                         out.flush();
                         return;
                     }
+                } else {
+                    // No se puede determinar la división → bloquear por seguridad
+                    response.setStatus(HttpServletResponse.SC_OK);
+                    out.write("{\"success\": false, \"message\": \"No se pudo determinar tu división para validar el periodo de carga.\"}");
+                    out.flush();
+                    return;
                 }
             }
 

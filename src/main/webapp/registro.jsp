@@ -143,7 +143,7 @@
     </div>
 </div>
 
-<script src="assets/js/bootstrap.js"></script>
-<script src="assets/js/login.js"></script>
+<script src="assets/js/bootstrap.js" charset="UTF-8"></script>
+<script src="assets/js/login.js" charset="UTF-8"></script>
 </body>
 </html>

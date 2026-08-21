@@ -155,7 +155,7 @@
     }
 </script>
 
-<script src="assets/js/AgregarDocente.js"></script>
-<script src="assets/js/coordinador.js"></script>
+<script src="assets/js/AgregarDocente.js" charset="UTF-8"></script>
+<script src="assets/js/coordinador.js" charset="UTF-8"></script>
 </body>
 </html>

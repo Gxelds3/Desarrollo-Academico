@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", function () {
+﻿document.addEventListener("DOMContentLoaded", function () {
     const contextPath = window.contextPath || (window.location.pathname.substring(0, window.location.pathname.indexOf("/", 1))) || '';
     const tbody = document.getElementById('tablaEventosBody');
     const inputBuscar = document.getElementById('buscarEvento');
@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", function () {
     let filtroTexto = '';
     let filtroTipo = 'todos';
 
-    // Sanitización contra inyección HTML (XSS)
+    // SanitizaciÃ³n contra inyecciÃ³n HTML (XSS)
     function escapeHtml(texto) {
         if (texto === null || texto === undefined) return '';
         return String(texto)
@@ -17,7 +17,7 @@ document.addEventListener("DOMContentLoaded", function () {
             .replace(/>/g, '&gt;');
     }
 
-    // Normalizador para búsqueda insensible a acentos/mayúsculas
+    // Normalizador para bÃºsqueda insensible a acentos/mayÃºsculas
     function normalizar(texto) {
         return String(texto || '')
             .toLowerCase()
@@ -42,7 +42,7 @@ document.addEventListener("DOMContentLoaded", function () {
         return `${escapeHtml(fInicio)} - ${escapeHtml(fFin)}`;
     }
 
-    // Filtrado combinado: Texto de búsqueda + Filtro de Categoría/Pill
+    // Filtrado combinado: Texto de bÃºsqueda + Filtro de CategorÃ­a/Pill
     function obtenerEventosFiltrados() {
         const texto = normalizar(filtroTexto);
         const tipoFiltroNormalizado = normalizar(filtroTipo);
@@ -60,7 +60,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    // Renderizado dinámico de la tabla (6 Columnas)
+    // Renderizado dinÃ¡mico de la tabla (6 Columnas)
     function renderEventos(lista) {
         if (!tbody) return;
 
@@ -76,7 +76,7 @@ document.addEventListener("DOMContentLoaded", function () {
             const idEvento = evt.id || evt.idEvento;
             const titulo = escapeHtml(evt.titulo || evt.nombre);
             const subtitulo = escapeHtml(evt.subtitulo || evt.descripcion || '');
-            const tipo = escapeHtml(evt.tipo || evt.tipoEvento || 'Sin especificación');
+            const tipo = escapeHtml(evt.tipo || evt.tipoEvento || 'Sin especificaciÃ³n');
             const institucion = escapeHtml(evt.institucion || 'N/A');
             const modalidad = escapeHtml(evt.modalidad || 'Presencial');
             const fechas = formatearFechas(evt.fechaInicio, evt.fechaFin);
@@ -105,7 +105,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function aplicarFiltro() {
-        renderEventos(obtenerEventosFiltrados());
+        window.renderPaginator(obtenerEventosFiltrados(), 20, 'paginationContainer', renderEventos);
     }
 
     function cargarMisEventos() {
@@ -123,7 +123,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 if (contentType && contentType.indexOf("application/json") !== -1) {
                     return response.json();
                 } else {
-                    throw new Error("Respuesta del servidor no válida (Se esperaba JSON).");
+                    throw new Error("Respuesta del servidor no vÃ¡lida (Se esperaba JSON).");
                 }
             })
             .then(function (eventos) {
@@ -133,11 +133,11 @@ document.addEventListener("DOMContentLoaded", function () {
             })
             .catch(function (error) {
                 console.error('Error al cargar la lista de eventos:', error);
-                tbody.innerHTML = '<tr><td colspan="6" class="text-center text-danger py-4">No se pudieron cargar los eventos. Revisa la conexión con el servidor.</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="6" class="text-center text-danger py-4">No se pudieron cargar los eventos. Revisa la conexiÃ³n con el servidor.</td></tr>';
             });
     }
 
-    // Escuchadores de eventos para búsqueda y filtros por Pill
+    // Escuchadores de eventos para bÃºsqueda y filtros por Pill
     if (inputBuscar) {
         inputBuscar.addEventListener('input', function () {
             filtroTexto = inputBuscar.value.trim();

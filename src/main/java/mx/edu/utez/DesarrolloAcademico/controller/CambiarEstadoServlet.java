@@ -45,9 +45,14 @@ public class CambiarEstadoServlet extends HttpServlet {
                 return;
             }
 
-            dao.cambiarEstadoPeriodo(idPeriodo, nuevoEstado);
-            response.setStatus(HttpServletResponse.SC_OK);
-            out.write("{\"success\":true}");
+            String errorMsg = dao.cambiarEstadoPeriodoError(idPeriodo, nuevoEstado);
+            if (errorMsg == null) {
+                response.setStatus(HttpServletResponse.SC_OK);
+                out.write("{\"success\":true}");
+            } else {
+                response.setStatus(HttpServletResponse.SC_CONFLICT);
+                out.write("{\"error\":\"" + errorMsg.replace("\"", "\\\"") + "\"}");
+            }
 
         } catch (Exception e) {
             e.printStackTrace();

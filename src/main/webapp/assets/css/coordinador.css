@@ -1,4 +1,4 @@
-﻿:root {
+:root {
     --teal-main: #00847b;
     --teal-dark: #004d40;
     --teal-light: #26a69a;
@@ -594,18 +594,16 @@ body {
         transition: height 0.3s ease;
     }
     
-    /* Cuando se le hace hover o tap, se expande hacia abajo */
-    .sidebar-hover:hover,
-    .sidebar-hover:active,
-    .sidebar-hover:focus-within {
+    /* Cuando se le hace click (controlado por JS) se expande hacia abajo */
+    .sidebar-hover.mobile-expanded {
         height: 100vh;
         overflow-y: auto !important;
         background-color: var(--teal-main);
     }
 
-    /* Bot�n Hamburguesa Simulado */
+    /* Botón Hamburguesa Simulado */
     .sidebar-hover::before {
-        content: '\2630  NAV';
+        content: '\2630';
         display: flex;
         align-items: center;
         justify-content: center;
@@ -637,9 +635,7 @@ body {
         transition: opacity 0.3s;
     }
 
-    .sidebar-hover:hover .sidebar-menu-scroll,
-    .sidebar-hover:active .sidebar-menu-scroll,
-    .sidebar-hover:focus-within .sidebar-menu-scroll {
+    .sidebar-hover.mobile-expanded .sidebar-menu-scroll {
         opacity: 1;
     }
 

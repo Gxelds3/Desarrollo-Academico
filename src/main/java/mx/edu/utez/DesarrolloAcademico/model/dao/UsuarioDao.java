@@ -591,4 +591,44 @@ public class UsuarioDao {
         }
         return lista;
     }
+
+    public List<Evento> obtenerProximosEventosAsignados(int idUsuario) {
+        List<Evento> lista = new ArrayList<>();
+        String sql = "SELECT e.ID_EVENTO, e.NOMBRE, e.FECHA_INICIO, e.FECHA_FIN " +
+                     "FROM EVENTO e " +
+                     "JOIN PARTICIPANTE_EVENTO pe ON e.ID_EVENTO = pe.ID_EVENTO " +
+                     "WHERE pe.ID_USUARIO = ? AND e.FECHA_INICIO > SYSDATE " +
+                     "ORDER BY e.FECHA_INICIO ASC";
+                     
+        try (java.sql.Connection con = mx.edu.utez.DesarrolloAcademico.utils.DatabaseConnection.getConnection();
+             java.sql.PreparedStatement ps = con != null ? con.prepareStatement(sql) : null) {
+             
+            if (con == null || ps == null) return lista;
+            
+            ps.setInt(1, idUsuario);
+            
+            try (java.sql.ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    mx.edu.utez.DesarrolloAcademico.model.Evento evento = new mx.edu.utez.DesarrolloAcademico.model.Evento();
+                    evento.setID(rs.getInt("ID_EVENTO"));
+                    evento.setNombre(rs.getString("NOMBRE"));
+                    
+                    java.sql.Timestamp fInicio = rs.getTimestamp("FECHA_INICIO");
+                    if (fInicio != null) {
+                        evento.setFecha_Inicio(new java.util.Date(fInicio.getTime()));
+                    }
+                    
+                    java.sql.Timestamp fFin = rs.getTimestamp("FECHA_FIN");
+                    if (fFin != null) {
+                        evento.setFecha_Fin(new java.util.Date(fFin.getTime()));
+                    }
+                    
+                    lista.add(evento);
+                }
+            }
+        } catch (java.sql.SQLException ex) {
+            ex.printStackTrace();
+        }
+        return lista;
+    }
 }

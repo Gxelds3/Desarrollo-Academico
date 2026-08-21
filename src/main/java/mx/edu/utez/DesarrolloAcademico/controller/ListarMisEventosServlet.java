@@ -35,11 +35,17 @@ public class ListarMisEventosServlet extends HttpServlet {
         }
 
         Usuario usuario = (Usuario) session.getAttribute("usuario");
+        String rol = usuario.getRol() != null ? usuario.getRol().toLowerCase() : "";
 
         List<agregarEvento_co> eventos;
-        if ("desarrollo".equalsIgnoreCase(usuario.getRol())) {
+        if ("desarrollo".equals(rol)) {
+            // Desarrollador: todos los eventos sin excepción
             eventos = new mx.edu.utez.DesarrolloAcademico.model.dao.UsuarioDao().listarTodosEventos();
+        } else if ("docente".equals(rol)) {
+            // Docente: solo los eventos en los que está asignado
+            eventos = dao.listarEventosAsignados(usuario.getIdUsuario());
         } else {
+            // Coordinador: todos los de su división
             eventos = dao.listarEventosPorDivision1(usuario.getIdDivision());
         }
 
