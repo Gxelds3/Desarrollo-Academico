@@ -73,6 +73,10 @@ public class ListarEventosServlet extends HttpServlet {
 
     private String escapar(String valor) {
         if (valor == null) return "";
-        return valor.replace("\\", "\\\\").replace("\"", "\\\"");
+        return valor.replace("\\", "\\\\")
+                .replace("\"", "\\\"")
+                .replace("\r", "\\r")
+                .replace("\n", "\\n")
+                .replace("\t", "\\t");
     }
 }
