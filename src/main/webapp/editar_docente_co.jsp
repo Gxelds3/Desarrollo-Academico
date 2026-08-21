@@ -59,7 +59,7 @@
             </div>
             <div class="col-md-4">
                 <label class="form-label">Número de Empleado <span class="text-danger">*</span> :</label>
-                <input type="text" class="form-control" name="numero_empleado" id="campoNumEmpleado" required>
+                <input type="text" class="form-control" name="numero_empleado" id="campoNumEmpleado" required maxlength="5" minlength="1" pattern="\d{1,5}" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 5)">
             </div>
             <div class="col-md-4">
                 <label class="form-label">Número de Teléfono <span class="text-danger">*</span> :</label>

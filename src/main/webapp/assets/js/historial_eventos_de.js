@@ -87,11 +87,13 @@
             // Coincide exactamente con las 6 columnas del <thead> y <colgroup>
             fila.innerHTML = `
                 <td class="text-start">
-                    <div class="fw-semibold">${titulo}</div>
-                    ${subtitulo ? `<div class="small text-muted">${subtitulo}</div>` : ''}
+                    <div class="fw-semibold truncate-1-line" title="${titulo}">${titulo}</div>
+                    ${subtitulo ? `<div class="small text-muted truncate-1-line" title="${subtitulo}">${subtitulo}</div>` : ''}
                 </td>
                 <td>${tipo}</td>
-                <td>${institucion}</td>
+                <td>
+                    <div class="truncate-1-line" title="${institucion}">${institucion}</div>
+                </td>
                 <td>${modalidad}</td>
                 <td>${fechas}</td>
                 <td>

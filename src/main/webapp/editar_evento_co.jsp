@@ -1,4 +1,4 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+﻿<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!doctype html>
 <html lang="es">
 <head>
@@ -23,15 +23,15 @@
         <div class="row mb-3">
             <div class="col-md-4">
                 <label class="form-label text-muted">Nombre del evento:</label>
-                <input type="text" class="form-control" id="campoNombre" name="nombre" required oninput="this.value = this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ0-9\s.,-]/g, '')" maxlength="255">
+                <input type="text" class="form-control" id="campoNombre" name="nombre" required oninput="this.value = this.value.replace(/[^a-zA-ZÃ¡Ã©Ã­Ã³ÃºÃÃ‰ÃÃ“ÃšÃ±Ã‘0-9\s.,-]/g, '')" maxlength="255">
             </div>
             <div class="col-md-4">
                 <label class="form-label text-muted">Lugar:</label>
-                <input type="text" class="form-control" id="campoLugar" name="lugar" required oninput="this.value = this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ0-9\s.,-]/g, '')" maxlength="255">
+                <input type="text" class="form-control" id="campoLugar" name="lugar" required oninput="this.value = this.value.replace(/[^a-zA-ZÃ¡Ã©Ã­Ã³ÃºÃÃ‰ÃÃ“ÃšÃ±Ã‘0-9\s.,-]/g, '')" maxlength="255">
             </div>
             <div class="col-md-4">
-                <label class="form-label text-muted">Institución / Empresa:</label>
-                <input type="text" class="form-control" id="campoInstitucion" name="institucion" oninput="this.value = this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ0-9\s.,-]/g, '')" maxlength="255">
+                <label class="form-label text-muted">InstituciÃ³n / Empresa:</label>
+                <input type="text" class="form-control" id="campoInstitucion" name="institucion" oninput="this.value = this.value.replace(/[^a-zA-ZÃ¡Ã©Ã­Ã³ÃºÃÃ‰ÃÃ“ÃšÃ±Ã‘0-9\s.,-]/g, '')" maxlength="255">
             </div>
         </div>
 
@@ -44,12 +44,12 @@
                     <option value="Diplomado">Diplomado</option>
                     <option value="Conferencia">Conferencia</option>
                     <option value="Curso">Curso</option>
-                    <option value="Certificacion">Certificación</option>
+                    <option value="Certificacion">CertificaciÃ³n</option>
                 </select>
             </div>
             <div class="col-md-8">
-                <label class="form-label text-muted">Descripción del evento:</label>
-                <textarea class="form-control" id="campoDescripcion" name="descripcion" rows="3" oninput="this.value = this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ0-9\s.,]/g, '')" style="resize: vertical;"></textarea>
+                <label class="form-label text-muted">DescripciÃ³n del evento:</label>
+                <textarea class="form-control" id="campoDescripcion" name="descripcion" rows="3" oninput="this.value = this.value.replace(/[^a-zA-ZÃ¡Ã©Ã­Ã³ÃºÃÃ‰ÃÃ“ÃšÃ±Ã‘0-9\s.,]/g, '')" style="resize: vertical;"></textarea>
             </div>
         </div>
 
@@ -130,7 +130,7 @@
             </div>
             <div class="modal-body p-4">
                 <div class="mb-3">
-                    <label class="form-label text-muted mb-2">Buscar por nombre, correo o número de empleado:</label>
+                    <label class="form-label text-muted mb-2">Buscar por nombre, correo o nÃºmero de empleado:</label>
                     <input type="text" class="form-control" id="inputBuscarDocente" placeholder="Escribe para buscar..." autocomplete="off">
                 </div>
                 <div style="max-height: 300px; overflow-y: auto;">

@@ -68,7 +68,7 @@
                                     <path d="M3 6.5A1.5 1.5 0 0 1 4.5 5h1A1.5 1.5 0 0 1 7 6.5v1A1.5 1.5 0 0 1 5.5 9h-1A1.5 1.5 0 0 1 3 7.5v-1zM9 6.25a.75.75 0 0 1 .75-.75h3.5a.75.75 0 0 1 0 1.5h-3.5A.75.75 0 0 1 9 6.25zM9 9.25a.75.75 0 0 1 .75-.75h3.5a.75.75 0 0 1 0 1.5h-3.5A.75.75 0 0 1 9 9.25zM3.75 11a.75.75 0 0 0 0 1.5h3.5a.75.75 0 0 0 0-1.5h-3.5z"/>
                                 </svg>
                             </span>
-                            <input type="text" class="form-control input-custom" id="NumeroEmpleado" name="numeroEmpleado" placeholder="Número de Empleado" value="${numeroEmpleado}" required>
+                            <input type="text" class="form-control input-custom" id="NumeroEmpleado" name="numeroEmpleado" placeholder="Número de Empleado" value="${numeroEmpleado}" required maxlength="5" minlength="1" pattern="\d{1,5}" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 5)">
                         </div>
                     </div>
 

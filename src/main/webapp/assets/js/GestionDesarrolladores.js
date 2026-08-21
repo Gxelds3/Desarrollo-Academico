@@ -1,4 +1,4 @@
-﻿const contextPath = window.contextPath || '';
+const contextPath = window.contextPath || '';
 const tbody = document.getElementById('tablaDesarrolladoresBody');
 const inputBuscar = document.getElementById('buscarDesarrollador');
 
@@ -42,23 +42,23 @@ function validarFormularioDocente(datos) {
 
     // 2. SELECCIÃ“N DE DIVISIÃ“N ACADÃ‰MICA
     if (!division) {
-        mostrarAlerta('DivisiÃ³n requerida', 'Por favor selecciona una DivisiÃ³n AcadÃ©mica.');
+        mostrarAlerta('División requerida', 'Por favor selecciona una División Académica.');
         return false;
     }
 
-    // 3. NÃšMERO DE EMPLEADO ÃšNICAMENTE CON DÃGITOS
+    // 3. NÃšMERO DE EMPLEADO ÃšNICAMENTE CON DÍGITOS
     if (!/^\d+$/.test(numEmp)) {
-        mostrarAlerta('NÃºmero de Empleado invÃ¡lido', 'El nÃºmero de empleado solo debe contener dÃ­gitos numÃ©ricos.');
+        mostrarAlerta('Número de Empleado inválido', 'El número de empleado solo debe contener dígitos numéricos.');
         return false;
     }
 
-    // 4. TELÃ‰FONO ESTRICTAMENTE DE 10 DÃGITOS
+    // 4. TELÃ‰FONO ESTRICTAMENTE DE 10 DÍGITOS
     if (!/^\d{10}$/.test(tel)) {
-        mostrarAlerta('TelÃ©fono invÃ¡lido', 'El telÃ©fono debe ser de exactamente 10 dÃ­gitos numÃ©ricos.');
+        mostrarAlerta('Teléfono inválido', 'El teléfono debe ser de exactamente 10 dígitos numéricos.');
         return false;
     }
 
-    // 5. CORREO INSTITUCIONAL MÃXIMO 50 CARACTERES
+    // 5. CORREO INSTITUCIONAL MÁXIMO 50 CARACTERES
     if (correo.length > 50) {
         mostrarAlerta('Correo demasiado largo', 'El correo institucional no debe exceder los 50 caracteres.');
         return false;
@@ -72,13 +72,13 @@ function validarFormularioDocente(datos) {
 
     // 7. CONTRASEÃ‘A ENTRE 12 Y 15 CARACTERES
     if (pass.length < 12 || pass.length > 15) {
-        mostrarAlerta('ContraseÃ±a invÃ¡lida', 'La contraseÃ±a debe tener entre 12 y 15 caracteres.');
+        mostrarAlerta('Contraseña inválida', 'La contraseña debe tener entre 12 y 15 caracteres.');
         return false;
     }
 
     // 8. COINCIDENCIA EXACTA DE CONTRASEÃ‘AS
     if (pass !== confirmPass) {
-        mostrarAlerta('Las contraseÃ±as no coinciden', 'AsegÃºrate de escribir exactamente la misma contraseÃ±a en ambos campos.');
+        mostrarAlerta('Las contraseñas no coinciden', 'Asegúrate de escribir exactamente la misma contraseña en ambos campos.');
         return false;
     }
 
@@ -97,14 +97,14 @@ function normalizar(texto) {
     return String(texto || '')
         .toLowerCase()
         .normalize('NFD')
-        .replace(/[\u0300-\u036f]/g, ''); // quita acentos para que "bÃºsqueda" == "busqueda"
+        .replace(/[\u0300-\u036f]/g, ''); // quita acentos para que "búsqueda" == "busqueda"
 }
 
 function nombreCompleto(dev) {
     return [dev.nombre, dev.apellidoPaterno, dev.apellidoMaterno].filter(Boolean).join(' ');
 }
 
-// FunciÃ³n helper para obtener las primeras dos iniciales
+// Función helper para obtener las primeras dos iniciales
 function obtenerIniciales(nombreStr) {
     if (!nombreStr) return '';
     const palabras = nombreStr.trim().split(/\s+/);
@@ -239,11 +239,11 @@ document.addEventListener("DOMContentLoaded", function () {
     const inputsTexto = document.querySelectorAll('#campoNombre, #campoApellidoP, #campoApellidoM, #nombre, #apellidoPaterno, #apellidoMaterno');
     inputsTexto.forEach(function (input) {
         input.addEventListener('input', function () {
-            this.value = this.value.replace(/[^a-zA-ZÃ¡Ã©Ã­Ã³ÃºÃÃ‰ÃÃ“ÃšÃ±Ã‘\s]/g, '');
+            this.value = this.value.replace(/[^a-zA-ZáéíóúÁÃ‰ÍÃ“ÃšñÃ‘\s]/g, '');
         });
     });
 
-    // 2. RESTRICCIÃ“N EN TIEMPO REAL: Solo dÃ­gitos en Num. Empleado y TelÃ©fono
+    // 2. RESTRICCIÃ“N EN TIEMPO REAL: Solo dígitos en Num. Empleado y Teléfono
     const inputsNumericos = document.querySelectorAll('#campoNumEmpleado, #campoTelefono, #numeroEmpleado, #telefono');
     inputsNumericos.forEach(function (input) {
         input.addEventListener('input', function () {
@@ -259,7 +259,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    // DelegaciÃ³n de eventos para la tabla
+    // Delegación de eventos para la tabla
     if (tbody) {
         tbody.addEventListener('click', function (e) {
             // Interruptor de estado
@@ -272,14 +272,14 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 Swal.fire({
                     icon: 'question',
-                    title: 'Â¿Deseas ' + accion + ' a este desarrollador?',
+                    title: '¿Deseas ' + accion + ' a este desarrollador?',
                     text: activoActual
-                        ? 'El desarrollador no podrÃ¡ iniciar sesiÃ³n mientras estÃ© inactivo.'
-                        : 'El desarrollador podrÃ¡ volver a iniciar sesiÃ³n.',
+                        ? 'El desarrollador no podrá iniciar sesión mientras esté inactivo.'
+                        : 'El desarrollador podrá volver a iniciar sesión.',
                     showCancelButton: true,
                     confirmButtonColor: '#00847b',
                     cancelButtonColor: '#aaaaaa',
-                    confirmButtonText: 'SÃ­, ' + accion,
+                    confirmButtonText: 'Sí, ' + accion,
                     cancelButtonText: 'Cancelar'
                 }).then(function (result) {
                     if (!result.isConfirmed) return;
@@ -317,14 +317,14 @@ document.addEventListener("DOMContentLoaded", function () {
                                     Swal.close();
                                     cargarDesarrolladores();
                                 } else {
-                                    mostrarAlerta('No se pudo actualizar el estado', resultado.data.message || 'OcurriÃ³ un error al conectar con la base de datos.', 'error');
+                                    mostrarAlerta('No se pudo actualizar el estado', resultado.data.message || 'Ocurrió un error al conectar con la base de datos.', 'error');
                                 }
                             }, 300);
                         })
                         .catch(function (error) {
                             clearInterval(timerCarga);
                             console.error('Error al cambiar el estado:', error);
-                            mostrarAlerta('Error de conexiÃ³n', 'No fue posible comunicarse con el servidor.', 'error');
+                            mostrarAlerta('Error de conexión', 'No fue posible comunicarse con el servidor.', 'error');
                         });
                 });
                 return;
@@ -339,12 +339,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 Swal.fire({
                     icon: 'warning',
-                    title: 'Â¿Deseas eliminar este desarrollador?',
-                    text: 'Esta acciÃ³n borrarÃ¡ al desarrollador de la base de datos.',
+                    title: '¿Deseas eliminar este desarrollador?',
+                    text: 'Esta acción borrará al desarrollador de la base de datos.',
                     showCancelButton: true,
                     confirmButtonColor: '#dc3545',
                     cancelButtonColor: '#aaaaaa',
-                    confirmButtonText: 'SÃ­, eliminar',
+                    confirmButtonText: 'Sí, eliminar',
                     cancelButtonText: 'Cancelar'
                 }).then(function (result) {
                     if (!result.isConfirmed) return;
@@ -381,20 +381,20 @@ document.addEventListener("DOMContentLoaded", function () {
                                 if (resultado.ok && resultado.data.success) {
                                     Swal.fire({
                                         icon: 'success',
-                                        title: 'Â¡Eliminado!',
+                                        title: '¡Eliminado!',
                                         text: resultado.data.message || 'El desarrollador fue eliminado correctamente.',
                                         confirmButtonColor: '#00847b'
                                     });
                                     cargarDesarrolladores();
                                 } else {
-                                    mostrarAlerta('No se pudo eliminar', resultado.data.message || 'OcurriÃ³ un error al eliminar el desarrollador.', 'error');
+                                    mostrarAlerta('No se pudo eliminar', resultado.data.message || 'Ocurrió un error al eliminar el desarrollador.', 'error');
                                 }
                             }, 300);
                         })
                         .catch(function (error) {
                             clearInterval(timerCarga);
                             console.error('Error al eliminar el desarrollador:', error);
-                            mostrarAlerta('Error de conexiÃ³n', 'No fue posible comunicarse con el servidor.', 'error');
+                            mostrarAlerta('Error de conexión', 'No fue posible comunicarse con el servidor.', 'error');
                         });
                 });
                 return;

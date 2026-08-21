@@ -324,12 +324,17 @@ function renderBusquedaDocentes(filtro) {
         var rol = u.rol || '';
         var rolDisplay = rol.charAt(0).toUpperCase() + rol.slice(1);
 
+        
+        var isDeView = window.location.pathname.includes('_de.jsp') || document.getElementById('campoDivision') !== null;
+        var tdDiv = isDeView ? '<td><span class="badge" style="background-color:#009e9e; color:white;">' + escHtml(getDivisionName(u.idDivision || u.division)) + '</span></td>' : '';
+
         tr.innerHTML =
             '<td>' + escHtml(getNombreCompleto(u)) + '</td>' +
             '<td>' + escHtml(getCorreoUsuario(u)) + '</td>' +
-            '<td>' + escHtml(getDivisionName(u.idDivision || u.division)) + '</td>' +
             '<td><span class="badge bg-secondary">' + escHtml(rolDisplay) + '</span></td>' +
+            tdDiv +
             '<td><button type="button" class="btn btn-sm btn-outline-success btn-asignar-docente" data-id="' + userId + '"><i class="bi bi-plus-circle me-1"></i>Añadir</button></td>';
+
         tbodyBusquedaDocentes.appendChild(tr);
     });
 

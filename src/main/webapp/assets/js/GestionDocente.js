@@ -239,7 +239,11 @@ function renderDocentes(lista) {
 }
 
 function aplicarFiltro() {
-    renderDocentes(obtenerDocentesFiltrados());
+    if (typeof window.renderPaginator === 'function') {
+        window.renderPaginator(obtenerDocentesFiltrados(), 20, 'paginationContainer', renderDocentes);
+    } else {
+        renderDocentes(obtenerDocentesFiltrados());
+    }
 }
 
 function cargarDocentes() {

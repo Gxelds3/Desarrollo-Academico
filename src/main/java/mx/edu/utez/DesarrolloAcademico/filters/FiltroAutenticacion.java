@@ -11,6 +11,12 @@ import mx.edu.utez.DesarrolloAcademico.model.Usuario;
 
 import java.io.IOException;
 
+import mx.edu.utez.DesarrolloAcademico.utils.DatabaseConnection;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+
+
 @WebFilter("/*")
 public class FiltroAutenticacion extends HttpFilter {
 
@@ -45,7 +51,23 @@ public class FiltroAutenticacion extends HttpFilter {
                 requestURI.endsWith(".ico");
 
         // 3. Evaluar Estado de Autenticación
+
         if (loggedIn) {
+            Usuario sessionUser = (Usuario) session.getAttribute("usuario");
+            if (sessionUser != null && !usuarioSigueActivo(sessionUser.getIdUsuario())) {
+                session.invalidate();
+                String requestedWith = request.getHeader("X-Requested-With");
+                String acceptHeader = request.getHeader("Accept");
+                if ("XMLHttpRequest".equals(requestedWith) || (acceptHeader != null && acceptHeader.contains("application/json"))) {
+                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                    response.setContentType("application/json;charset=UTF-8");
+                    response.getWriter().write("{\"success\": false, \"message\": \"Sesin expirada o cuenta inactiva.\"}");
+                } else {
+                    response.sendRedirect(request.getContextPath() + "/login.jsp");
+                }
+                return;
+            }
+
             if (isAuthPage) {
                 // Si el usuario ya está logueado e intenta ir al Login -> Redirigir a su panel
                 Usuario user = (Usuario) session.getAttribute("usuario");
@@ -88,5 +110,23 @@ public class FiltroAutenticacion extends HttpFilter {
                 }
             }
         }
+    }
+
+    private boolean usuarioSigueActivo(int idUsuario) {
+        String sql = "SELECT activo FROM usuario WHERE id_usuario = ?";
+        try (Connection con = DatabaseConnection.getConnection();
+             PreparedStatement ps = con != null ? con.prepareStatement(sql) : null) {
+            if (con == null || ps == null) return true;
+            ps.setInt(1, idUsuario);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt("activo") == 1;
+                }
+            }
+        } catch (Exception e) {
+            System.err.println("Error verificando estado de usuario en FiltroAutenticacion: " + e.getMessage());
+            return true; // Asumir verdadero si hay error temporal de DB para no desloguear masivamente
+        }
+        return false;
     }
 }

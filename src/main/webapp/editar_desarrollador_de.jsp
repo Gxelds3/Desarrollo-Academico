@@ -53,7 +53,7 @@
             </div>
             <div class="col-md-4">
                 <label for="campoNumEmpleado" class="form-label">Número de Empleado <span class="text-danger">*</span> :</label>
-                <input type="text" class="form-control" id="campoNumEmpleado" name="numero_empleado" required>
+                <input type="text" class="form-control" id="campoNumEmpleado" name="numero_empleado" required maxlength="5" minlength="1" pattern="\d{1,5}" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 5)">
             </div>
             <div class="col-md-4">
                 <label for="campoTelefono" class="form-label">Número de Teléfono <span class="text-danger">*</span> :</label>
@@ -75,24 +75,6 @@
 
         <!-- Las 3 Contraseñas Alineadas en una sola fila -->
         <div class="row mb-4">
-            <!-- 1. Contraseña Actual -->
-            <div class="col-md-4">
-                <label for="passActual" class="form-label">Contraseña Actual <span class="text-danger">*</span> :</label>
-                <div class="input-group">
-                    <input type="password"
-                           id="passActual"
-                           name="passActual"
-                           class="form-control"
-                           placeholder="Ingresa tu contraseña actual"
-                           required>
-                    <button class="btn btn-outline-secondary bg-white border-start-0"
-                            type="button"
-                            onclick="togglePassword('passActual')">
-                        <i id="icon-passActual" class="bi bi-eye-fill text-muted"></i>
-                    </button>
-                </div>
-            </div>
-
             <!-- 2. Nueva Contraseña -->
             <div class="col-md-4">
                 <label for="passNueva" class="form-label">Nueva Contraseña (Opcional):</label>

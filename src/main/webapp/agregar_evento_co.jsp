@@ -1,4 +1,4 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+﻿<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!doctype html>
 <html lang="es">
 <head>
@@ -28,15 +28,15 @@
         <div class="row mb-3">
             <div class="col-md-4">
                 <label class="form-label">Nombre del evento <span class="text-danger">*</span></label>
-                <input type="text" class="form-control" name="nombre" required oninput="this.value = this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ0-9\s.,-]/g, '')" maxlength="255">
+                <input type="text" class="form-control" name="nombre" required oninput="this.value = this.value.replace(/[^a-zA-ZÃ¡Ã©Ã­Ã³ÃºÃÃ‰ÃÃ“ÃšÃ±Ã‘0-9\s.,-]/g, '')" maxlength="255">
             </div>
             <div class="col-md-4">
                 <label class="form-label">Lugar <span class="text-danger">*</span></label>
-                <input type="text" class="form-control" name="lugar" required oninput="this.value = this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ0-9\s.,-]/g, '')" maxlength="255">
+                <input type="text" class="form-control" name="lugar" required oninput="this.value = this.value.replace(/[^a-zA-ZÃ¡Ã©Ã­Ã³ÃºÃÃ‰ÃÃ“ÃšÃ±Ã‘0-9\s.,-]/g, '')" maxlength="255">
             </div>
             <div class="col-md-4">
-                <label class="form-label">Institución / Empresa</label>
-                <input type="text" class="form-control" name="institucion" oninput="this.value = this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ0-9\s.,-]/g, '')" maxlength="255">
+                <label class="form-label">InstituciÃ³n / Empresa</label>
+                <input type="text" class="form-control" name="institucion" oninput="this.value = this.value.replace(/[^a-zA-ZÃ¡Ã©Ã­Ã³ÃºÃÃ‰ÃÃ“ÃšÃ±Ã‘0-9\s.,-]/g, '')" maxlength="255">
             </div>
         </div>
 
@@ -44,17 +44,17 @@
             <div class="col-md-4">
                 <label class="form-label">Tipo de evento <span class="text-danger">*</span></label>
                 <select class="form-select" name="tipo" required>
-                    <option value="" disabled selected>Selecciona una opción</option>
+                    <option value="" disabled selected>Selecciona una opciÃ³n</option>
                     <option value="Diplomado">Diplomado</option>
                     <option value="Conferencia">Conferencia</option>
                     <option value="Taller">Taller</option>
                     <option value="Curso">Curso</option>
-                    <option value="Certificacion">Certificación</option>
+                    <option value="Certificacion">CertificaciÃ³n</option>
                 </select>
             </div>
             <div class="col-md-8">
-                <label class="form-label text-muted">Descripción del evento:</label>
-                <textarea class="form-control" id="descripcion" name="descripcion" rows="3" required oninput="this.value = this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ0-9\s.,]/g, '')" style="resize: vertical;"></textarea>
+                <label class="form-label text-muted">DescripciÃ³n del evento:</label>
+                <textarea class="form-control" id="descripcion" name="descripcion" rows="3" required oninput="this.value = this.value.replace(/[^a-zA-ZÃ¡Ã©Ã­Ã³ÃºÃÃ‰ÃÃ“ÃšÃ±Ã‘0-9\s.,]/g, '')" style="resize: vertical;"></textarea>
             </div>
         </div>
 
@@ -70,7 +70,7 @@
             <div class="col-md-6">
                 <label class="form-label">Modalidad <span class="text-danger">*</span></label>
                 <select class="form-select" name="modalidad" required>
-                    <option value="" disabled selected>Selecciona una opción</option>
+                    <option value="" disabled selected>Selecciona una opciÃ³n</option>
                     <option value="presencial">Presencial</option>
                     <option value="virtual">Virtual</option>
                     <option value="mixto">Mixta</option>
@@ -137,7 +137,7 @@
                         <tr>
                             <th>Nombre</th>
                             <th>Correo</th>
-                            <th>Division</th>
+                            <th>Rol</th>
                             <th></th>
                         </tr>
                         </thead>

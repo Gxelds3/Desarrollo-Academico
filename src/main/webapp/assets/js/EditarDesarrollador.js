@@ -56,11 +56,9 @@ function llenarFormulario(data) {
         document.getElementById('campoCorreo').value = data.correoInstitucional || data.correo || '';
     }
 
-    const inputPassActual = document.getElementById('passActual');
     const inputPassNueva  = document.getElementById('passNueva');
     const inputPassConfirm = document.getElementById('passConfirm');
 
-    if (inputPassActual)  inputPassActual.value  = '';
     if (inputPassNueva)   inputPassNueva.value   = '';
     if (inputPassConfirm) inputPassConfirm.value = '';
 
@@ -150,7 +148,6 @@ function guardarCambios() {
     const campoTelefono       = document.getElementById('campoTelefono');
     const campoCorreo         = document.getElementById('campoCorreo');
 
-    const passActual  = document.getElementById('passActual');
     const passNueva   = document.getElementById('passNueva');
     const passConfirm = document.getElementById('passConfirm');
 
@@ -162,37 +159,8 @@ function guardarCambios() {
     const telVal       = campoTelefono      ? campoTelefono.value.trim()      : '';
     const correoVal    = campoCorreo        ? campoCorreo.value.trim()        : '';
 
-    const passActualVal = passActual  ? passActual.value.trim()  : '';
     const passNuevaVal  = passNueva   ? passNueva.value.trim()   : '';
     const passConfVal   = passConfirm ? passConfirm.value.trim() : '';
-
-    // Validaciones de campos obligatorios
-    if (!nombreVal || !apePVal || !numEmpVal || !telVal || !correoVal) {
-        mostrarAlerta('Campos incompletos', 'Por favor, llena todos los campos obligatorios (*).');
-        return;
-    }
-    if (!divisionVal) {
-        mostrarAlerta('División requerida', 'Selecciona una División Académica.');
-        return;
-    }
-    if (!/^\d+$/.test(numEmpVal)) {
-        mostrarAlerta('Número de Empleado inválido', 'Solo deben ser dígitos numéricos.');
-        return;
-    }
-    if (!/^\d{10}$/.test(telVal)) {
-        mostrarAlerta('Teléfono inválido', 'Debe ser exactamente 10 dígitos.');
-        return;
-    }
-    if (!correoVal.toLowerCase().endsWith('@utez.edu.mx')) {
-        mostrarAlerta('Correo no institucional', 'El correo debe terminar en @utez.edu.mx');
-        return;
-    }
-
-    // Validación OBLIGATORIA de contraseña actual
-    if (!passActualVal) {
-        mostrarAlerta('Contraseña requerida', 'Debes ingresar tu contraseña actual para confirmar los cambios.');
-        return;
-    }
 
     // Validación de nueva contraseña opcional
     if (passNuevaVal !== '') {
@@ -226,10 +194,6 @@ function guardarCambios() {
     datos.append('correoInstitucional',  correoVal);
 
     // Parámetros de contraseña actual y nueva
-    datos.append('passActual',           passActualVal);
-    datos.append('contrasenaActual',     passActualVal);
-    datos.append('contrasena_actual',    passActualVal);
-
     datos.append('contrasena',           passNuevaVal);
     datos.append('passNueva',            passNuevaVal);
     datos.append('confirmar_contrasena', passConfVal);

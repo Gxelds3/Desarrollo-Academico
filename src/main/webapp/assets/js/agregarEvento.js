@@ -150,12 +150,20 @@ function renderBusquedaDocentes(filtro) {
         var userId = getIdUsuario(u);
         var rol = u.rol || '';
         var rolDisplay = rol.charAt(0).toUpperCase() + rol.slice(1);
+        
+        var isDeView = window.location.pathname.includes('_de.jsp') || document.getElementById('campoDivision') !== null;
+        var divMap = {1: 'DATID', 2: 'DACEA', 3: 'DATEFI', 4: 'DAMI', 5: 'General'};
+        var divName = divMap[u.idDivision] || 'General';
+        var tdDiv = isDeView ? '<td><span class="badge" style="background-color:#009e9e; color:white;">' + escHtml(divName) + '</span></td>' : '';
+
         tr.innerHTML =
             '<td>' + escHtml(getNombreCompleto(u)) + '</td>' +
             '<td>' + escHtml(getCorreoUsuario(u)) + '</td>' +
             '<td><span class="badge bg-secondary">' + escHtml(rolDisplay) + '</span></td>' +
+            tdDiv +
             '<td><button type="button" class="btn btn-sm btn-outline-success btn-asignar" data-id="' + userId + '">' +
             '<i class="bi bi-plus-circle me-1"></i>Añadir</button></td>';
+
         tbodyBusquedaDocentes.appendChild(tr);
     });
 

@@ -1,4 +1,4 @@
-﻿// 1. CORREGIDO: "const" en lugar de "onst"
+// 1. CORREGIDO: "const" en lugar de "onst"
 const contextPath = window.contextPath || '';
 const tbody = document.getElementById('tablaEventosBody');
 const inputBuscar = document.getElementById('buscarEvento');
@@ -85,13 +85,13 @@ function renderEventos(eventos) {
 
         let celdas =
             '<td>' +
-            '<div class="fw-semibold">' + escapeHtml(ev.nombre) + '</div>' +
-            '<div class="small text-muted">' + escapeHtml(ev.descripcion) + '</div>' +
+            '<div class="fw-semibold truncate-1-line" title="' + escapeHtml(ev.nombre) + '">' + escapeHtml(ev.nombre) + '</div>' +
+            '<div class="small text-muted truncate-3-lines" title="' + escapeHtml(ev.descripcion) + '">' + escapeHtml(ev.descripcion) + '</div>' +
             '</td>' +
             '<td>' + escapeHtml(ev.tipo) + '</td>' +
             '<td>' +
-            '<div>' + escapeHtml(ev.institucion) + '</div>' +
-            '<div class="small text-muted">' + escapeHtml(ev.lugar) + '</div>' +
+            '<div class="truncate-2-lines" title="' + escapeHtml(ev.institucion) + '">' + escapeHtml(ev.institucion) + '</div>' +
+            '<div class="small text-muted truncate-2-lines" title="' + escapeHtml(ev.lugar) + '">' + escapeHtml(ev.lugar) + '</div>' +
             '</td>' +
             '<td>' + formatearFecha(ev.fechaInicio) + ' - ' + formatearFecha(ev.fechaFin) + '</td>';
 

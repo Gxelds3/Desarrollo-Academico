@@ -303,7 +303,7 @@ body {
     border-bottom: 1px solid #eee;
     text-align: left;
 }
-.table-custom td > div,
+.table-custom td > div:not(.truncate-1-line):not(.truncate-2-lines):not(.truncate-3-lines),
 .table-custom td > span {
     overflow: hidden;
     text-overflow: ellipsis;
@@ -735,4 +735,37 @@ body {
         margin-bottom: 15px;
         width: 100%;
     }
+}
+
+.truncate-3-lines {
+    display: -webkit-box !important;
+    -webkit-line-clamp: 3 !important;
+    -webkit-box-orient: vertical !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis;
+    max-width: 100%;
+    word-break: break-word;
+    white-space: normal !important;
+}
+
+.truncate-2-lines {
+    display: -webkit-box !important;
+    -webkit-line-clamp: 2 !important;
+    -webkit-box-orient: vertical !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis;
+    max-width: 100%;
+    word-break: break-word;
+    white-space: normal !important;
+}
+
+.truncate-1-line {
+    display: -webkit-box !important;
+    -webkit-line-clamp: 1 !important;
+    -webkit-box-orient: vertical !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis;
+    max-width: 100%;
+    word-break: break-word;
+    white-space: normal !important;
 }
