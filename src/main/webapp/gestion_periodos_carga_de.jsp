@@ -17,7 +17,7 @@
 </jsp:include>
 
 <main class="main-content">
-    <h3 class="page-title mb-4">GESTION DE PERIODOS DE CARGA</h3>
+    <h3 class="page-title mb-4">GESTIÓN DE PERIODOS DE CARGA</h3>
 
     <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
         <!-- Buscador en tiempo real -->
@@ -40,7 +40,7 @@
             </colgroup>
             <thead>
             <tr>
-                <th class="text-start">Division</th>
+                <th class="text-start">División</th>
                 <th>Fecha inicio</th>
                 <th>fecha fin</th>
                 <th>Estado</th>

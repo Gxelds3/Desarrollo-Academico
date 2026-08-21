@@ -17,7 +17,7 @@
 </jsp:include>
 
 <main class="main-content">
-    <h3 class="page-title mb-4">GESTION DE EVENTOS</h3>
+    <h3 class="page-title mb-4">GESTIÓN DE EVENTOS</h3>
 
     <div class="d-flex flex-wrap gap-2 mb-4" id="filtrosTipo">
         <a href="#" class="nav-pill active" data-tipo="todos">Todos</a>
@@ -50,7 +50,7 @@
             </colgroup>
             <thead>
             <tr>
-                <th>Titulo</th>
+                <th>Título</th>
                 <th>Tipo</th>
                 <th>Institución</th>
                 <th>Fecha</th>

@@ -51,7 +51,7 @@
             <tr>
                 <th class="text-start">Nombre</th>
                 <th>Correo</th>
-                <th>Num. Empleado</th>
+                <th>Núm. Empleado</th>
                 <th>Estado</th>
                 <th>Acciones</th>
             </tr>

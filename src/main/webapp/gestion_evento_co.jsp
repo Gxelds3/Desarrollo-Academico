@@ -17,7 +17,7 @@
 </jsp:include>
 
 <main class="main-content">
-    <h3 class="page-title mb-4">GESTION DE EVENTOS</h3>
+    <h3 class="page-title mb-4">GESTIÓN DE EVENTOS</h3>
 
     <div class="d-flex flex-wrap gap-2 mb-4" id="filtrosTipo">
         <a href="#" class="nav-pill active" data-tipo="todos">Todos</a>
@@ -25,7 +25,7 @@
         <a href="#" class="nav-pill" data-tipo="conferencia">Conferencia</a>
         <a href="#" class="nav-pill" data-tipo="taller">Taller</a>
         <a href="#" class="nav-pill" data-tipo="curso">Curso</a>
-        <a href="#" class="nav-pill" data-tipo="certificacion">Certificacion</a>
+        <a href="#" class="nav-pill" data-tipo="certificacion">Certificación</a>
     </div>
 
     <div class="d-flex justify-content-between align-items-center mb-4">

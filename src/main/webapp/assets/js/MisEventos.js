@@ -36,14 +36,14 @@ function renderMisEventos(lista) {
 
         const tr = document.createElement('tr');
         tr.innerHTML =
-            '<td>' +
-            '  <div class="fw-semibold">' + escHtmlEv(ev.nombre) + '</div>' +
-            '  <div class="small text-muted">' + escHtmlEv(ev.descripcion) + '</div>' +
+            '<td class="text-start">' +
+            '  <div class="fw-semibold truncate-1-line" title="">' + escHtmlEv(ev.nombre) + '</div>' +
+            '  <div class="small text-muted truncate-1-line" title="">' + escHtmlEv(ev.descripcion) + '</div>' +
             '</td>' +
             '<td>' + escHtmlEv(ev.tipo) + '</td>' +
             '<td>' +
-            '  <div>' + escHtmlEv(ev.institucion) + '</div>' +
-            '  <div class="small text-muted">' + escHtmlEv(ev.lugar) + '</div>' +
+            '  <div class="truncate-1-line" title="">' + escHtmlEv(ev.institucion) + '</div>' +
+            '  <div class="small text-muted truncate-1-line" title="">' + escHtmlEv(ev.lugar) + '</div>' +
             '</td>' +
             '<td>' + formatFechaMisEv(ev.fechaInicio) + ' - ' + formatFechaMisEv(ev.fechaFin) + '</td>' +
             '<td>' +

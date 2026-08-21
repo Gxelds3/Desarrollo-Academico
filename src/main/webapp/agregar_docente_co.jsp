@@ -54,7 +54,7 @@
 
         <div class="row mb-4">
             <div class="col-md-4">
-                <label class="form-label">Division Academica <span class="text-danger">*</span> :</label>
+                <label class="form-label">División Académica <span class="text-danger">*</span> :</label>
                 <select class="form-select" name="division_display" disabled required>
                     <option value="" <%= divStr.isEmpty() ? "selected" : "" %> disabled>Selecciona...</option>
                     <option value="DACEA" <%= "DACEA".equals(divStr) ? "selected" : "" %>>DACEA</option>
@@ -65,11 +65,11 @@
                 <input type="hidden" name="division" value="<%= divStr %>">
             </div>
             <div class="col-md-4">
-                <label class="form-label">Numero de Empleado <span class="text-danger">*</span> :</label>
+                <label class="form-label">Número de Empleado <span class="text-danger">*</span> :</label>
                 <input type="text" class="form-control" name="numero_empleado" required placeholder="Num. Empleado" maxlength="5" minlength="1" pattern="\d{1,5}" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 5)">
             </div>
             <div class="col-md-4">
-                <label class="form-label">Numero de Telefono <span class="text-danger">*</span> :</label>
+                <label class="form-label">Número de Teléfono <span class="text-danger">*</span> :</label>
                 <input type="text" class="form-control" name="telefono" required placeholder="Teléfono">
             </div>
         </div>

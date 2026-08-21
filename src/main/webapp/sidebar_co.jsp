@@ -17,14 +17,14 @@
         <div class="sidebar-icon">
             <i class="bi bi-calendar-event"></i>
         </div>
-        <span class="sidebar-text">Eventos Proximos</span>
+        <span class="sidebar-text">Eventos Próximos</span>
     </a>
 
     <a href="gestion_evento_co.jsp" class="sidebar-item ${param.active == 'gestion_evento' ? 'active' : ''}">
         <div class="sidebar-icon">
             <i class="bi bi-calendar2-check"></i>
         </div>
-        <span class="sidebar-text">Gestion de Eventos</span>
+        <span class="sidebar-text">Gestión de Eventos</span>
     </a>
 
     <a href="gestion_docente_co.jsp" class="sidebar-item ${param.active == 'gestion_docente' ? 'active' : ''}">
@@ -52,6 +52,6 @@
         <div class="sidebar-icon">
             <i class="bi bi-box-arrow-left"></i>
         </div>
-        <span class="sidebar-text">Cerrar sesion</span>
+        <span class="sidebar-text">Cerrar sesión</span>
     </a>
 </nav>
