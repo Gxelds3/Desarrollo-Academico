@@ -73,6 +73,11 @@ public class ListarMisEventosServlet extends HttpServlet {
 
     private String esc(String v) {
         if (v == null) return "";
-        return v.replace("\\", "\\\\").replace("\"", "\\\"");
+        return v
+                .replace("\\", "\\\\") // Escapa barras invertidas
+                .replace("\"", "\\\"") // Escapa comillas dobles
+                .replace("\n", "\\n")  // Escapa saltos de línea (AQUÍ ESTÁ EL FIX)
+                .replace("\r", "\\r")  // Escapa retornos de carro
+                .replace("\t", "\\t"); // Escapa tabulaciones
     }
 }
