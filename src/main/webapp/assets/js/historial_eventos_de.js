@@ -17,7 +17,7 @@
             .replace(/>/g, '&gt;');
     }
 
-    // Normalizador para bÃºsqueda insensible a acentos/mayÃºsculas
+    // Normalizador para busqueda insensible de acentos/mayusculas
     function normalizar(texto) {
         return String(texto || '')
             .toLowerCase()
@@ -42,7 +42,7 @@
         return `${escapeHtml(fInicio)} - ${escapeHtml(fFin)}`;
     }
 
-    // Filtrado combinado: Texto de bÃºsqueda + Filtro de CategorÃ­a/Pill
+    // Filtrado combinado: Texto de busqueda + Filtro de CategorÃ­a/Pill
     function obtenerEventosFiltrados() {
         const texto = normalizar(filtroTexto);
         const tipoFiltroNormalizado = normalizar(filtroTipo);

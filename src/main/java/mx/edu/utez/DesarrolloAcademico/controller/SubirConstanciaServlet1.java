@@ -149,8 +149,11 @@ public class SubirConstanciaServlet1 extends HttpServlet {
                 return;
             }
 
-            // 5. PROCESAR Y VALIDAR EL ARCHIVO SUBIDO
             Part filePart = request.getPart("archivo");
+            if (filePart == null) {
+                filePart = request.getPart("archivoPdf"); // Fallback por si el formulario manda este parámetro
+            }
+
             if (filePart == null || filePart.getSize() == 0) {
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 out.write("{\"success\": false, \"message\": \"Debes seleccionar un archivo PDF, PNG o JPG.\"}");
@@ -158,30 +161,61 @@ public class SubirConstanciaServlet1 extends HttpServlet {
                 return;
             }
 
-            String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
-            String fileNameLower = fileName.toLowerCase();
-            if (!fileNameLower.endsWith(".pdf") && !fileNameLower.endsWith(".png")
-                    && !fileNameLower.endsWith(".jpg") && !fileNameLower.endsWith(".jpeg")) {
-                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                out.write("{\"success\": false, \"message\": \"El archivo debe ser PDF, PNG o JPG.\"}");
-                out.flush();
-                return;
-            }
-
-            // Determinar Content-Type
-            String contentType = filePart.getContentType();
-            if (contentType == null) {
-                if (fileNameLower.endsWith(".pdf")) contentType = "application/pdf";
-                else if (fileNameLower.endsWith(".png")) contentType = "image/png";
-                else contentType = "image/jpeg";
-            }
-
-            // Leer bytes para BLOB
+            // A) Leer bytes completos en memoria
             byte[] contenidoArchivo;
             try (InputStream is = filePart.getInputStream()) {
                 contenidoArchivo = is.readAllBytes();
             }
 
+            // B) Verificar que el archivo tenga al menos 4 bytes para leer los Magic Bytes
+            if (contenidoArchivo.length < 4) {
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                out.write("{\"success\": false, \"message\": \"El archivo es inválido o está dañado.\"}");
+                out.flush();
+                return;
+            }
+
+            // C) Comparación directa de Magic Bytes
+            boolean esPdf = contenidoArchivo[0] == 0x25 && contenidoArchivo[1] == 0x50
+                    && contenidoArchivo[2] == 0x44 && contenidoArchivo[3] == 0x46; // %PDF
+
+            boolean esPng = (contenidoArchivo[0] & 0xFF) == 0x89 && contenidoArchivo[1] == 0x50
+                    && contenidoArchivo[2] == 0x4E && contenidoArchivo[3] == 0x47; // PNG
+
+            boolean esJpg = (contenidoArchivo[0] & 0xFF) == 0xFF && (contenidoArchivo[1] & 0xFF) == 0xD8
+                    && (contenidoArchivo[2] & 0xFF) == 0xFF; // JPEG/JPG
+
+            String contentType = null;
+            String extensionCorrecta = null;
+
+            if (esPdf) {
+                contentType = "application/pdf";
+                extensionCorrecta = ".pdf";
+            } else if (esPng) {
+                contentType = "image/png";
+                extensionCorrecta = ".png";
+            } else if (esJpg) {
+                contentType = "image/jpeg";
+                extensionCorrecta = ".jpg";
+            } else {
+                // Si el archivo no tiene la firma interna de PDF, PNG o JPG (ej. un .txt o .exe)
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                out.write("{\"success\": false, \"message\": \"El contenido real del archivo no es un PDF, PNG o JPG válido.\"}");
+                out.flush();
+                return;
+            }
+
+            // D) Construir un nombre seguro con la extensión REAL detectada
+            String originalName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
+            String fileNameOnly = originalName.contains(".")
+                    ? originalName.substring(0, originalName.lastIndexOf('.'))
+                    : originalName;
+
+            String fileName = fileNameOnly + extensionCorrecta;
+
+            // ------------------------------------------------------------------
+            // 6. GUARDAR EN BASE DE DATOS
+            // ------------------------------------------------------------------
             boolean exito = dao.guardarConstancia(idParticipante, fileName, contenidoArchivo, contentType,
                     tieneVigencia, fechaVencimiento, usuarioEnSesion.getIdUsuario());
 
@@ -200,4 +234,5 @@ public class SubirConstanciaServlet1 extends HttpServlet {
             out.flush();
         }
     }
-}
+
+    }
