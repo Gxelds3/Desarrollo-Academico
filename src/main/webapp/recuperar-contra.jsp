@@ -12,6 +12,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <title>Recuperación de Contraseña</title>
   <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/bootstrap.css">
   <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/bi/bootstrap-icons.css">
@@ -179,6 +180,8 @@
 
     <form action="recuperar" method="post" id="formVerificar">
       <input type="hidden" name="action" value="verificar">
+      <!-- CORRECCIÓN: Mantener el dato del usuario en este paso -->
+      <input type="hidden" name="dato" value="<%= emailParaReenvio != null ? emailParaReenvio : "" %>">
       <input type="hidden" name="codigoCompleto" id="codigoCompleto">
 
       <div class="otp-container" id="otpContainer">
@@ -230,11 +233,14 @@
           });
         });
 
-        document.getElementById('formVerificar').addEventListener('submit', function () {
-          var codigo = '';
-          inputs.forEach(function (inp) { codigo += inp.value; });
-          document.getElementById('codigoCompleto').value = codigo;
-        });
+        var formVerif = document.getElementById('formVerificar');
+        if (formVerif) {
+          formVerif.addEventListener('submit', function () {
+            var codigo = '';
+            inputs.forEach(function (inp) { codigo += inp.value; });
+            document.getElementById('codigoCompleto').value = codigo;
+          });
+        }
       })();
     </script>
     <% } %>
@@ -249,6 +255,8 @@
 
     <form action="recuperar" method="post" id="formCambiar" onsubmit="return validarPass()">
       <input type="hidden" name="action" value="cambiar">
+      <!-- CORRECCIÓN: Mantener el dato del usuario para la actualización final -->
+      <input type="hidden" name="dato" value="<%= emailParaReenvio != null ? emailParaReenvio : "" %>">
 
       <!-- Campo 1: Nueva contraseña -->
       <div class="mb-4">
@@ -259,6 +267,7 @@
           <i class="bi bi-eye position-absolute text-secondary fs-5" id="btnEye1" onclick="togglePass('pass1', 'btnEye1')" style="right: 15px; top: 50%; transform: translateY(-50%); cursor: pointer;"></i>
         </div>
         <div class="pass-hint text-muted mt-1" style="font-size: 0.8rem;">Entre 12 y 15 caracteres</div>
+        <div class="pass-strength" id="passStrength"></div>
       </div>
 
       <!-- Campo 2: Confirmar contraseña -->
@@ -278,7 +287,6 @@
     </form>
 
     <script>
-      // Función para alternar visibilidad de la contraseña
       function togglePass(inputId, iconId) {
         var input = document.getElementById(inputId);
         var icon = document.getElementById(iconId);
@@ -293,40 +301,65 @@
         }
       }
 
-      document.getElementById('pass1').addEventListener('input', function () {
-        var len = this.value.length;
-        var bar = document.getElementById('passStrength');
-        if (len === 0) { bar.style.background = '#e0e0e0'; bar.style.width = '0'; return; }
-        var pct = Math.min(100, Math.round((len / 15) * 100)) + '%';
-        var color = len < 8 ? '#e74c3c' : (len < 12 ? '#f39c12' : '#27ae60');
-        bar.style.background = color;
-        bar.style.width = pct;
-      });
+      var inputP1 = document.getElementById('pass1');
+      var inputP2 = document.getElementById('pass2');
 
-      document.getElementById('pass2').addEventListener('input', function () {
-        var p1 = document.getElementById('pass1').value;
+      if (inputP1) {
+        inputP1.addEventListener('input', function () {
+          var len = this.value.length;
+          var bar = document.getElementById('passStrength');
+          if (!bar) return;
+          if (len === 0) { bar.style.background = '#e0e0e0'; bar.style.width = '0'; return; }
+          var pct = Math.min(100, Math.round((len / 15) * 100)) + '%';
+          var color = len < 8 ? '#e74c3c' : (len < 12 ? '#f39c12' : '#27ae60');
+          bar.style.background = color;
+          bar.style.width = pct;
+        });
+      }
+
+      function checkMatch() {
         var msg = document.getElementById('passMatchMsg');
-        if (this.value.length === 0) { msg.textContent = ''; return; }
-        if (p1 === this.value) {
+        if (!msg || !inputP2) return;
+        if (inputP2.value.length === 0) { msg.textContent = ''; return; }
+
+        if (inputP1.value === inputP2.value) {
           msg.textContent = '✓ Las contraseñas coinciden';
           msg.style.color = '#27ae60';
         } else {
           msg.textContent = '✗ Las contraseñas no coinciden';
           msg.style.color = '#e74c3c';
         }
-      });
+      }
+
+      if (inputP1 && inputP2) {
+        inputP1.addEventListener('input', checkMatch);
+        inputP2.addEventListener('input', checkMatch);
+      }
 
       function validarPass() {
         var p1 = document.getElementById('pass1').value;
         var p2 = document.getElementById('pass2').value;
+
         if (p1.length < 12 || p1.length > 15) {
-          alert('La contraseña debe tener entre 12 y 15 caracteres.');
+          Swal.fire({
+            icon: 'warning',
+            title: 'Longitud inválida',
+            text: 'La contraseña debe tener entre 12 y 15 caracteres.',
+            confirmButtonColor: '#4cbab8'
+          });
           return false;
         }
+
         if (p1 !== p2) {
-          alert('Las contraseñas no coinciden.');
+          Swal.fire({
+            icon: 'error',
+            title: 'Las contraseñas no coinciden',
+            text: 'Asegúrate de haber ingresado la misma contraseña en ambos campos.',
+            confirmButtonColor: '#4cbab8'
+          });
           return false;
         }
+
         return true;
       }
     </script>
