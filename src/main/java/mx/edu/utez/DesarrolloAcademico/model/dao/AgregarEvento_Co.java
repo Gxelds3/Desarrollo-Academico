@@ -84,6 +84,7 @@ public class AgregarEvento_Co {
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
+
             }
         }
     }
@@ -372,7 +373,7 @@ public class AgregarEvento_Co {
         return null;
     }
 
-    public boolean actualizarEvento(agregarEvento_co evento) {
+    public boolean actualizarEvento(agregarEvento_co evento) throws Exception {
         boolean estado = false;
         Connection con = null;
         PreparedStatement psEvento = null;
@@ -409,8 +410,10 @@ public class AgregarEvento_Co {
             } catch (SQLException ex) {
                 ex.printStackTrace();
             }
+            // RELANZA LA EXCEPCIÓN PARA QUE LLEGUE AL SERVLET Y SWEETALERT PUEDA LEER EL MENSAJE
+            throw e;
         } finally {
-            //  IMPORTANTE: Devolver la conexión al pool
+            // IMPORTANTE: Devolver la conexión al pool
             try {
                 if (psEvento != null) psEvento.close();
                 if (con != null) {

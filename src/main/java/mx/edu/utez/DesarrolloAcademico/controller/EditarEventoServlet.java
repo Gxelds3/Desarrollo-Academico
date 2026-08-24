@@ -11,6 +11,7 @@ import mx.edu.utez.DesarrolloAcademico.model.dao.AgregarEvento_Co;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.SQLException;
 
 @WebServlet(name = "EditarEventoServlet", value = "/EditarEventoServlet")
 @MultipartConfig
@@ -35,10 +36,9 @@ public class EditarEventoServlet extends HttpServlet {
                 response.setStatus(HttpServletResponse.SC_NOT_FOUND);
                 out.write("{\"success\": false, \"message\": \"Evento no encontrado.\"}");
             } else {
-                // Obtener división del usuario en sesión
                 jakarta.servlet.http.HttpSession session = request.getSession(false);
-                int divisionParaLimite = evento.getIdDivision(); // fallback inicial
-                
+                int divisionParaLimite = evento.getIdDivision();
+
                 if (session != null && session.getAttribute("usuario") != null) {
                     mx.edu.utez.DesarrolloAcademico.model.Usuario u = (mx.edu.utez.DesarrolloAcademico.model.Usuario) session.getAttribute("usuario");
                     if (u.getIdDivision() != null && u.getIdDivision() > 0) {
@@ -46,13 +46,10 @@ public class EditarEventoServlet extends HttpServlet {
                     }
                 }
 
-
-
                 int divisionDelEvento = evento.getIdDivision();
-
                 String fechaLimite = dao.obtenerFechaLimitePorDivision(divisionDelEvento);
                 if (fechaLimite == null) {
-                    fechaLimite = evento.getFechaFin(); // fallback si no hay periodo configurado
+                    fechaLimite = evento.getFechaFin();
                 }
 
                 out.write("{"
@@ -78,7 +75,6 @@ public class EditarEventoServlet extends HttpServlet {
         out.flush();
     }
 
-    // Guarda los cambios del formulario de edición.
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
@@ -139,19 +135,41 @@ public class EditarEventoServlet extends HttpServlet {
             evento.setModalidad(modalidad);
 
             AgregarEvento_Co dao = new AgregarEvento_Co();
+
+            // Si actualizarEvento relanza SQLException, caerá directo al catch de abajo
             boolean exito = dao.actualizarEvento(evento);
 
             if (exito) {
                 out.write("{\"success\": true, \"message\": \"Evento actualizado correctamente.\"}");
             } else {
                 response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-                out.write("{\"success\": false, \"message\": \"No se pudo actualizar el evento.\"}");
+                out.write("{\"success\": false, \"message\": \"No se pudo actualizar el evento en la base de datos.\"}");
             }
+
         } catch (Exception e) {
             e.printStackTrace();
-            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            out.write("{\"success\": false, \"message\": \"Error inesperado en el servidor: " + e.getMessage() + "\"}");
+
+            // Responder con 200 OK para que Fetch/JS procese el JSON sin interrupciones por código de estado
+            response.setStatus(HttpServletResponse.SC_OK);
+
+            String mensajeError = "Error al actualizar el evento.";
+
+            Throwable causa = e;
+            while (causa.getCause() != null) {
+                causa = causa.getCause();
+            }
+
+            String msg = causa.getMessage() != null ? causa.getMessage() : e.getMessage();
+
+            if (msg != null && (msg.contains("ORA-12899") || msg.contains("12899"))) {
+                mensajeError = "No se pudo actualizar: El campo 'Descripción' o un texto excede el límite permitido de caracteres.";
+            } else if (msg != null) {
+                mensajeError = "No se pudo actualizar: " + msg;
+            }
+
+            out.write("{\"success\": false, \"message\": \"" + escapar(mensajeError) + "\"}");
         }
         out.flush();
     }
+
 }
