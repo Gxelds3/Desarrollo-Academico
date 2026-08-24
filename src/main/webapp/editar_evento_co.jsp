@@ -30,7 +30,7 @@
                 <input type="text" class="form-control" id="campoLugar" name="lugar" required oninput="this.value = this.value.replace(/[^a-zA-ZÃ¡Ã©Ã­Ã³ÃºÃÃ‰ÃÃ“ÃšÃ±Ã‘0-9\s.,-]/g, '')" maxlength="255">
             </div>
             <div class="col-md-4">
-                <label class="form-label text-muted">InstituciÃ³n / Empresa:</label>
+                <label class="form-label text-muted">Institución / Empresa:</label>
                 <input type="text" class="form-control" id="campoInstitucion" name="institucion" oninput="this.value = this.value.replace(/[^a-zA-ZÃ¡Ã©Ã­Ã³ÃºÃÃ‰ÃÃ“ÃšÃ±Ã‘0-9\s.,-]/g, '')" maxlength="255">
             </div>
         </div>
@@ -44,11 +44,11 @@
                     <option value="Diplomado">Diplomado</option>
                     <option value="Conferencia">Conferencia</option>
                     <option value="Curso">Curso</option>
-                    <option value="Certificacion">CertificaciÃ³n</option>
+                    <option value="Certificacion">Certificación</option>
                 </select>
             </div>
             <div class="col-md-8">
-                <label class="form-label text-muted">DescripciÃ³n del evento:</label>
+                <label class="form-label text-muted">Descripción del evento:</label>
                 <textarea class="form-control" id="campoDescripcion" name="descripcion" rows="3" oninput="this.value = this.value.replace(/[^a-zA-ZÃ¡Ã©Ã­Ã³ÃºÃÃ‰ÃÃ“ÃšÃ±Ã‘0-9\s.,]/g, '')" style="resize: vertical;"></textarea>
             </div>
         </div>
@@ -59,7 +59,7 @@
                 <input type="date" class="form-control" id="campoFechaInicio" name="fecha_inicio" required>
             </div>
             <div class="col-md-3">
-                <label class="form-label text-muted fw-semibold mb-2">Fecha de termino</label>
+                <label class="form-label text-muted fw-semibold mb-2">Fecha fin</label>
                 <input type="date" class="form-control" id="campoFechaFin" name="fecha_fin" required>
             </div>
             <div class="col-md-6 custom-checkbox ps-md-4">
