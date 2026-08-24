@@ -10,23 +10,33 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.http.Part;
 import mx.edu.utez.DesarrolloAcademico.model.Usuario;
 import mx.edu.utez.DesarrolloAcademico.model.dao.ConstanciaDao;
+import org.apache.tika.Tika;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.nio.file.Paths;
+import java.util.Map;
 
 @WebServlet(name = "SubirConstanciaServlet", value = "/SubirConstanciaServlet")
-
 @MultipartConfig(
-        fileSizeThreshold = 1024 * 1024 * 2, // 2MB (Límite para guardar en memoria RAM antes de disco)
-        maxFileSize = 1024 * 1024 * 25,      // 25MB (Tamaño máximo de un solo archivo)
-        maxRequestSize = 1024 * 1024 * 30    // 30MB (Tamaño máximo total de la petición HTTP)
+        fileSizeThreshold = 1024 * 1024 * 2, // 2MB
+        maxFileSize = 1024 * 1024 * 25,      // 25MB
+        maxRequestSize = 1024 * 1024 * 30    // 30MB
 )
 public class SubirConstanciaServlet extends HttpServlet {
 
-    // ID correspondiente a la división "General" en tu base de datos
     private static final int ID_DIVISION_GENERAL = 5;
+
+    // Instancia reutilizable e inmutable de Tika
+    private final Tika tika = new Tika();
+
+    // Mapeo de tipos MIME soportados a sus extensiones correspondientes
+    private static final Map<String, String> MIME_EXTENSION_MAP = Map.of(
+            "application/pdf", ".pdf",
+            "image/png", ".png",
+            "image/jpeg", ".jpg"
+    );
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -45,7 +55,7 @@ public class SubirConstanciaServlet extends HttpServlet {
 
         try {
             String idEventoStr = request.getParameter("idEvento");
-            String vigencia = request.getParameter("vigencia"); // "si" o "no"
+            String vigencia = request.getParameter("vigencia");
             String fechaVencimiento = request.getParameter("fechaVencimiento");
 
             if (idEventoStr == null || idEventoStr.trim().isEmpty()) {
@@ -60,11 +70,7 @@ public class SubirConstanciaServlet extends HttpServlet {
 
             ConstanciaDao dao = new ConstanciaDao();
 
-            // ------------------------------------------------------------------
-            // 1. VALIDACIÓN DE DOBLE PERIODO (GENERAL + DIVISIÓN DEL DOCENTE)
-            // ------------------------------------------------------------------
-
-            // A) Verificar periodo General (ID = 5)
+            // 1. VALIDACIÓN DE DOBLE PERIODO
             boolean periodoGeneralActivo = dao.esPeriodoActivo(ID_DIVISION_GENERAL);
             if (!periodoGeneralActivo) {
                 response.setStatus(HttpServletResponse.SC_OK);
@@ -73,11 +79,8 @@ public class SubirConstanciaServlet extends HttpServlet {
                 return;
             }
 
-            // B) Verificar periodo de la División específica del usuario
             if (usuario.getIdDivision() != null && usuario.getIdDivision() > 0) {
                 int idDivisionUsuario = usuario.getIdDivision();
-
-                // Si no es la misma ID general, validamos su división correspondiente
                 if (idDivisionUsuario != ID_DIVISION_GENERAL) {
                     boolean periodoDivisionActivo = dao.esPeriodoActivo(idDivisionUsuario);
                     if (!periodoDivisionActivo) {
@@ -94,11 +97,8 @@ public class SubirConstanciaServlet extends HttpServlet {
                 return;
             }
 
-            // ------------------------------------------------------------------
             // 2. VALIDAR ASIGNACIÓN AL EVENTO
-            // ------------------------------------------------------------------
             int idParticipante = dao.obtenerIdParticipante(idEvento, usuario.getIdUsuario());
-
             if (idParticipante == -1) {
                 response.setStatus(HttpServletResponse.SC_FORBIDDEN);
                 out.write("{\"success\": false, \"message\": \"No estás asignado a este evento.\"}");
@@ -106,9 +106,7 @@ public class SubirConstanciaServlet extends HttpServlet {
                 return;
             }
 
-            // ------------------------------------------------------------------
             // 3. VERIFICAR CONSTANCIA DUPLICADA
-            // ------------------------------------------------------------------
             if (dao.verificarConstanciaExistente(idParticipante)) {
                 response.setStatus(HttpServletResponse.SC_OK);
                 out.write("{\"success\": false, \"message\": \"Ya has subido una constancia para este evento.\"}");
@@ -117,9 +115,11 @@ public class SubirConstanciaServlet extends HttpServlet {
             }
 
             // ------------------------------------------------------------------
+            // 4. VALIDACIÓN DE ARCHIVO CON APACHE TIKA
+            // ------------------------------------------------------------------
             Part filePart = request.getPart("archivoPdf");
             if (filePart == null) {
-                filePart = request.getPart("archivo"); // Fallback por si el input se llama "archivo"
+                filePart = request.getPart("archivo");
             }
 
             if (filePart == null || filePart.getSize() == 0) {
@@ -129,51 +129,24 @@ public class SubirConstanciaServlet extends HttpServlet {
                 return;
             }
 
-            // A) Leer bytes completos en memoria
             byte[] contenidoArchivo;
             try (InputStream is = filePart.getInputStream()) {
                 contenidoArchivo = is.readAllBytes();
             }
 
-            // B) Verificar longitud mínima para leer la cabecera
-            if (contenidoArchivo.length < 4) {
-                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                out.write("{\"success\": false, \"message\": \"El archivo es inválido o está dañado.\"}");
-                out.flush();
-                return;
-            }
+            // Detección automática del MIME-type real mediante Apache Tika
+            String contentType = tika.detect(contenidoArchivo);
+            String extensionCorrecta = MIME_EXTENSION_MAP.get(contentType);
 
-            // C) Inspección directa de Magic Bytes
-            boolean esPdf = contenidoArchivo[0] == 0x25 && contenidoArchivo[1] == 0x50
-                    && contenidoArchivo[2] == 0x44 && contenidoArchivo[3] == 0x46; // %PDF
-
-            boolean esPng = (contenidoArchivo[0] & 0xFF) == 0x89 && contenidoArchivo[1] == 0x50
-                    && contenidoArchivo[2] == 0x4E && contenidoArchivo[3] == 0x47; // PNG
-
-            boolean esJpg = (contenidoArchivo[0] & 0xFF) == 0xFF && (contenidoArchivo[1] & 0xFF) == 0xD8
-                    && (contenidoArchivo[2] & 0xFF) == 0xFF; // JPEG/JPG
-
-            String contentType = null;
-            String extensionCorrecta = null;
-
-            if (esPdf) {
-                contentType = "application/pdf";
-                extensionCorrecta = ".pdf";
-            } else if (esPng) {
-                contentType = "image/png";
-                extensionCorrecta = ".png";
-            } else if (esJpg) {
-                contentType = "image/jpeg";
-                extensionCorrecta = ".jpg";
-            } else {
-                // Si el archivo no es un PDF, PNG o JPG binariamente (ej. un script .txt o .exe)
+            // Si el formato detectado no está dentro de la lista de permitidos
+            if (extensionCorrecta == null) {
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 out.write("{\"success\": false, \"message\": \"El contenido real del archivo no es un PDF, PNG o JPG válido.\"}");
                 out.flush();
                 return;
             }
 
-            // D) Generar nombre con la extensión REAL comprobada por firma
+            // Sanitización y armado del nombre de archivo seguro
             String originalName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
             String fileNameOnly = originalName.contains(".")
                     ? originalName.substring(0, originalName.lastIndexOf('.'))
@@ -181,9 +154,7 @@ public class SubirConstanciaServlet extends HttpServlet {
 
             String fileName = fileNameOnly + extensionCorrecta;
 
-            // ------------------------------------------------------------------
             // 5. GUARDAR EN BASE DE DATOS
-            // ------------------------------------------------------------------
             boolean exito = dao.guardarConstanciaCO(idParticipante, fileName, contenidoArchivo, contentType,
                     tieneVigencia, fechaVencimiento, usuario.getIdUsuario());
 
@@ -202,5 +173,4 @@ public class SubirConstanciaServlet extends HttpServlet {
             out.flush();
         }
     }
-
 }

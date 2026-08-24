@@ -20,6 +20,13 @@
     <dependencies>
         <!-- Pool de Conexiones HikariCP -->
 
+
+        <dependency>
+            <groupId>org.apache.tika</groupId>
+            <artifactId>tika-core</artifactId>
+            <version>2.9.2</version>
+        </dependency>
+
         <!-- Para proyectos con Java 8 -->
         <dependency>
             <groupId>com.zaxxer</groupId>
