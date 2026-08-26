@@ -167,35 +167,44 @@ if (form) {
             headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8' },
             body: datos.toString()
         })
-        .then(function(res) { return res.json().then(function(data) { return { ok: res.ok, data: data }; }); })
-        .then(function(resultado) {
-            clearInterval(timerCarga);
-            var el = document.getElementById('lblPorcentajeEditEvento');
-            if (el) el.textContent = '100%';
+            .then(function(res) {
+                return res.json().catch(function() {
+                    return { success: false, message: 'Respuesta inválida del servidor.' };
+                });
+            })
+            .then(function(data) {
+                clearInterval(timerCarga);
+                var el = document.getElementById('lblPorcentajeEditEvento');
+                if (el) el.textContent = '100%';
 
-            setTimeout(function() {
-                if (resultado.ok && resultado.data.success) {
-                    Swal.fire({
-                        icon: 'success',
-                        title: '¡Evento actualizado con éxito!',
-                        text: resultado.data.message || 'Los cambios se guardaron correctamente.',
-                        confirmButtonColor: '#00847b'
-                    }).then(function(r) {
-                        if (r.isConfirmed) {
-                            var esDesarrollador = window.location.pathname.indexOf('_de.jsp') !== -1;
-                            window.location.href = esDesarrollador ? 'gestion_eventos_de.jsp' : 'gestion_evento_co.jsp';
-                        }
-                    });
-                } else {
-                    Swal.fire({ icon: 'error', title: 'Error', text: resultado.data.message || 'No se pudo actualizar.', confirmButtonColor: '#00847b' });
-                }
-            }, 300);
-        })
-        .catch(function(err) {
-            clearInterval(timerCarga);
-            console.error(err);
-            Swal.fire({ icon: 'error', title: 'Error de conexión', text: 'No fue posible comunicarse con el servidor.', confirmButtonColor: '#00847b' });
-        });
+                setTimeout(function() {
+                    if (data && data.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: '¡Evento actualizado con éxito!',
+                            text: data.message || 'Los cambios se guardaron correctamente.',
+                            confirmButtonColor: '#00847b'
+                        }).then(function(r) {
+                            if (r.isConfirmed) {
+                                var esDesarrollador = window.location.pathname.indexOf('_de.jsp') !== -1;
+                                window.location.href = esDesarrollador ? 'gestion_eventos_de.jsp' : 'gestion_evento_co.jsp';
+                            }
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: (data && data.message) ? data.message : 'No se pudo actualizar.',
+                            confirmButtonColor: '#00847b'
+                        });
+                    }
+                }, 300);
+            })
+            .catch(function(err) {
+                clearInterval(timerCarga);
+                console.error(err);
+                Swal.fire({ icon: 'error', title: 'Error de conexión', text: 'No fue posible comunicarse con el servidor.', confirmButtonColor: '#00847b' });
+            });
     });
 }
 
@@ -256,17 +265,17 @@ function renderParticipantes(lista) {
         var rolSuffix = window.location.pathname.includes('_co.jsp') ? 'co' : 'de';
         tr.innerHTML =
             '<td>' +
-                '<div class="docente-name-container">' +
-                    '<div class="avatar-circle">' + iniciales + '</div>' +
-                    '<div class="docente-name">' + escHtml(getNombreCompleto(u)) + '</div>' +
-                '</div>' +
+            '<div class="docente-name-container">' +
+            '<div class="avatar-circle">' + iniciales + '</div>' +
+            '<div class="docente-name">' + escHtml(getNombreCompleto(u)) + '</div>' +
+            '</div>' +
             '</td>' +
             '<td>' + escHtml(userCorreo) + '</td>' +
             '<td><span class="badge" style="background-color:' + estadoColor + ';">' + estadoTexto + '</span></td>' +
             '<td style="white-space: nowrap;">' +
-                '<a href="' + contextPath + '/verDocente?id=' + userId + '" class="action-btn" title="Ver detalles"><i class="bi bi-eye"></i></a>' +
-                '<a href="' + contextPath + '/cargar_archivo_' + rolSuffix + '.jsp?id=' + idEvento + '&idUsuarioTarget=' + userId + '" class="action-btn" title="Subir archivo"><i class="bi bi-cloud-upload"></i></a>' +
-                '<a href="#" class="action-btn delete btn-remover-participante" data-id="' + userId + '" title="Remover del evento"><i class="bi bi-trash"></i></a>' +
+            '<a href="' + contextPath + '/verDocente?id=' + userId + '" class="action-btn" title="Ver detalles"><i class="bi bi-eye"></i></a>' +
+            '<a href="' + contextPath + '/cargar_archivo_' + rolSuffix + '.jsp?id=' + idEvento + '&idUsuarioTarget=' + userId + '" class="action-btn" title="Subir archivo"><i class="bi bi-cloud-upload"></i></a>' +
+            '<a href="#" class="action-btn delete btn-remover-participante" data-id="' + userId + '" title="Remover del evento"><i class="bi bi-trash"></i></a>' +
             '</td>';
         tbodyParticipantes.appendChild(tr);
     });
@@ -358,8 +367,8 @@ function renderBusquedaDocentes(filtro) {
     if (texto !== '') {
         resultados = noAsignados.filter(function(u) {
             return normString(getNombreCompleto(u)).indexOf(texto) !== -1 ||
-                   normString(getCorreoUsuario(u)).indexOf(texto) !== -1 ||
-                   normString(u.numeroEmpleado || '').indexOf(texto) !== -1;
+                normString(getCorreoUsuario(u)).indexOf(texto) !== -1 ||
+                normString(u.numeroEmpleado || '').indexOf(texto) !== -1;
         });
     }
 
@@ -377,7 +386,6 @@ function renderBusquedaDocentes(filtro) {
         var rol = u.rol || '';
         var rolDisplay = rol.charAt(0).toUpperCase() + rol.slice(1);
 
-        
         var isDeView = window.location.pathname.includes('_de.jsp') || document.getElementById('campoDivision') !== null;
         var tdDiv = isDeView ? '<td><span class="badge" style="background-color:#009e9e; color:white;">' + escHtml(getDivisionName(u.idDivision || u.division)) + '</span></td>' : '';
 
@@ -453,5 +461,4 @@ if (tbodyBusquedaDocentes) {
     });
 }
 
-// Iniciar
 cargarEvento();

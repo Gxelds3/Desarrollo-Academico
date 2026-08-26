@@ -51,7 +51,7 @@
 <main class="main-content">
     <div class="d-flex align-items-center mb-4" style="color: var(--teal-main);">
         <i class="bi bi-info-circle me-2 fs-5"></i>
-        <h3 class="page-title mb-0">DESARROLLADOR ACADÉMICO</h3>
+        <h3 class="page-title mb-0">COORDINADOR ACADÉMICO</h3>
     </div>
 
     <form id="formMiCuenta">

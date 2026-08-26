@@ -43,7 +43,7 @@
                 <input type="text" class="form-control" name="lugar" required oninput="this.value = this.value.replace(/[^a-zA-ZÃ¡Ã©Ã­Ã³ÃºÃÃ‰ÃÃ“ÃšÃ±Ã‘0-9\s.,-]/g, '')" maxlength="255">
             </div>
             <div class="col-md-4">
-                <label class="form-label">InstituciÃ³n / Empresa</label>
+                <label class="form-label">Institución / Empresa</label>
                 <input type="text" class="form-control" name="institucion" oninput="this.value = this.value.replace(/[^a-zA-ZÃ¡Ã©Ã­Ã³ÃºÃÃ‰ÃÃ“ÃšÃ±Ã‘0-9\s.,-]/g, '')" maxlength="255">
             </div>
         </div>
@@ -52,16 +52,16 @@
             <div class="col-md-4">
                 <label class="form-label">Tipo de evento <span class="text-danger">*</span></label>
                 <select class="form-select" name="tipo" required>
-                    <option value="" disabled selected>Selecciona una opciÃ³n</option>
+                    <option value="" disabled selected>Selecciona una opción</option>
                     <option value="Diplomado">Diplomado</option>
                     <option value="Conferencia">Conferencia</option>
                     <option value="Taller">Taller</option>
                     <option value="Curso">Curso</option>
-                    <option value="Certificacion">CertificaciÃ³n</option>
+                    <option value="Certificacion">Certificación</option>
                 </select>
             </div>
             <div class="col-md-8">
-                <label class="form-label text-muted">DescripciÃ³n del evento:</label>
+                <label class="form-label text-muted">Descripción del evento:</label>
                 <textarea class="form-control" id="descripcion" name="descripcion" rows="3" required oninput="this.value = this.value.replace(/[^a-zA-ZÃ¡Ã©Ã­Ã³ÃºÃÃ‰ÃÃ“ÃšÃ±Ã‘0-9\s.,]/g, '')" style="resize: vertical;"></textarea>
             </div>
         </div>
@@ -78,7 +78,7 @@
             <div class="col-md-6">
                 <label class="form-label">Modalidad <span class="text-danger">*</span></label>
                 <select class="form-select" name="modalidad" required>
-                    <option value="" disabled selected>Selecciona una opciÃ³n</option>
+                    <option value="" disabled selected>Selecciona una opción</option>
                     <option value="presencial">Presencial</option>
                     <option value="virtual">Virtual</option>
                     <option value="mixto">Mixta</option>

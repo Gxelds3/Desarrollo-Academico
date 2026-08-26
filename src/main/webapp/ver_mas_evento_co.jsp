@@ -64,7 +64,7 @@
             <input type="text" class="form-control" id="campoFechaInicio" value="" readonly>
         </div>
         <div class="col-md-2">
-            <label class="form-label text-muted">Fecha de fin:</label>
+            <label class="form-label text-muted">Fecha fin:</label>
             <input type="text" class="form-control" id="campoFechaFin" value="" readonly>
         </div>
         <div class="col-md-2 mt-3 mt-md-0 d-flex flex-column justify-content-center">
@@ -75,7 +75,7 @@
             <div class="info-card-outline h-100 d-flex flex-column justify-content-center align-items-center text-center">
                 <div class="d-flex align-items-center mb-1">
                     <div class="info-card-icon"><i class="bi bi-clock"></i></div>
-                    <span class="fw-bold text-teal" style="color: var(--teal-main);">Fecha limite de entrega</span>
+                    <span class="fw-bold text-teal" style="color: var(--teal-main);">Fecha límite de entrega</span>
                 </div>
                 <div class="text-dark fw-semibold" id="fechaLimiteTexto">-</div>
                 <div class="badge-light-green" id="diasRestantesBadge">Calculando...</div>

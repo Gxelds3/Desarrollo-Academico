@@ -23,7 +23,7 @@
         <div class="sidebar-icon">
             <i class="bi bi-calendar-event"></i>
         </div>
-        <span class="sidebar-text">Eventos Proximos</span>
+        <span class="sidebar-text">Eventos Próximos</span>
     </a>
 
     <a href="mi_evento_do.jsp" class="sidebar-item ${param.active == 'mis_eventos' ? 'active' : ''}">
@@ -44,6 +44,6 @@
         <div class="sidebar-icon">
             <i class="bi bi-box-arrow-left"></i>
         </div>
-        <span class="sidebar-text">Cerrar sesion</span>
+        <span class="sidebar-text">Cerrar sesión</span>
     </a>
 </nav>

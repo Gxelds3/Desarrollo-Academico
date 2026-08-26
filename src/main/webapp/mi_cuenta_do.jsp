@@ -51,7 +51,7 @@
 <main class="main-content">
     <div class="d-flex align-items-center mb-4" style="color: var(--teal-main);">
         <i class="bi bi-info-circle me-2 fs-5"></i>
-        <h3 class="page-title mb-0">DESARROLLADOR ACADÉMICO</h3>
+        <h3 class="page-title mb-0">DOCENTE</h3>
     </div>
 
     <form id="formMiCuenta">
@@ -81,7 +81,7 @@
             </div>
             <div class="col-md-4">
                 <label class="form-label text-muted">Número de Empleado:</label>
-                <input type="text" name="numero_empleado" class="form-control" value="<%= u.getNumeroEmpleado() %>" maxlength="5" minlength="1" pattern="\d{1,5}" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 5)">" readonly>
+                <input type="text" name="numero_empleado" class="form-control" value="<%= u.getNumeroEmpleado() %>" maxlength="5" minlength="1" pattern="\d{1,5}" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 5)" readonly>
             </div>
             <div class="col-md-4">
                 <label class="form-label text-muted">Teléfono:</label>

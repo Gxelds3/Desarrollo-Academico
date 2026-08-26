@@ -202,6 +202,6 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="assets/js/coordinador.js" charset="UTF-8"></script>
 <script>window.contextPath = '<%= request.getContextPath() %>';</script>
-<script src="assets/js/CargarArchivodo.js" charset="UTF-8"> </script>
+<script src="assets/js/CargarArchivoCo.js" charset="UTF-8"> </script>
 </body>
 </html>

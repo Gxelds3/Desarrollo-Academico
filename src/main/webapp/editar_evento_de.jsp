@@ -69,7 +69,7 @@
                 <input type="date" class="form-control" id="campoFechaInicio" name="fecha_inicio" required>
             </div>
             <div class="col-md-3">
-                <label class="form-label text-muted fw-semibold mb-2">Fecha de termino</label>
+                <label class="form-label text-muted fw-semibold mb-2">Fecha de fin</label>
                 <input type="date" class="form-control" id="campoFechaFin" name="fecha_fin" required>
             </div>
             <div class="col-md-6 custom-checkbox ps-md-4">

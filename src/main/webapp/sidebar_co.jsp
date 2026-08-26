@@ -15,7 +15,7 @@
         <div class="sidebar-avatar"></div>
         <div class="sidebar-info text-white">
             <div class="fw-semibold mb-1"><%= nombreSidebar %></div>
-            <div class="small" style="color: rgba(255,255,255,0.85);">Coordinador Academico</div>
+            <div class="small" style="color: rgba(255,255,255,0.85);">Coordinador Académico</div>
         </div>
     </div>
 
