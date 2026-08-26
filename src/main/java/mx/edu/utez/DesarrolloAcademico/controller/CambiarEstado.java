@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 /**
- * Controlador (servlet) que gestiona la lógica de 'CambiarEstado' en la capa de presentación del patrón MVC.
+ * Controlador (servlet) que gestiona la lógica de 'CambiarEstado'.
  * @author Carlos Apreza Gutierrez
  * @since 2026-08-07
  */

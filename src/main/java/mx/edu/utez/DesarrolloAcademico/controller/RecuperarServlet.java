@@ -14,7 +14,7 @@ import java.io.IOException;
 import java.security.SecureRandom;
 
 /**
- * Servlet controlador que atiende las peticiones HTTP relacionadas con 'Recuperar' dentro de la arquitectura MVC del proyecto.
+ * Servlet controlador que atiende las peticiones HTTP relacionadas con 'Recuperar'.
  * @author Gael Itzaya Velez Reyez
  * @since 2026-07-16
  */

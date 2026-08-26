@@ -16,7 +16,7 @@ import java.text.SimpleDateFormat;
 import java.util.Map;
 
 /**
- * Servlet controlador que atiende las peticiones HTTP relacionadas con 'ObtenerConstancia' dentro de la arquitectura MVC del proyecto.
+ * Servlet controlador que atiende las peticiones HTTP relacionadas con 'ObtenerConstancia'.
  * @author Gael Itzaya Velez Reyez
  * @since 2026-08-02
  */

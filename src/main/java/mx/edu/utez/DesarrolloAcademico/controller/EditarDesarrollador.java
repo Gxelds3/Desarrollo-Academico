@@ -13,7 +13,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 /**
- * Controlador (servlet) que gestiona la lógica de 'EditarDesarrollador' en la capa de presentación del patrón MVC.
+ * Controlador (servlet) que gestiona la lógica de 'EditarDesarrollador'.
  * @author Carlos Apreza Gutierrez
  * @since 2026-07-31
  */

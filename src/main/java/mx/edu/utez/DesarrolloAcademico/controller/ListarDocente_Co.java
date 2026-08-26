@@ -16,7 +16,7 @@ import java.util.List;
 
 // Regresa en JSON los docentes pertenecientes a la división del coordinador autenticado
 /**
- * Controlador (servlet) que gestiona la lógica de 'ListarDocente_Co' en la capa de presentación del patrón MVC.
+ * Controlador (servlet) que gestiona la lógica de 'ListarDocente_Co'.
  * @author Carlos Apreza Gutierrez
  * @since 2026-07-31
  */

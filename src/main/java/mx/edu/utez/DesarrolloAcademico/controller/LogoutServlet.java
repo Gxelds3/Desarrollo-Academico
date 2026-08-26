@@ -10,7 +10,7 @@ import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 
 /**
- * Servlet controlador que atiende las peticiones HTTP relacionadas con 'Logout' dentro de la arquitectura MVC del proyecto.
+ * Servlet controlador que atiende las peticiones HTTP relacionadas con 'Logout' .
  * @author Ángel Gael Flores Ronces
  * @since 2026-06-30
  */

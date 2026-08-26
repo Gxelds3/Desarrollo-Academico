@@ -16,9 +16,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 /**
- * Servlet que sirve el archivo (BLOB) de una constancia directamente desde Oracle.
- * Reemplaza el acceso a archivos locales.
- * URL: /DescargarConstanciaServlet?idConstancia=X
+ * Servlet que sirve el archivo de una constancia directamente desde Oracle.
  * @author Gael Itzaya Velez Reyez
  * @since 2026-08-10
  */

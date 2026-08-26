@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"mx.edu.utez.DesarrolloAcademico"},{"l":"mx.edu.utez.DesarrolloAcademico.controller"},{"l":"mx.edu.utez.DesarrolloAcademico.filters"},{"l":"mx.edu.utez.DesarrolloAcademico.model"},{"l":"mx.edu.utez.DesarrolloAcademico.model.dao"},{"l":"mx.edu.utez.DesarrolloAcademico.utils"}];updateSearchResults();

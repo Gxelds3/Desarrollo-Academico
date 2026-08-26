@@ -14,7 +14,7 @@ import java.io.PrintWriter;
 
 
 /**
- * Controlador (servlet) que gestiona la lógica de 'EliminarDesarrollador' en la capa de presentación del patrón MVC.
+ * Controlador (servlet) que gestiona la lógica de 'EliminarDesarrollador' e.
  * @author Carlos Apreza Gutierrez
  * @since 2026-07-31
  */

@@ -25,7 +25,7 @@ import java.nio.file.Paths;
 
 )
 /**
- * Controlador (servlet) que gestiona la lógica de 'SubirConstanciaServlet1' en la capa de presentación del patrón MVC.
+ * Controlador (servlet) que gestiona la lógica de 'SubirConstanciaServlet1'.
  * @author Gael Itzaya Velez Reyez
  * @since 2026-08-02
  */

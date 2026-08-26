@@ -11,7 +11,7 @@ import mx.edu.utez.DesarrolloAcademico.model.dao.UsuarioDao;
 import java.io.IOException;
 
 /**
- * Servlet controlador que atiende las peticiones HTTP relacionadas con 'Registro' dentro de la arquitectura MVC del proyecto.
+ * Servlet controlador que atiende las peticiones HTTP relacionadas con 'Registro'.
  * @author Gael Itzaya Velez Reyez
  * @since 2026-08-02
  */

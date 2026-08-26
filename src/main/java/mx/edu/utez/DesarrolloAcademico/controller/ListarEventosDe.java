@@ -14,7 +14,7 @@ import java.io.PrintWriter;
 import java.util.List;
 
 /**
- * Controlador (servlet) que gestiona la lógica de 'ListarEventosDe' en la capa de presentación del patrón MVC.
+ * Controlador (servlet) que gestiona la lógica de 'ListarEventosDe".
  * @author Carlos Apreza Gutierrez
  * @since 2026-08-16
  */

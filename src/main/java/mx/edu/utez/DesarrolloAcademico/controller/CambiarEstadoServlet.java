@@ -12,7 +12,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 /**
- * Servlet controlador que atiende las peticiones HTTP relacionadas con 'CambiarEstado' dentro de la arquitectura MVC del proyecto.
+ * Servlet controlador que atiende las peticiones HTTP relacionadas con 'CambiarEstado'.
  * @author Carlos Apreza Gutierrez
  * @since 2026-08-07
  */

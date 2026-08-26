@@ -15,7 +15,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 /**
- * Servlet controlador que atiende las peticiones HTTP relacionadas con 'EliminarEvento' dentro de la arquitectura MVC del proyecto.
+ * Servlet controlador que atiende las peticiones HTTP relacionadas con 'EliminarEvento'.
  * @author Carlos Apreza Gutierrez
  * @since 2026-07-29
  */

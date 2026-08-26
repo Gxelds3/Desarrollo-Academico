@@ -12,7 +12,7 @@ import java.io.IOException;
 
 
 /**
- * Controlador (servlet) que gestiona la lógica de 'VerDesarrollador' en la capa de presentación del patrón MVC.
+ * Controlador (servlet) que gestiona la lógica de 'VerDesarrollador.
  * @author Carlos Apreza Gutierrez
  * @since 2026-08-07
  */

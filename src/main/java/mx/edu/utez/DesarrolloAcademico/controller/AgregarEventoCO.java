@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Controlador (servlet) que gestiona la lógica de 'AgregarEventoCO' en la capa de presentación del patrón MVC.
+ * Controlador (servlet) que gestiona la lógica de 'AgregarEventoCO'.
  * @author Carlos Apreza Gutierrez
  * @since 2026-07-29
  */

@@ -13,7 +13,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 /**
- * Servlet controlador que atiende las peticiones HTTP relacionadas con 'EditarEvento' dentro de la arquitectura MVC del proyecto.
+ * Servlet controlador que atiende las peticiones HTTP relacionadas con 'EditarEvento' .
  * @author Carlos Apreza Gutierrez
  * @since 2026-07-30
  */

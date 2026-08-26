@@ -11,7 +11,7 @@ import mx.edu.utez.DesarrolloAcademico.model.dao.UsuarioListaDao;
 import java.io.IOException;
 
 /**
- * Servlet controlador que atiende las peticiones HTTP relacionadas con 'EliminarPeriodo' dentro de la arquitectura MVC del proyecto.
+ * Servlet controlador que atiende las peticiones HTTP relacionadas con 'EliminarPeriodo'.
  * @author Carlos Apreza Gutierrez
  * @since 2026-08-07
  */

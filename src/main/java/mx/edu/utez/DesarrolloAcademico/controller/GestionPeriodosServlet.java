@@ -13,7 +13,7 @@ import java.io.IOException;
 import java.util.List;
 
 /**
- * Servlet controlador que atiende las peticiones HTTP relacionadas con 'GestionPeriodos' dentro de la arquitectura MVC del proyecto.
+ * Servlet controlador que atiende las peticiones HTTP relacionadas con 'GestionPeriodos' .
  * @author Carlos Apreza Gutierrez
  * @since 2026-08-07
  */

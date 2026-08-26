@@ -24,7 +24,7 @@ import java.nio.file.Paths;
         maxRequestSize = 1024 * 1024 * 30    // 30MB (Tamaño máximo total de la petición HTTP)
 )
 /**
- * Servlet controlador que atiende las peticiones HTTP relacionadas con 'SubirConstancia' dentro de la arquitectura MVC del proyecto.
+ * Servlet controlador que atiende las peticiones HTTP relacionadas con 'SubirConstancia'.
  * @author Gael Itzaya Velez Reyez
  * @since 2026-08-02
  */

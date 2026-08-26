@@ -15,7 +15,7 @@ import java.util.List;
 // Regresa en JSON a todos los usuarios con rol 'docente', para la tabla
 // de "Gestión de Docentes" (gestion_docentes.jsp).
 /**
- * Controlador (servlet) que gestiona la lógica de 'ListarDocente' en la capa de presentación del patrón MVC.
+ * Controlador (servlet) que gestiona la lógica de 'ListarDocente'.
  * @author Carlos Apreza Gutierrez
  * @since 2026-07-31
  */

@@ -16,7 +16,7 @@ import java.util.List;
 
 
 /**
- * Controlador (servlet) que gestiona la lógica de 'MisEventosCo' en la capa de presentación del patrón MVC.
+ * Controlador (servlet) que gestiona la lógica de 'MisEventosCo'.
  * @author Gael Itzaya Velez Reyez
  * @since 2026-08-02
  */

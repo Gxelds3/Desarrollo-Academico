@@ -16,7 +16,7 @@ import java.sql.ResultSet;
 import mx.edu.utez.DesarrolloAcademico.utils.DatabaseConnection;
 
 /**
- * Servlet controlador que atiende las peticiones HTTP relacionadas con 'Login' dentro de la arquitectura MVC del proyecto.
+ * Servlet controlador que atiende las peticiones HTTP relacionadas con 'Login'.
  * @author Gael Itzaya Velez Reyez
  * @since 2026-07-27
  */

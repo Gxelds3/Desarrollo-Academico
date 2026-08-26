@@ -14,7 +14,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 /**
- * Servlet controlador que atiende las peticiones HTTP relacionadas con 'CancelarConstancia' dentro de la arquitectura MVC del proyecto.
+ * Servlet controlador que atiende las peticiones HTTP relacionadas con 'CancelarConstancia' .
  * @author Gael Itzaya Velez Reyez
  * @since 2026-08-02
  */

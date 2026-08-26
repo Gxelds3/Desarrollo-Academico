@@ -6,7 +6,7 @@ import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
 
 /**
- * Servlet de prueba/plantilla generado por defecto, usado para verificar que el servidor de aplicaciones responde correctamente.
+ * Servlet de prueba generado por defecto.
  * @author Ángel Gael Flores Ronces
  * @since 2026-06-29
  */

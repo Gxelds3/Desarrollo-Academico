@@ -18,7 +18,7 @@ import java.util.List;
 // Regresa en JSON a todos los usuarios con rol 'desarrollo', para la tabla
 // de "Gestión de Desarrolladores" (gestion_desarrolladores_de.jsp).
 /**
- * Controlador (servlet) que gestiona la lógica de 'ListarDesarrollador' en la capa de presentación del patrón MVC.
+ * Controlador (servlet) que gestiona la lógica de 'ListarDesarrollador' .
  * @author Carlos Apreza Gutierrez
  * @since 2026-07-31
  */
