@@ -9,11 +9,23 @@ import mx.edu.utez.DesarrolloAcademico.model.Usuario;
 import mx.edu.utez.DesarrolloAcademico.model.dao.AgregarDesarrollador_Dao;
 
 
+    /**
+     * Servlet controlador que atiende las peticiones HTTP relacionadas con 'AgregarDesarrollador' dentro de la arquitectura MVC del proyecto.
+     * @author Carlos Apreza Gutierrez
+     * @since 2026-07-31
+     */
     @WebServlet(name = "AgregarDesarrolladorServlet", value = "/AgregarDesarrolladorServlet")
 
     @MultipartConfig
     public class AgregarDesarrolladorServlet extends HttpServlet {
 
+        /**
+         * Maneja las peticiones HTTP POST recibidas por este servlet.
+         * @param request Objeto de la petición HTTP entrante.
+         * @param response Objeto de la respuesta HTTP a generar.
+         * @throws ServletException Si ocurre un error al procesar la petición dentro del servlet.
+         * @throws IOException Si ocurre un error de entrada/salida al leer o escribir la petición/respuesta.
+         */
         @Override
         protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
             request.setCharacterEncoding("UTF-8");

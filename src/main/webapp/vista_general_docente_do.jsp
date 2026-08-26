@@ -1,3 +1,11 @@
+<%--
+  Vista: vista_general_docente_do.jsp
+  Rol: Docente
+  Descripción: Panel principal (dashboard) del rol Docente tras iniciar sesión.
+  Espera en sesión: usuario
+  Incluye los fragmentos: sidebar_do.jsp
+  Scripts propios: assets/js/coordinador.js
+--%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="mx.edu.utez.DesarrolloAcademico.model.dao.UsuarioListaDao" %>
 <%@ page import="mx.edu.utez.DesarrolloAcademico.model.dao.UsuarioDao" %>
@@ -35,6 +43,7 @@
 </head>
 <body>
 
+<%-- Fragmento incluido: sidebar_do.jsp --%>
 <jsp:include page="sidebar_do.jsp">
     <jsp:param name="active" value="vista_general" />
 </jsp:include>

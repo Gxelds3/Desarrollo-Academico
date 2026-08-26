@@ -14,11 +14,23 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
+/**
+ * Servlet controlador que atiende las peticiones HTTP relacionadas con 'EliminarEvento' dentro de la arquitectura MVC del proyecto.
+ * @author Carlos Apreza Gutierrez
+ * @since 2026-07-29
+ */
 @WebServlet(name = "EliminarEventoServlet", value = "/EliminarEventoServlet")
 @MultipartConfig
 
 public class EliminarEventoServlet extends HttpServlet {
 
+    /**
+     * Maneja las peticiones HTTP POST recibidas por este servlet.
+     * @param request Objeto de la petición HTTP entrante.
+     * @param response Objeto de la respuesta HTTP a generar.
+     * @throws ServletException Si ocurre un error al procesar la petición dentro del servlet.
+     * @throws IOException Si ocurre un error de entrada/salida al leer o escribir la petición/respuesta.
+     */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
@@ -48,6 +60,11 @@ public class EliminarEventoServlet extends HttpServlet {
         out.flush();
     }
 
+    /**
+     * Elimina de forma permanente el registro indicado de la base de datos.
+     * @param idEvento Identificador del evento.
+     * @return `true` si la operación fue exitosa o la condición se cumple; `false` en caso contrario.
+     */
     public boolean eliminarEvento(int idEvento) {
         boolean estado = false;
         Connection con = null;

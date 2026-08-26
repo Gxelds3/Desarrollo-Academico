@@ -10,8 +10,18 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Clase de acceso a datos (DAO) encargada de las operaciones CRUD sobre la base de datos relacionadas con la entidad correspondiente a 'AgregarDesarrollador_Dao'.
+ * @author Carlos Apreza Gutierrez
+ * @since 2026-07-31
+ */
 public class AgregarDesarrollador_Dao {
 
+    /**
+     * Registra un nuevo registro en la base de datos con los datos recibidos.
+     * @param usuario Objeto Usuario con los datos a utilizar.
+     * @return `true` si la operación fue exitosa o la condición se cumple; `false` en caso contrario.
+     */
     public boolean registrarDesarrollador(Usuario usuario) {
         boolean estado = false;
         String query = "INSERT INTO usuario " +
@@ -50,6 +60,12 @@ public class AgregarDesarrollador_Dao {
         return estado;
     }
 
+    /**
+     * Verifica si el registro indicado ya existe en la base de datos.
+     * @param correo Correo electrónico.
+     * @param numeroEmpleado Número de empleado institucional.
+     * @return `true` si la operación fue exitosa o la condición se cumple; `false` en caso contrario.
+     */
     public boolean existeCorreoOEmpleado(String correo, String numeroEmpleado) {
         boolean existe = false;
         String query = "SELECT COUNT(*) FROM usuario WHERE correo_institucional = ? OR numero_empleado = ?";
@@ -74,6 +90,13 @@ public class AgregarDesarrollador_Dao {
         return existe;
     }
 
+    /**
+     * Verifica si el registro indicado ya existe en la base de datos.
+     * @param correo Correo electrónico.
+     * @param numeroEmpleado Número de empleado institucional.
+     * @param idUsuario Identificador único del usuario.
+     * @return `true` si la operación fue exitosa o la condición se cumple; `false` en caso contrario.
+     */
     public boolean existeCorreoOEmpleadoExcluyendo(String correo, String numeroEmpleado, int idUsuario) {
         boolean existe = false;
         String query = "SELECT COUNT(*) FROM usuario WHERE (correo_institucional = ? OR numero_empleado = ?) AND id_usuario <> ?";
@@ -99,6 +122,11 @@ public class AgregarDesarrollador_Dao {
         return existe;
     }
 
+    /**
+     * Obtiene y devuelve el dato solicitado.
+     * @param idUsuario Identificador único del usuario.
+     * @return Objeto Usuario encontrado, o `null` si no existe.
+     */
     public Usuario obtenerPorId(int idUsuario) {
         Usuario usuario = null;
         String query = "SELECT * FROM usuario WHERE id_usuario = ? AND rol = 'desarrollo'";
@@ -138,6 +166,13 @@ public class AgregarDesarrollador_Dao {
         return usuario;
     }
 
+    /**
+     * Actualiza en la base de datos el registro indicado con los nuevos datos recibidos.
+     * @param usuario Objeto Usuario con los datos a utilizar.
+     * @param nuevaContrasena Parámetro `nuevaContrasena`.
+     * @return `true` si la operación fue exitosa o la condición se cumple; `false` en caso contrario.
+     * @throws Exception Si ocurre un error durante la ejecución del método.
+     */
     public boolean actualizarDesarrollador(Usuario usuario, String nuevaContrasena) throws Exception {
         boolean estado = false;
         Connection con = null;
@@ -224,6 +259,10 @@ public class AgregarDesarrollador_Dao {
         return estado;
     }
 
+    /**
+     * Consulta y devuelve la lista de registros solicitada.
+     * @return Lista con los registros obtenidos (vacía si no hay resultados).
+     */
     public List<Usuario> listarDesarrolladores() {
         List<Usuario> lista = new ArrayList<>();
         String query = "SELECT * FROM usuario WHERE rol = 'desarrollo' ORDER BY id_usuario DESC";
@@ -262,6 +301,12 @@ public class AgregarDesarrollador_Dao {
         return lista;
     }
 
+    /**
+     * Cambia el estado (activo/inactivo u otro) del registro indicado en la base de datos.
+     * @param idUsuario Identificador único del usuario.
+     * @param nuevoEstado Nuevo valor de estado a asignar.
+     * @return `true` si la operación fue exitosa o la condición se cumple; `false` en caso contrario.
+     */
     public boolean cambiarEstado(int idUsuario, int nuevoEstado) {
         String query = "UPDATE usuario SET activo = ? WHERE id_usuario = ?";
 
@@ -280,6 +325,12 @@ public class AgregarDesarrollador_Dao {
         return false;
     }
 
+    /**
+     * Valida los datos recibidos según las reglas de negocio definidas.
+     * @param idUsuario Identificador único del usuario.
+     * @param passActualIngresada Parámetro `passActualIngresada`.
+     * @return `true` si la operación fue exitosa o la condición se cumple; `false` en caso contrario.
+     */
     public boolean validarContrasenaActual(int idUsuario, String passActualIngresada) {
         String sql = "SELECT contrasena FROM usuario WHERE id_usuario = ?";
 

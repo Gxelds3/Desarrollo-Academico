@@ -1,3 +1,10 @@
+<%--
+  Vista: cargar_archivo_do.jsp
+  Rol: Docente
+  Descripción: Vista para cargar/entregar la constancia (PDF) de un evento dentro del periodo de carga vigente.
+  Incluye los fragmentos: sidebar_do.jsp
+  Scripts propios: assets/js/coordinador.js, assets/js/CargarArchivodo.js
+--%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!doctype html>
 <html lang="es">
@@ -39,6 +46,7 @@
 </head>
 <body>
 
+<%-- Fragmento incluido: sidebar_do.jsp --%>
 <jsp:include page="sidebar_do.jsp">
     <jsp:param name="active" value="mis_eventos" />
 </jsp:include>

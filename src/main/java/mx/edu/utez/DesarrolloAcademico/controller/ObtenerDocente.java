@@ -11,6 +11,11 @@ import mx.edu.utez.DesarrolloAcademico.model.dao.UsuarioDao;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+/**
+ * Controlador (servlet) que gestiona la lógica de 'ObtenerDocente' en la capa de presentación del patrón MVC.
+ * @author Carlos Apreza Gutierrez
+ * @since 2026-08-07
+ */
 @WebServlet(name = "ObtenerDocente", value = "/ObtenerDocente")
 public class ObtenerDocente extends HttpServlet {
 
@@ -59,6 +64,11 @@ public class ObtenerDocente extends HttpServlet {
         }
     }
 
+    /**
+     * Método auxiliar de la clase.
+     * @param texto Parámetro `texto`.
+     * @return Cadena de texto resultante.
+     */
     private String escape(String texto) {
         if (texto == null) return "";
         return texto.replace("\\", "\\\\").replace("\"", "\\\"");

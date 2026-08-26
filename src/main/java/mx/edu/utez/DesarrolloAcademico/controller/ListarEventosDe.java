@@ -13,6 +13,11 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
 
+/**
+ * Controlador (servlet) que gestiona la lógica de 'ListarEventosDe' en la capa de presentación del patrón MVC.
+ * @author Carlos Apreza Gutierrez
+ * @since 2026-08-16
+ */
 @WebServlet(name = "ListarEventosDe", value = "/ListarEventosDe")
 public class ListarEventosDe extends HttpServlet {
 
@@ -56,6 +61,11 @@ public class ListarEventosDe extends HttpServlet {
         }
     }
 
+    /**
+     * Método auxiliar de la clase.
+     * @param v Parámetro `v`.
+     * @return Cadena de texto resultante.
+     */
     private String esc(String v) {
         if (v == null) return "";
         return v.replace("\\", "\\\\").replace("\"", "\\\"");

@@ -11,9 +11,21 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
 
+/**
+ * Servlet controlador que atiende las peticiones HTTP relacionadas con 'ListarEventos' dentro de la arquitectura MVC del proyecto.
+ * @author Carlos Apreza Gutierrez
+ * @since 2026-07-29
+ */
 @WebServlet(name = "ListarEventosServlet", value = "/ListarEventosServlet")
 public class ListarEventosServlet extends HttpServlet {
 
+    /**
+     * Maneja las peticiones HTTP GET recibidas por este servlet.
+     * @param request Objeto de la petición HTTP entrante.
+     * @param response Objeto de la respuesta HTTP a generar.
+     * @throws ServletException Si ocurre un error al procesar la petición dentro del servlet.
+     * @throws IOException Si ocurre un error de entrada/salida al leer o escribir la petición/respuesta.
+     */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("application/json;charset=UTF-8");
@@ -71,6 +83,11 @@ public class ListarEventosServlet extends HttpServlet {
         out.flush();
     }
 
+    /**
+     * Método auxiliar de la clase.
+     * @param valor Parámetro `valor`.
+     * @return Cadena de texto resultante.
+     */
     private String escapar(String valor) {
         if (valor == null) return "";
         return valor.replace("\\", "\\\\")

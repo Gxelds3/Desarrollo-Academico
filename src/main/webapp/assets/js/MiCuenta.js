@@ -1,3 +1,9 @@
+/**
+ * MiCuenta.js
+ *
+ * Lógica de la vista 'Mi cuenta': validación y envío de los cambios de datos personales del usuario en sesión.
+ */
+
 const contextPath = window.contextPath || '';
 const formMiCuenta = document.getElementById('formMiCuenta');
 
@@ -7,6 +13,11 @@ document.addEventListener("DOMContentLoaded", () => {
     // -------------------------------------------------------------------------
     // 1. RESTRICCIÓN EN TIEMPO REAL: Solo números y máximo 10 dígitos en Teléfono
     // -------------------------------------------------------------------------
+    /**
+     * Handler del evento 'input' del campo Teléfono: filtra en tiempo real
+     * cualquier carácter que no sea un dígito numérico.
+     * @param {InputEvent} e
+     */
     if (inputTelefono) {
         inputTelefono.addEventListener('input', (e) => {
             // Elimina inmediatamente cualquier caracter que no sea número (0-9)
@@ -17,6 +28,13 @@ document.addEventListener("DOMContentLoaded", () => {
     // -------------------------------------------------------------------------
     // 2. ENVÍO DEL FORMULARIO Y VALIDACIONES
     // -------------------------------------------------------------------------
+    /**
+     * Handler del evento 'submit' del formulario Mi Cuenta.
+     * Valida contraseña actual, teléfono y, si aplica, la nueva contraseña;
+     * luego envía los datos (FormData) por POST a ActualizarMiCuentaServlet
+     * mostrando una barra de progreso simulada y el resultado con SweetAlert2.
+     * @param {SubmitEvent} e
+     */
     if (formMiCuenta) {
         formMiCuenta.addEventListener('submit', function (e) {
             e.preventDefault();

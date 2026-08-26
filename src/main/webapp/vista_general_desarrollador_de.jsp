@@ -1,3 +1,10 @@
+<%--
+  Vista: vista_general_desarrollador_de.jsp
+  Rol: Desarrollador
+  Descripción: Panel principal (dashboard) del rol Desarrollador tras iniciar sesión.
+  Incluye los fragmentos: sidebar_de.jsp
+  Scripts propios: assets/js/coordinador.js
+--%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="mx.edu.utez.DesarrolloAcademico.model.dao.UsuarioListaDao" %>
 <%@ page import="mx.edu.utez.DesarrolloAcademico.model.dao.UsuarioDao" %>
@@ -28,6 +35,7 @@
 </head>
 <body>
 
+<%-- Fragmento incluido: sidebar_de.jsp --%>
 <jsp:include page="sidebar_de.jsp">
     <jsp:param name="active" value="eventos" />
 </jsp:include>

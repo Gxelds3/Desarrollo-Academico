@@ -17,6 +17,11 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
 
+/**
+ * Filtro de autenticación que valida que exista una sesión de usuario activa antes de permitir el acceso a las páginas protegidas, redirigiendo al login en caso contrario.
+ * @author Ángel Gael Flores Ronces
+ * @since 2026-06-30
+ */
 @WebFilter("/*")
 public class FiltroAutenticacion extends HttpFilter {
 
@@ -112,6 +117,11 @@ public class FiltroAutenticacion extends HttpFilter {
         }
     }
 
+    /**
+     * Método auxiliar de la clase.
+     * @param idUsuario Identificador único del usuario.
+     * @return `true` si la operación fue exitosa o la condición se cumple; `false` en caso contrario.
+     */
     private boolean usuarioSigueActivo(int idUsuario) {
         String sql = "SELECT activo FROM usuario WHERE id_usuario = ?";
         try (Connection con = DatabaseConnection.getConnection();

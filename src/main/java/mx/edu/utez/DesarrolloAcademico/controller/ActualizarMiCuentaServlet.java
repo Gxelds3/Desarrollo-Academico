@@ -13,15 +13,32 @@ import mx.edu.utez.DesarrolloAcademico.model.dao.UsuarioDao;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+/**
+ * Servlet controlador que atiende las peticiones HTTP relacionadas con 'ActualizarMiCuenta' dentro de la arquitectura MVC del proyecto.
+ * @author Carlos Apreza Gutierrez
+ * @since 2026-08-07
+ */
 @WebServlet(name = "ActualizarMiCuentaServlet", value = "/ActualizarMiCuentaServlet")
 @MultipartConfig
 public class ActualizarMiCuentaServlet extends HttpServlet {
 
+    /**
+     * Método auxiliar de la clase.
+     * @param valor Parámetro `valor`.
+     * @return Cadena de texto resultante.
+     */
     private String escapar(String valor) {
         if (valor == null) return "";
         return valor.replace("\\", "\\\\").replace("\"", "\\\"");
     }
 
+    /**
+     * Maneja las peticiones HTTP POST recibidas por este servlet.
+     * @param request Objeto de la petición HTTP entrante.
+     * @param response Objeto de la respuesta HTTP a generar.
+     * @throws ServletException Si ocurre un error al procesar la petición dentro del servlet.
+     * @throws IOException Si ocurre un error de entrada/salida al leer o escribir la petición/respuesta.
+     */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
@@ -45,7 +62,7 @@ public class ActualizarMiCuentaServlet extends HttpServlet {
             String passActual = request.getParameter("passActual");
             String passNueva = request.getParameter("passNueva");
 
-            // Sanitización básica
+
             telefono = (telefono != null) ? telefono.trim() : "";
             passActual = (passActual != null) ? passActual.trim() : "";
             passNueva = (passNueva != null) ? passNueva.trim() : "";

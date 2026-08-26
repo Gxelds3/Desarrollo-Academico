@@ -1,3 +1,10 @@
+<%--
+  Vista: login.jsp
+  Descripción: Formulario de inicio de sesión: solicita correo institucional/número de empleado y contraseña, y muestra mensajes de error o éxito recibidos del servidor.
+  Usa atributos de request (enviados por el servlet): error, mensaje, mensajeExito
+  Formulario(s): envía a 'login' por POST
+  Scripts propios: assets/js/login.js
+--%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!doctype html>
 <html lang="es">
@@ -39,6 +46,7 @@
                     </div>
                 <% } %>
 
+                                <!-- Formulario: envía a 'login' por POST -->
                 <form action="login" method="post">
 
                     <div class="mb-3">

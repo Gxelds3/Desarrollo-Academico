@@ -1,3 +1,10 @@
+<%--
+  Vista: editar_desarrollador_de.jsp
+  Rol: Desarrollador
+  Descripción: Formulario para editar los datos de un desarrollador existente.
+  Incluye los fragmentos: sidebar_de.jsp
+  Scripts propios: assets/js/coordinador.js, assets/js/EditarDesarrollador.js?v=2.0
+--%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!doctype html>
 <html lang="es">
@@ -12,6 +19,7 @@
 </head>
 <body>
 
+<%-- Fragmento incluido: sidebar_de.jsp --%>
 <jsp:include page="sidebar_de.jsp">
     <jsp:param name="active" value="gestion_usuarios" />
     <jsp:param name="active_sub" value="desarrollador" />

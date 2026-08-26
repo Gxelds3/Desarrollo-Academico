@@ -13,6 +13,11 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
 
+/**
+ * Servlet controlador que atiende las peticiones HTTP relacionadas con 'ListarPeriodos' dentro de la arquitectura MVC del proyecto.
+ * @author Carlos Apreza Gutierrez
+ * @since 2026-08-07
+ */
 @WebServlet("/ListarPeriodosServlet")
 public class ListarPeriodosServlet extends HttpServlet {
 

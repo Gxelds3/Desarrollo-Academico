@@ -1,3 +1,10 @@
+<%--
+  Vista: ver_periodo_carga_de.jsp
+  Rol: Desarrollador
+  Descripción: Vista de detalle de un periodo de carga específico.
+  Incluye los fragmentos: sidebar_de.jsp
+  Scripts propios: assets/js/coordinador.js
+--%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!doctype html>
 <html lang="es">
@@ -13,6 +20,7 @@
 </head>
 <body>
 
+<%-- Fragmento incluido: sidebar_de.jsp --%>
 <jsp:include page="sidebar_de.jsp">
   <jsp:param name="active" value="periodos_carga" />
 </jsp:include>

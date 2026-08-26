@@ -1,3 +1,11 @@
+<%--
+  Vista: editar_docente_co.jsp
+  Rol: Coordinador
+  Descripción: Formulario para editar los datos de un docente/coordinador existente.
+  Incluye los fragmentos: sidebar_co.jsp
+  Formulario(s): envía a '#' por POST
+  Scripts propios: assets/js/coordinador.js, assets/js/EditarDocente.js?v=2
+--%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!doctype html>
 <html lang="es">
@@ -11,6 +19,7 @@
 </head>
 <body>
 
+<%-- Fragmento incluido: sidebar_co.jsp --%>
 <jsp:include page="sidebar_co.jsp">
     <jsp:param name="active" value="gestion_docente" />
 </jsp:include>
@@ -23,6 +32,7 @@
         <h5 class="mb-0 fw-bold">DATOS DOCENTE/COORDINADOR</h5>
     </div>
 
+        <!-- Formulario: envía a '#' por POST -->
     <form id="formEditarDocente" action="#" method="POST">
         <input type="hidden" name="id_usuario" id="campoIdUsuario">
 

@@ -1,3 +1,9 @@
+/**
+ * historial_evento_do.js
+ *
+ * Lógica de la vista de historial de eventos para el rol Docente.
+ */
+
 /* historial_evento_do.js
  * Carga el historial de eventos del docente autenticado desde /ListarMisEventosServlet
  * Renderiza tabla con 6 columnas: Título, Tipo, Institución, Modalidad, Fecha, Acciones
@@ -19,6 +25,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // ── Utilidades ──────────────────────────────────────────────────────────────
 
+    /**
+     * Escapa los caracteres especiales de HTML (&, <, >) de un texto para insertarlo de forma segura en el DOM y prevenir inyección de HTML/XSS.
+     * @param {*} texto
+     */
     function escapeHtml(texto) {
         if (texto === null || texto === undefined) return '';
         return String(texto)
@@ -27,6 +37,10 @@ document.addEventListener('DOMContentLoaded', function () {
             .replace(/>/g, '&gt;');
     }
 
+    /**
+     * Normaliza un texto a minúsculas y sin acentos/diacríticos, para poder comparar cadenas de forma insensible a mayúsculas y tildes (usado en buscadores/filtros).
+     * @param {*} texto
+     */
     function normalizar(texto) {
         return String(texto || '')
             .toLowerCase()
@@ -36,6 +50,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
     /**
      * Convierte "2026-08-20" → "20/08/26"
+     */
+    /**
+     * Convierte una fecha en formato ISO a un formato de fecha legible para mostrar en la interfaz.
+     * @param {*} iso
      */
     function formatearFecha(iso) {
         if (!iso) return '';
@@ -47,6 +65,11 @@ document.addEventListener('DOMContentLoaded', function () {
     /**
      * Une las fechas de inicio y fin en un rango legible
      */
+    /**
+     * Une la fecha de inicio y (opcionalmente) la de fin en un texto de rango legible.
+     * @param {*} fechaInicio
+     * @param {*} fechaFin
+     */
     function formatearFechas(fechaInicio, fechaFin) {
         if (!fechaInicio) return 'Sin fecha';
         const fInicio = formatearFecha(fechaInicio);
@@ -57,6 +80,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // ── Filtrado ─────────────────────────────────────────────────────────────────
 
+    /**
+     * Devuelve la lista de eventos que coinciden con el texto de búsqueda / filtros actuales (filtrado en memoria sobre la lista maestra).
+     */
     function obtenerEventosFiltrados() {
         const texto = normalizar(filtroTexto);
         const tipoFiltroNormalizado = normalizar(filtroTipo);
@@ -76,6 +102,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // ── Renderizado de tabla ──────────────────────────────────────────────────────
 
+    /**
+     * Renderiza en el DOM la tabla/listado de eventos a partir de la lista recibida.
+     * @param {*} lista
+     */
     function renderEventos(lista) {
         if (!tbody) return;
 
@@ -120,11 +150,24 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // ── Paginación dinámica ───────────────────────────────────────────────────────
 
+    /**
+     * Genera y renderiza en el DOM los controles de paginación según el total de registros/páginas.
+     * @param {*} totalPaginas
+     */
     function renderPaginacion(totalPaginas) {
         if (!contenedorPaginacion) return;
         contenedorPaginacion.innerHTML = '';
         if (totalPaginas <= 1) return;
 
+        /**
+         * Crea un elemento `<a>` de paginación (número, "«" o "»") con las clases
+         * de estado (activo/deshabilitado) y su listener de clic.
+         * @param {string} contenido HTML/texto a mostrar dentro del enlace.
+         * @param {boolean} activo Si es la página actualmente seleccionada.
+         * @param {boolean} deshabilitado Si el botón debe mostrarse inactivo (sin listener).
+         * @param {function(): void} onClick Acción a ejecutar al hacer clic.
+         * @returns {HTMLAnchorElement}
+         */
         function crearBtn(contenido, activo, deshabilitado, onClick) {
             var a = document.createElement('a');
             a.href = '#';
@@ -179,6 +222,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // ── Aplicar filtros, paginación y rerender ───────────────────────────────────
 
+    /**
+     * Aplica los filtros de búsqueda vigentes sobre la lista maestra y vuelve a renderizar la tabla con el resultado.
+     */
     function aplicarFiltros() {
         const filtrados = obtenerEventosFiltrados();
         const totalPaginas = Math.ceil(filtrados.length / EVENTOS_POR_PAGINA);
@@ -198,6 +244,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // ── Carga desde servidor ──────────────────────────────────────────────────────
 
+    /**
+     * Obtiene del servidor los eventos asociados al usuario en sesión y los renderiza en la vista.
+     */
     function cargarMisEventos() {
         if (!tbody) return;
         tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted py-4">Cargando eventos...</td></tr>';

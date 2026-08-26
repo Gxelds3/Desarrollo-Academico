@@ -1,3 +1,9 @@
+/**
+ * GestionUsuarios.js
+ *
+ * Lógica de la vista de gestión (listado) de usuarios: búsqueda, paginación, renderizado de la tabla y eliminación.
+ */
+
 // GestionUsuarios.js - Lista docentes/coordinadores con paginación dinámica y columna Rol
 const contextPath = window.contextPath || '';
 const tbody = document.getElementById('tablaUsuariosBody');
@@ -11,6 +17,10 @@ let paginaActual = 1;
 
 const DIVISIONES = { 1: 'DATID', 2: 'DACEA', 3: 'DATEFI', 4: 'DAMI' };
 
+/**
+ * Escapa los caracteres especiales de HTML (&, <, >) de un texto para insertarlo de forma segura en el DOM y prevenir inyección de HTML/XSS.
+ * @param {*} texto
+ */
 function escapeHtml(texto) {
     if (texto === null || texto === undefined) return '';
     return String(texto)
@@ -19,6 +29,10 @@ function escapeHtml(texto) {
         .replace(/>/g, '&gt;');
 }
 
+/**
+ * Normaliza un texto a minúsculas y sin acentos/diacríticos, para poder comparar cadenas de forma insensible a mayúsculas y tildes (usado en buscadores/filtros).
+ * @param {*} texto
+ */
 function normalizar(texto) {
     return String(texto || '')
         .toLowerCase()
@@ -26,10 +40,17 @@ function normalizar(texto) {
         .replace(/[\u0300-\u036f]/g, '');
 }
 
+/**
+ * Devuelve el nombre legible de la división académica a partir de su identificador numérico.
+ * @param {*} id
+ */
 function getDivisionNombre(id) {
     return DIVISIONES[id] || (id ? 'Div. ' + id : 'N/A');
 }
 
+/**
+ * Devuelve la lista de usuarios que coinciden con el texto de búsqueda actual (filtrado en memoria sobre la lista maestra).
+ */
 function obtenerUsuariosFiltrados() {
     const texto = normalizar(filtroTexto);
     const filtrados = usuariosOriginales.filter(function (u) {
@@ -43,6 +64,10 @@ function obtenerUsuariosFiltrados() {
     return filtrados;
 }
 
+/**
+ * Genera y renderiza en el DOM los controles de paginación según el total de registros/páginas.
+ * @param {*} total
+ */
 function renderPaginacion(total) {
     if (!paginationContainer) return;
     const totalPaginas = Math.ceil(total / ITEMS_POR_PAGINA);
@@ -75,6 +100,10 @@ function renderPaginacion(total) {
     });
 }
 
+/**
+ * Renderiza en el DOM la tabla de usuarios a partir de la lista recibida.
+ * @param {*} usuarios
+ */
 function renderUsuarios(usuarios) {
     const total = usuarios.length;
     const inicio = (paginaActual - 1) * ITEMS_POR_PAGINA;
@@ -123,10 +152,16 @@ function renderUsuarios(usuarios) {
     renderPaginacion(total);
 }
 
+/**
+ * Aplica los filtros de búsqueda vigentes sobre la lista maestra y vuelve a renderizar la tabla con el resultado.
+ */
 function aplicarFiltros() {
     renderUsuarios(obtenerUsuariosFiltrados());
 }
 
+/**
+ * Obtiene del servidor la lista de usuarios y la muestra en la tabla, aplicando filtros y paginación.
+ */
 function cargarUsuarios() {
     // Carga docentes Y coordinadores (sin filtro de rol para que el desarrollador vea todos)
     fetch(contextPath + '/ListarUsuariosServlet?t=' + Date.now())
@@ -186,6 +221,10 @@ if (tbody) {
     cargarUsuarios();
 }
 
+/**
+ * Solicita confirmación al usuario y, si acepta, envía al servidor la petición para eliminar el usuario indicado.
+ * @param {*} id
+ */
 function eliminarUsuario(id) {
     const datos = new FormData();
     datos.append('id', id);

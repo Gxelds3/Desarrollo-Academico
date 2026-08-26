@@ -11,6 +11,11 @@ import jakarta.servlet.http.Part;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
+/**
+ * Controlador (servlet) que gestiona la lógica de 'CargarArchivo' en la capa de presentación del patrón MVC.
+ * @author Carlos Apreza Gutierrez
+ * @since 2026-08-07
+ */
 @WebServlet("/CargarArchivo")
 @MultipartConfig(
         fileSizeThreshold = 1024 * 1024 * 2, // 2MB

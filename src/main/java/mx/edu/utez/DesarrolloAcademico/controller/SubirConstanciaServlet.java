@@ -23,11 +23,23 @@ import java.nio.file.Paths;
         maxFileSize = 1024 * 1024 * 25,      // 25MB (Tamaño máximo de un solo archivo)
         maxRequestSize = 1024 * 1024 * 30    // 30MB (Tamaño máximo total de la petición HTTP)
 )
+/**
+ * Servlet controlador que atiende las peticiones HTTP relacionadas con 'SubirConstancia' dentro de la arquitectura MVC del proyecto.
+ * @author Gael Itzaya Velez Reyez
+ * @since 2026-08-02
+ */
 public class SubirConstanciaServlet extends HttpServlet {
 
     // ID correspondiente a la división "General" en tu base de datos
     private static final int ID_DIVISION_GENERAL = 5;
 
+    /**
+     * Maneja las peticiones HTTP POST recibidas por este servlet.
+     * @param request Objeto de la petición HTTP entrante.
+     * @param response Objeto de la respuesta HTTP a generar.
+     * @throws ServletException Si ocurre un error al procesar la petición dentro del servlet.
+     * @throws IOException Si ocurre un error de entrada/salida al leer o escribir la petición/respuesta.
+     */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("application/json;charset=UTF-8");

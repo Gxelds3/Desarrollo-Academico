@@ -1,3 +1,9 @@
+/**
+ * EditarPeriodo.js
+ *
+ * Lógica de la vista de edición de un periodo de carga: obtención de sus datos y envío de los cambios al servidor.
+ */
+
 document.addEventListener("DOMContentLoaded", function () {
     const urlParams = new URLSearchParams(window.location.search);
     const idPeriodo = urlParams.get('id');
@@ -21,6 +27,10 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 });
 
+/**
+ * Obtiene del servidor los datos del periodo de carga indicado por su id y rellena el formulario de edición.
+ * @param {*} id
+ */
 function cargarDatosPeriodo(id) {
     fetch("ListarPeriodosServlet")
         .then(res => res.json())
@@ -42,6 +52,9 @@ function cargarDatosPeriodo(id) {
 }
 
 // Función principal que envía la actualización y valida la respuesta
+/**
+ * Recolecta y valida los datos del formulario y envía al servidor la petición para guardar los cambios del periodo de carga.
+ */
 function guardarEdicionPeriodo() {
     const form = document.getElementById("formEditarPeriodo");
     const formData = new URLSearchParams(new FormData(form));

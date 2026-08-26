@@ -5,11 +5,19 @@ import jakarta.mail.internet.*;
 import java.io.InputStream;
 import java.util.Properties;
 
+/**
+ * Clase utilitaria encargada del envío de correos electrónicos (por ejemplo, códigos de verificación para recuperación de contraseña).
+ * @author Gael Itzaya Velez Reyez
+ * @since 2026-07-16
+ */
 public class EmailService {
 
     private String user;
     private String password;
 
+    /**
+     * Construye una nueva instancia de EmailService.
+     */
     public EmailService() {
 
         this.user = System.getenv("MAIL_USER");
@@ -30,6 +38,10 @@ public class EmailService {
         }
     }
 
+    /**
+     * Obtiene el valor de session.
+     * @return Resultado de tipo `Session`.
+     */
     private Session getSession() {
         Properties props = new Properties();
         props.put("mail.smtp.auth", "true");
@@ -38,6 +50,10 @@ public class EmailService {
         props.put("mail.smtp.port", "587");
 
         return Session.getInstance(props, new Authenticator() {
+            /**
+             * Obtiene el valor de password authentication.
+             * @return Resultado de tipo `PasswordAuthentication`.
+             */
             @Override
             protected PasswordAuthentication getPasswordAuthentication() {
                 return new PasswordAuthentication(user, password);
@@ -45,6 +61,12 @@ public class EmailService {
         });
     }
 
+    /**
+     * Envía la información o notificación correspondiente.
+     * @param destEmail Parámetro `destEmail`.
+     * @param codigo Parámetro `codigo`.
+     * @return `true` si la operación fue exitosa o la condición se cumple; `false` en caso contrario.
+     */
     public boolean enviarCodigoRecuperacion(String destEmail, String codigo) {
         try {
             Message message = new MimeMessage(getSession());
@@ -68,6 +90,11 @@ public class EmailService {
         }
     }
 
+    /**
+     * Envía la información o notificación correspondiente.
+     * @param destEmail Parámetro `destEmail`.
+     * @return `true` si la operación fue exitosa o la condición se cumple; `false` en caso contrario.
+     */
     public boolean enviarConfirmacionCambio(String destEmail) {
         try {
             Message message = new MimeMessage(getSession());

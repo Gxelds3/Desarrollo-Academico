@@ -10,6 +10,11 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Properties;
 
+/**
+ * Clase utilitaria encargada de crear y devolver conexiones JDBC a la base de datos del sistema.
+ * @author Gael Itzaya Velez Reyez
+ * @since 2026-07-16
+ */
 public class DatabaseConnection {
 
     private static HikariDataSource dataSource;
@@ -60,8 +65,33 @@ public class DatabaseConnection {
         }
     }
 
+    /**
+     * Abre y devuelve una nueva conexión JDBC a la base de datos.
+     * @return Conexión JDBC activa a la base de datos, o `null` si no fue posible establecerla.
+     */
+    /**
+     * DataSource alterno usado por las pruebas automatizadas. Cuando no es null,
+     * {@link #getConnection()} lo utiliza en lugar del pool de Oracle Cloud.
+     * En produccion siempre permanece en null, por lo que el comportamiento
+     * original de la clase no cambia.
+     */
+    private static javax.sql.DataSource testDataSource;
+
+    /**
+     * Redirige las conexiones hacia un DataSource alterno (por ejemplo, el de un
+     * contenedor Docker levantado por Testcontainers durante las pruebas).
+     *
+     * @param ds DataSource a utilizar, o null para volver al pool de produccion.
+     */
+    public static void setTestDataSource(javax.sql.DataSource ds) {
+        testDataSource = ds;
+    }
+
     public static Connection getConnection() {
         try {
+            if (testDataSource != null) {
+                return testDataSource.getConnection();
+            }
             if (dataSource != null) {
                 return dataSource.getConnection();
             }
@@ -72,6 +102,10 @@ public class DatabaseConnection {
         return null;
     }
 
+    /**
+     * Método auxiliar de la clase.
+     * @param con Conexión activa a la base de datos.
+     */
     public static void closeConnection(Connection con) {
         try {
             if (con != null && !con.isClosed()) {

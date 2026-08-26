@@ -1,3 +1,9 @@
+/**
+ * EditarEvento.js
+ *
+ * Lógica de la vista de edición de un evento: carga de sus datos, gestión de participantes asignados y búsqueda de docentes para agregar.
+ */
+
 const contextPath = window.contextPath || '';
 const params = new URLSearchParams(window.location.search);
 const idEvento = params.get('id');
@@ -23,15 +29,35 @@ let participantesOriginales = [];
 let todosLosUsuarios = [];
 let filtroParticipante = '';
 
+/**
+ * Obtiene el identificador de un usuario contemplando distintos nombres posibles de la propiedad (idUsuario o id).
+ * @param {*} u
+ */
 function getIdUsuario(u) { return u.idUsuario || u.id; }
+/**
+ * Obtiene el correo institucional de un usuario contemplando distintos nombres posibles de la propiedad.
+ * @param {*} u
+ */
 function getCorreoUsuario(u) { return u.correoInstitucional || u.correo || ''; }
+/**
+ * Escapa los caracteres especiales de HTML (&, <, >) de un texto para insertarlo de forma segura en el DOM y prevenir inyección de HTML/XSS.
+ * @param {*} texto
+ */
 function escHtml(texto) {
     if (!texto) return '';
     return String(texto).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
+/**
+ * Normaliza un texto a minúsculas y sin acentos/diacríticos, para poder comparar cadenas de forma insensible a mayúsculas y tildes (usado en buscadores/filtros).
+ * @param {*} t
+ */
 function normString(t) {
     return String(t || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
 }
+/**
+ * Devuelve el nombre legible de la división académica a partir de su identificador numérico.
+ * @param {*} id
+ */
 function getDivisionName(id) {
     if (!id) return 'N/A';
     const num = Number(id);
@@ -44,11 +70,18 @@ function getDivisionName(id) {
         default: return 'N/A';
     }
 }
+/**
+ * Concatena nombre y apellidos de un usuario en una sola cadena de nombre completo, ignorando los campos vacíos.
+ * @param {*} u
+ */
 function getNombreCompleto(u) {
     return [u.nombre, u.apellidoPaterno, u.apellidoMaterno].filter(Boolean).join(' ');
 }
 
 // ---- CARGA Y GUARDADO DE EVENTO ----
+/**
+ * Obtiene del servidor la información del evento actual (según el id de la URL) y la muestra en la vista.
+ */
 function cargarEvento() {
     if (!idEvento) {
         Swal.fire({ icon: 'error', title: 'Falta el id del evento', text: 'Entra a esta página desde "Gestión de Eventos".', confirmButtonColor: '#00847b' });
@@ -167,6 +200,9 @@ if (form) {
 }
 
 // ---- PARTICIPANTES ----
+/**
+ * Obtiene del servidor la lista de participantes/docentes asociados al evento y los muestra en la vista.
+ */
 function cargarParticipantes() {
     return fetch(contextPath + '/ListarParticipantesEventoServlet?id=' + encodeURIComponent(idEvento) + '&t=' + Date.now())
         .then(function(res) {
@@ -185,6 +221,9 @@ function cargarParticipantes() {
         });
 }
 
+/**
+ * Aplica el filtro de búsqueda vigente sobre la lista de participantes y vuelve a renderizar la tabla.
+ */
 function aplicarFiltrosParticipantes() {
     var texto = normString(filtroParticipante);
     var filtrados = participantesOriginales.filter(function(u) {
@@ -194,6 +233,10 @@ function aplicarFiltrosParticipantes() {
     renderParticipantes(filtrados);
 }
 
+/**
+ * Renderiza en el DOM la tabla de participantes del evento a partir de la lista recibida.
+ * @param {*} lista
+ */
 function renderParticipantes(lista) {
     if (!tbodyParticipantes) return;
     if (!lista.length) {
@@ -276,6 +319,9 @@ if (tbodyParticipantes) {
 }
 
 // ---- MODAL BUSCADOR PARA ASIGNAR DOCENTES ----
+/**
+ * Obtiene del servidor el catálogo completo de usuarios disponibles para ser asignados/agregados.
+ */
 function cargarTodosLosUsuarios() {
     fetch(contextPath + '/ListarUsuariosServlet?t=' + Date.now())
         .then(function(res) {
@@ -288,6 +334,9 @@ function cargarTodosLosUsuarios() {
         .catch(function(err) { console.error('Error al cargar usuarios:', err); });
 }
 
+/**
+ * Calcula la lista de usuarios que aún no han sido asignados/agregados, comparando el catálogo completo contra los ya asignados.
+ */
 function getNoAsignados() {
     var asignadosIds = participantesOriginales.map(function(p) { return Number(getIdUsuario(p)); });
     return todosLosUsuarios.filter(function(u) {
@@ -296,6 +345,10 @@ function getNoAsignados() {
     });
 }
 
+/**
+ * Renderiza en el DOM los resultados del buscador de docentes/usuarios disponibles para asignar, según el filtro indicado.
+ * @param {*} filtro
+ */
 function renderBusquedaDocentes(filtro) {
     if (!tbodyBusquedaDocentes) return;
     var texto = normString(filtro);

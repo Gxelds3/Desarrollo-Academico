@@ -4,6 +4,11 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+/**
+ * Clase utilitaria con funciones de hasheo (SHA-256) usadas para almacenar y verificar contraseñas de forma segura.
+ * @author Gael Itzaya Velez Reyez
+ * @since 2026-08-19
+ */
 public class HashUtils {
 
     /**
@@ -24,6 +29,11 @@ public class HashUtils {
         }
     }
 
+    /**
+     * Convierte un arreglo de bytes a su representación en texto hexadecimal.
+     * @param hash Arreglo de bytes con el hash a convertir.
+     * @return Cadena de texto resultante.
+     */
     private static String bytesToHex(byte[] hash) {
         StringBuilder hexString = new StringBuilder(2 * hash.length);
         for (int i = 0; i < hash.length; i++) {

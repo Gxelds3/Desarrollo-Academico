@@ -1,3 +1,9 @@
+/**
+ * historial_eventos_de.js
+ *
+ * Lógica de la vista de historial de eventos para el rol Desarrollador.
+ */
+
 ﻿document.addEventListener("DOMContentLoaded", function () {
     const contextPath = window.contextPath || (window.location.pathname.substring(0, window.location.pathname.indexOf("/", 1))) || '';
     const tbody = document.getElementById('tablaEventosBody');
@@ -9,6 +15,10 @@
     let filtroTipo = 'todos';
 
     // SanitizaciÃ³n contra inyecciÃ³n HTML (XSS)
+    /**
+     * Escapa los caracteres especiales de HTML (&, <, >) de un texto para insertarlo de forma segura en el DOM y prevenir inyección de HTML/XSS.
+     * @param {*} texto
+     */
     function escapeHtml(texto) {
         if (texto === null || texto === undefined) return '';
         return String(texto)
@@ -18,6 +28,10 @@
     }
 
     // Normalizador para busqueda insensible de acentos/mayusculas
+    /**
+     * Normaliza un texto a minúsculas y sin acentos/diacríticos, para poder comparar cadenas de forma insensible a mayúsculas y tildes (usado en buscadores/filtros).
+     * @param {*} texto
+     */
     function normalizar(texto) {
         return String(texto || '')
             .toLowerCase()
@@ -26,6 +40,10 @@
     }
 
     // Formateador individual de fecha (YYYY-MM-DD a DD/MM/YY)
+    /**
+     * Convierte una fecha en formato ISO ("AAAA-MM-DD") a formato corto legible ("DD/MM/AA").
+     * @param {*} fechaIso
+     */
     function formatearFechaIndividual(fechaIso) {
         if (!fechaIso) return '';
         const partes = fechaIso.split('-');
@@ -34,6 +52,11 @@
     }
 
     // Formateador de rangos de fecha
+    /**
+     * Une la fecha de inicio y (opcionalmente) la de fin en un texto de rango legible.
+     * @param {*} fechaInicio
+     * @param {*} fechaFin
+     */
     function formatearFechas(fechaInicio, fechaFin) {
         if (!fechaInicio) return 'Sin fecha';
         const fInicio = formatearFechaIndividual(fechaInicio);
@@ -43,6 +66,9 @@
     }
 
     // Filtrado combinado: Texto de busqueda + Filtro de CategorÃ­a/Pill
+    /**
+     * Devuelve la lista de eventos que coinciden con el texto de búsqueda / filtros actuales (filtrado en memoria sobre la lista maestra).
+     */
     function obtenerEventosFiltrados() {
         const texto = normalizar(filtroTexto);
         const tipoFiltroNormalizado = normalizar(filtroTipo);
@@ -61,6 +87,10 @@
     }
 
     // Renderizado dinÃ¡mico de la tabla (6 Columnas)
+    /**
+     * Renderiza en el DOM la tabla/listado de eventos a partir de la lista recibida.
+     * @param {*} lista
+     */
     function renderEventos(lista) {
         if (!tbody) return;
 
@@ -106,10 +136,16 @@
         });
     }
 
+    /**
+     * Aplica el filtro de búsqueda vigente sobre la lista maestra y vuelve a renderizar la tabla con el resultado.
+     */
     function aplicarFiltro() {
         window.renderPaginator(obtenerEventosFiltrados(), 20, 'paginationContainer', renderEventos);
     }
 
+    /**
+     * Obtiene del servidor los eventos asociados al usuario en sesión y los renderiza en la vista.
+     */
     function cargarMisEventos() {
         if (!tbody) return;
         tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted py-4">Cargando eventos...</td></tr>';

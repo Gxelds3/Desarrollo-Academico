@@ -1,3 +1,7 @@
+<%--
+  Vista: 500.jsp
+  Descripción: Página de error personalizada para respuestas HTTP 500 (error interno del servidor).
+--%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!doctype html>
 <html lang="es">

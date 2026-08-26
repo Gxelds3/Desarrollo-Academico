@@ -12,9 +12,21 @@ import mx.edu.utez.DesarrolloAcademico.model.dao.UsuarioDao;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+/**
+ * Servlet controlador que atiende las peticiones HTTP relacionadas con 'CambiarEstadoUsuario' dentro de la arquitectura MVC del proyecto.
+ * @author Gael Itzaya Velez Reyez
+ * @since 2026-08-05
+ */
 @WebServlet(name = "CambiarEstadoUsuarioServlet", value = "/CambiarEstadoUsuarioServlet")
 public class CambiarEstadoUsuarioServlet extends HttpServlet {
 
+    /**
+     * Maneja las peticiones HTTP POST recibidas por este servlet.
+     * @param request Objeto de la petición HTTP entrante.
+     * @param response Objeto de la respuesta HTTP a generar.
+     * @throws ServletException Si ocurre un error al procesar la petición dentro del servlet.
+     * @throws IOException Si ocurre un error de entrada/salida al leer o escribir la petición/respuesta.
+     */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("application/json;charset=UTF-8");

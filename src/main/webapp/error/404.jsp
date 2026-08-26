@@ -1,3 +1,7 @@
+<%--
+  Vista: 404.jsp
+  Descripción: Página de error personalizada para respuestas HTTP 404 (recurso/página no encontrada).
+--%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!doctype html>
 <html lang="es">

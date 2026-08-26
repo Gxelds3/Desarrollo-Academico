@@ -1,3 +1,10 @@
+<%--
+  Vista: ver_mas_evento_do.jsp
+  Rol: Docente
+  Descripción: Vista de detalle de un evento específico, incluyendo sus participantes.
+  Incluye los fragmentos: sidebar_do.jsp
+  Scripts propios: assets/js/coordinador.js, assets/js/VerMasEventoDo.js
+--%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!doctype html>
 <html lang="es">
@@ -17,6 +24,7 @@
 </head>
 <body>
 
+<%-- Fragmento incluido: sidebar_do.jsp --%>
 <jsp:include page="sidebar_do.jsp">
     <jsp:param name="active" value="mis_eventos" />
 </jsp:include>

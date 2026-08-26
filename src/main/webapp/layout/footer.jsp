@@ -1,3 +1,7 @@
+<%--
+  Vista: footer.jsp
+  Descripción: Fragmento de plantilla (footer) de cierre de la página; parece boilerplate de plantilla base, sin evidencia de estar incluido activamente por las vistas del proyecto (revisar si sigue en uso).
+--%>
 </div>
 </div>
 </div>

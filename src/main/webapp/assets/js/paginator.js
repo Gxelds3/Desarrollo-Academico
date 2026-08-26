@@ -1,3 +1,17 @@
+/**
+ * paginator.js
+ *
+ * Componente reutilizable de paginación de tablas: divide una lista en páginas y genera los controles de navegación (anterior/siguiente/números).
+ */
+
+/**
+ * Divide una lista de datos en páginas y gestiona la navegación entre ellas,
+ * delegando el pintado de cada página a la función `renderCallback` recibida.
+ * @param {Array<*>} listaOriginal Lista completa de elementos a paginar.
+ * @param {number} rowsPerPage Cantidad de elementos a mostrar por página.
+ * @param {string} containerId Id del elemento del DOM donde se dibujan los controles de paginación.
+ * @param {function(Array<*>): void} renderCallback Función que recibe la sublista de la página actual y la renderiza.
+ */
 window.renderPaginator = function(listaOriginal, rowsPerPage, containerId, renderCallback) {
     const container = document.getElementById(containerId);
     if (!container) return;
@@ -10,6 +24,10 @@ window.renderPaginator = function(listaOriginal, rowsPerPage, containerId, rende
     let totalPages = Math.ceil(listaOriginal.length / rowsPerPage);
     if (totalPages === 0) totalPages = 1;
 
+    /**
+     * Renderiza en el DOM el contenido indicado a partir de los datos recibidos.
+     * @param {*} page
+     */
     function renderPage(page) {
         currentPage = page;
         const start = (page - 1) * rowsPerPage;
@@ -22,6 +40,9 @@ window.renderPaginator = function(listaOriginal, rowsPerPage, containerId, rende
         renderControls();
     }
 
+    /**
+     * Renderiza en el DOM el contenido indicado a partir de los datos recibidos.
+     */
     function renderControls() {
         container.innerHTML = '';
 

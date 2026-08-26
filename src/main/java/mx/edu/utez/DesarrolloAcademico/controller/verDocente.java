@@ -11,6 +11,11 @@ import mx.edu.utez.DesarrolloAcademico.model.dao.UsuarioDao;
 
 import java.io.IOException;
 
+/**
+ * Controlador (servlet) que gestiona la lógica de 'verDocente' en la capa de presentación del patrón MVC.
+ * @author Carlos Apreza Gutierrez
+ * @since 2026-08-07
+ */
 @WebServlet(name = "verDocente", value = "/verDocente")
 public class verDocente extends HttpServlet {
 

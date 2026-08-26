@@ -12,6 +12,11 @@ import mx.edu.utez.DesarrolloAcademico.model.dao.UsuarioDao;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+/**
+ * Controlador (servlet) que gestiona la lógica de 'EliminarDocente' en la capa de presentación del patrón MVC.
+ * @author Carlos Apreza Gutierrez
+ * @since 2026-08-07
+ */
 @WebServlet(name = "EliminarDocente", value = "/EliminarDocente")
 @MultipartConfig
 public class EliminarDocente extends HttpServlet {

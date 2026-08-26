@@ -11,9 +11,21 @@ import mx.edu.utez.DesarrolloAcademico.model.dao.AgregarDesarrollador_Dao;
 import java.io.IOException;
 
 
+/**
+ * Controlador (servlet) que gestiona la lógica de 'VerDesarrollador' en la capa de presentación del patrón MVC.
+ * @author Carlos Apreza Gutierrez
+ * @since 2026-08-07
+ */
 @WebServlet(name = "VerDesarrollador", value = "/VerDesarrollador")
 public class VerDesarrollador extends HttpServlet {
 
+    /**
+     * Maneja las peticiones HTTP GET recibidas por este servlet.
+     * @param request Objeto de la petición HTTP entrante.
+     * @param response Objeto de la respuesta HTTP a generar.
+     * @throws ServletException Si ocurre un error al procesar la petición dentro del servlet.
+     * @throws IOException Si ocurre un error de entrada/salida al leer o escribir la petición/respuesta.
+     */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String idStr = request.getParameter("id");

@@ -1,3 +1,10 @@
+<%--
+  Vista: detalles_docente_coordinadores_de.jsp
+  Rol: Desarrollador
+  Descripción: Vista de detalle con la información completa de un docente/coordinador.
+  Usa atributos de request (enviados por el servlet): dev
+  Incluye los fragmentos: sidebar_de.jsp
+--%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="mx.edu.utez.DesarrolloAcademico.model.Usuario" %>
 <%
@@ -50,6 +57,7 @@
 </head>
 <body>
 
+<%-- Fragmento incluido: sidebar_de.jsp --%>
 <jsp:include page="sidebar_de.jsp">
     <jsp:param name="active" value="gestion_usuarios" />
     <jsp:param name="active_sub" value="docente" />

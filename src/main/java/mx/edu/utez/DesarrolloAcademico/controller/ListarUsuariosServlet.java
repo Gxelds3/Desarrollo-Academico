@@ -12,6 +12,11 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
 
+/**
+ * Servlet controlador que atiende las peticiones HTTP relacionadas con 'ListarUsuarios' dentro de la arquitectura MVC del proyecto.
+ * @author Gael Itzaya Velez Reyez
+ * @since 2026-08-02
+ */
 @WebServlet(name = "ListarUsuariosServlet", value = "/ListarUsuariosServlet")
 public class ListarUsuariosServlet extends HttpServlet {
 
@@ -74,6 +79,11 @@ public class ListarUsuariosServlet extends HttpServlet {
         out.flush();
     }
 
+    /**
+     * Método auxiliar de la clase.
+     * @param v Parámetro `v`.
+     * @return Cadena de texto resultante.
+     */
     private String esc(String v) {
         if (v == null) return "";
         return v.replace("\\", "\\\\").replace("\"", "\\\"");

@@ -1,3 +1,10 @@
+<%--
+  Vista: cargar_archivo_co.jsp
+  Rol: Coordinador
+  Descripción: Vista para cargar/entregar la constancia (PDF) de un evento dentro del periodo de carga vigente.
+  Incluye los fragmentos: sidebar_co.jsp
+  Scripts propios: assets/js/coordinador.js, assets/js/CargarArchivoCo.js
+--%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!doctype html>
 <html lang="es">
@@ -38,6 +45,7 @@
 </head>
 <body>
 
+<%-- Fragmento incluido: sidebar_co.jsp --%>
 <jsp:include page="sidebar_co.jsp">
     <jsp:param name="active" value="gestion_evento" />
 </jsp:include>

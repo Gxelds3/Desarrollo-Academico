@@ -1,3 +1,9 @@
+/**
+ * GestionDocenteCO.js
+ *
+ * Lógica de la vista de gestión (listado) de docentes para el rol Coordinador: búsqueda, edición rápida, activar/desactivar y eliminación.
+ */
+
 const contextPath = window.contextPath || '';
 const tbody = document.getElementById('tablaDocentesBody');
 const inputBuscar = document.getElementById('buscarDocente');
@@ -32,6 +38,12 @@ let docentesOriginales = [];
 let filtroTexto = '';
 
 // Helper para alertas SweetAlert2 unificadas
+/**
+ * Muestra una alerta emergente (SweetAlert2) al usuario; si SweetAlert2 no está disponible, recurre a `alert()` nativo como respaldo.
+ * @param {*} titulo
+ * @param {*} mensaje
+ * @param {*} [icono='warning']
+ */
 function mostrarAlerta(titulo, mensaje, icono = 'warning') {
     if (typeof Swal !== 'undefined') {
         Swal.fire({
@@ -48,6 +60,10 @@ function mostrarAlerta(titulo, mensaje, icono = 'warning') {
 // ------------------------------------------------------------------
 //  VALIDACIONES EN EL FRONTEND (GUARDAR / EDITAR)
 // ------------------------------------------------------------------
+/**
+ * Valida en el frontend los campos obligatorios y el formato de los datos de un docente antes de enviarlos al servidor.
+ * @param {*} datos
+ */
 function validarFormularioDocente(datos) {
     const { nombre, apeP, apeM, division, numEmp, tel, correo, pass, confirmPass } = datos;
 
@@ -102,6 +118,10 @@ function validarFormularioDocente(datos) {
     return true;
 }
 
+/**
+ * Escapa los caracteres especiales de HTML (&, <, >) de un texto para insertarlo de forma segura en el DOM y prevenir inyección de HTML/XSS.
+ * @param {*} texto
+ */
 function escapeHtml(texto) {
     if (texto === null || texto === undefined) return '';
     return String(texto)
@@ -110,6 +130,10 @@ function escapeHtml(texto) {
         .replace(/>/g, '&gt;');
 }
 
+/**
+ * Normaliza un texto a minúsculas y sin acentos/diacríticos, para poder comparar cadenas de forma insensible a mayúsculas y tildes (usado en buscadores/filtros).
+ * @param {*} texto
+ */
 function normalizar(texto) {
     return String(texto || '')
         .toLowerCase()
@@ -117,11 +141,19 @@ function normalizar(texto) {
         .replace(/[\u0300-\u036f]/g, ''); // quita acentos
 }
 
+/**
+ * Concatena nombre y apellidos de un registro en una sola cadena de nombre completo, ignorando los campos vacíos.
+ * @param {*} doc
+ */
 function nombreCompleto(doc) {
     return [doc.nombre, doc.apellidoPaterno, doc.apellidoMaterno].filter(Boolean).join(' ');
 }
 
 // AGREGADO: Helper para obtener las primeras dos iniciales
+/**
+ * Obtiene las iniciales (hasta dos letras) a partir de un nombre completo, usadas para mostrar un avatar/placeholder visual.
+ * @param {*} nombreStr
+ */
 function obtenerIniciales(nombreStr) {
     if (!nombreStr) return '';
     const palabras = nombreStr.trim().split(/\s+/);
@@ -132,6 +164,10 @@ function obtenerIniciales(nombreStr) {
 }
 
 // Función auxiliar para convertir el rol en su respectiva etiqueta legible
+/**
+ * Devuelve la etiqueta de texto legible correspondiente a un rol de usuario.
+ * @param {*} rol
+ */
 function obtenerTextoRol(rol) {
     const rolStr = String(rol || '').trim().toLowerCase();
 
@@ -144,6 +180,9 @@ function obtenerTextoRol(rol) {
     return rol ? (rol.charAt(0).toUpperCase() + rol.slice(1)) : 'Docente';
 }
 
+/**
+ * Devuelve la lista de docentes que coinciden con el texto de búsqueda actual (filtrado en memoria sobre la lista maestra).
+ */
 function obtenerDocentesFiltrados() {
     const texto = normalizar(filtroTexto);
     if (texto === '') return docentesOriginales;
@@ -160,6 +199,10 @@ function obtenerDocentesFiltrados() {
     });
 }
 
+/**
+ * Renderiza en el DOM la tabla de docentes a partir de la lista recibida.
+ * @param {*} lista
+ */
 function renderDocentes(lista) {
     if (!tbody) return;
 
@@ -228,6 +271,9 @@ function renderDocentes(lista) {
     });
 }
 
+/**
+ * Aplica el filtro de búsqueda vigente sobre la lista maestra y vuelve a renderizar la tabla con el resultado.
+ */
 function aplicarFiltro() {
     if (typeof window.renderPaginator === 'function') {
         window.renderPaginator(obtenerDocentesFiltrados(), 20, 'paginationContainer', renderDocentes);
@@ -236,6 +282,9 @@ function aplicarFiltro() {
     }
 }
 
+/**
+ * Obtiene del servidor la lista de docentes y la muestra en la tabla, aplicando el filtro de búsqueda vigente.
+ */
 function cargarDocentes() {
     if (!tbody) return;
     tbody.innerHTML = '<tr><td colspan="7" class="text-center text-muted py-4">Cargando...</td></tr>';
@@ -259,6 +308,10 @@ function cargarDocentes() {
         });
 }
 
+/**
+ * Rellena los campos del formulario de docente con los datos recibidos desde el servidor para su edición.
+ * @param {*} data
+ */
 function llenarFormularioDocente(data) {
     if (document.getElementById('campoIdUsuario')) document.getElementById('campoIdUsuario').value = data.idUsuario || '';
     if (document.getElementById('campoNombre')) document.getElementById('campoNombre').value = data.nombre || '';
@@ -271,6 +324,11 @@ function llenarFormularioDocente(data) {
     if (document.getElementById('campoContrasena')) document.getElementById('campoContrasena').value = data.contrasena || '';
 }
 
+/**
+ * Envía al servidor la petición para activar/desactivar (o cambiar de estado) el registro indicado.
+ * @param {*} id
+ * @param {*} nuevoEstado
+ */
 function cambiarEstado(id, nuevoEstado) {
     const datos = new URLSearchParams();
     datos.append('id', id);

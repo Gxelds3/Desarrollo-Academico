@@ -12,9 +12,20 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Clase de acceso a datos (DAO) encargada de las operaciones CRUD sobre la base de datos relacionadas con la entidad correspondiente a 'UsuarioDao'.
+ * @author Gael Itzaya Velez Reyez
+ * @since 2026-07-16
+ */
 public class UsuarioDao {
 
     // Método auxiliar para mapear el ResultSet al objeto Usuario
+    /**
+     * Convierte una fila del ResultSet recibido en un objeto del modelo correspondiente.
+     * @param rs Resultado (ResultSet) de la consulta SQL ejecutada.
+     * @return Objeto Usuario encontrado, o `null` si no existe.
+     * @throws SQLException Si ocurre un error al ejecutar la operación en la base de datos.
+     */
     private Usuario mapearUsuario(ResultSet rs) throws SQLException {
         Usuario usuario = new Usuario();
         usuario.setIdUsuario(rs.getInt("id_usuario"));
@@ -43,6 +54,11 @@ public class UsuarioDao {
         return usuario;
     }
 
+    /**
+     * Busca en la base de datos el registro cuyo identificador coincide con el recibido.
+     * @param idUsuario Identificador único del usuario.
+     * @return Objeto Usuario encontrado, o `null` si no existe.
+     */
     public Usuario buscarPorId(int idUsuario) {
         Usuario usuario = null;
         String query = "SELECT * FROM usuario WHERE id_usuario = ?";
@@ -65,6 +81,12 @@ public class UsuarioDao {
         return usuario;
     }
 
+    /**
+     * Verifica las credenciales recibidas contra la base de datos y devuelve el usuario autenticado si son correctas.
+     * @param credencial Correo institucional o número de empleado usado para autenticar.
+     * @param contrasena Contraseña del usuario.
+     * @return Objeto Usuario encontrado, o `null` si no existe.
+     */
     public Usuario login(String credencial, String contrasena) {
         Usuario usuario = null;
         String query = "SELECT * FROM usuario WHERE (correo_institucional = ? OR numero_empleado = ?) AND contrasena = ? AND activo = 1";
@@ -89,6 +111,11 @@ public class UsuarioDao {
         return usuario;
     }
 
+    /**
+     * Busca en la base de datos el/los registro(s) que cumplen el criterio indicado.
+     * @param credencial Correo institucional o número de empleado usado para autenticar.
+     * @return Objeto Usuario encontrado, o `null` si no existe.
+     */
     public Usuario buscarPorEmailOEmpleado(String credencial) {
         Usuario usuario = null;
         String query = "SELECT * FROM usuario WHERE correo_institucional = ? OR numero_empleado = ?";
@@ -112,6 +139,12 @@ public class UsuarioDao {
         return usuario;
     }
 
+    /**
+     * Método auxiliar de la clase.
+     * @param idUsuario Identificador único del usuario.
+     * @param codigo Parámetro `codigo`.
+     * @return `true` si la operación fue exitosa o la condición se cumple; `false` en caso contrario.
+     */
     public boolean guardarCodigoRecuperacion(int idUsuario, String codigo) {
         String query = "INSERT INTO token_recuperacion (id_usuario, codigo_token, utilizado, fecha_expiracion) " +
                 "VALUES (?, ?, 0, CURRENT_TIMESTAMP + INTERVAL '15' MINUTE)";
@@ -131,6 +164,11 @@ public class UsuarioDao {
         return false;
     }
 
+    /**
+     * Verifica que la condición o dato indicado sea correcto.
+     * @param codigo Parámetro `codigo`.
+     * @return Objeto Usuario encontrado, o `null` si no existe.
+     */
     public Usuario verificarCodigo(String codigo) {
         Usuario usuario = null;
         String query = "SELECT u.* FROM usuario u " +
@@ -155,6 +193,12 @@ public class UsuarioDao {
         return usuario;
     }
 
+    /**
+     * Actualiza en la base de datos el registro indicado con los nuevos datos recibidos.
+     * @param idUsuario Identificador único del usuario.
+     * @param nuevaPassword Parámetro `nuevaPassword`.
+     * @return `true` si la operación fue exitosa o la condición se cumple; `false` en caso contrario.
+     */
     public boolean actualizarPasswordLimpiaCodigo(int idUsuario, String nuevaPassword) {
         Connection con = null;
         boolean exitoso = false;
@@ -202,6 +246,11 @@ public class UsuarioDao {
         return exitoso;
     }
 
+    /**
+     * Registra un nuevo registro en la base de datos con los datos recibidos.
+     * @param usuario Objeto Usuario con los datos a utilizar.
+     * @return `true` si la operación fue exitosa o la condición se cumple; `false` en caso contrario.
+     */
     public boolean registrarUsuario(Usuario usuario) {
         boolean estado = false;
         String query = "INSERT INTO usuario (nombre, apellido_paterno, apellido_materno, rol, id_division, numero_empleado, telefono, correo_institucional, contrasena, fecha_registro, activo, creado_por) " +
@@ -241,6 +290,13 @@ public class UsuarioDao {
         return estado;
     }
 
+    /**
+     * Actualiza en la base de datos el registro indicado con los nuevos datos recibidos.
+     * @param idUsuario Identificador único del usuario.
+     * @param actualPassword Parámetro `actualPassword`.
+     * @param nuevaPassword Parámetro `nuevaPassword`.
+     * @return `true` si la operación fue exitosa o la condición se cumple; `false` en caso contrario.
+     */
     public boolean actualizarPasswordEnCuenta(int idUsuario, String actualPassword, String nuevaPassword) {
         String query = "UPDATE usuario SET contrasena = ? WHERE id_usuario = ? AND contrasena = ?";
 
@@ -260,6 +316,11 @@ public class UsuarioDao {
         return false;
     }
 
+    /**
+     * Obtiene y devuelve el dato solicitado.
+     * @param idDivision Identificador de la división académica.
+     * @return Lista con los registros obtenidos (vacía si no hay resultados).
+     */
     public List<Evento> obtenerProximosEventos(Integer idDivision) {
         List<Evento> lista = new ArrayList<>();
         StringBuilder sql = new StringBuilder("SELECT ID_EVENTO, NOMBRE, FECHA_INICIO, FECHA_FIN FROM EVENTO ");
@@ -301,6 +362,11 @@ public class UsuarioDao {
         return lista;
     }
 
+    /**
+     * Elimina de forma permanente el registro indicado de la base de datos.
+     * @param idUsuario Identificador único del usuario.
+     * @return `true` si la operación fue exitosa o la condición se cumple; `false` en caso contrario.
+     */
     public boolean eliminarUsuario(int idUsuario) {
         String sql = "DELETE FROM usuario WHERE ID_USUARIO = ?";
 
@@ -317,6 +383,11 @@ public class UsuarioDao {
         }
     }
 
+    /**
+     * Obtiene y devuelve el dato solicitado.
+     * @param idUsuario Identificador único del usuario.
+     * @return Lista con los registros obtenidos (vacía si no hay resultados).
+     */
     public List<Evento> obtenerMisEventos(int idUsuario) {
         List<Evento> lista = new ArrayList<>();
         String sql = "SELECT ID_EVENTO, NOMBRE, FECHA_INICIO, FECHA_FIN, TIPO_EVENTO, INSTITUCION " +
@@ -349,6 +420,10 @@ public class UsuarioDao {
         return lista;
     }
 
+    /**
+     * Método auxiliar de la clase.
+     * @return Lista con los registros obtenidos (vacía si no hay resultados).
+     */
     public List<Usuario> GestionDocentes() {
         List<Usuario> lista = new ArrayList<>();
         String sql = "SELECT ID_USUARIO, NOMBRE, APELLIDO_PATERNO, APELLIDO_MATERNO, " +
@@ -382,6 +457,12 @@ public class UsuarioDao {
         return lista;
     }
 
+    /**
+     * Cambia el estado (activo/inactivo u otro) del registro indicado en la base de datos.
+     * @param idUsuario Identificador único del usuario.
+     * @param nuevoEstado Nuevo valor de estado a asignar.
+     * @return `true` si la operación fue exitosa o la condición se cumple; `false` en caso contrario.
+     */
     public boolean cambiarEstado(int idUsuario, int nuevoEstado) {
         String query = "UPDATE usuario SET activo = ? WHERE id_usuario = ?";
 
@@ -401,6 +482,11 @@ public class UsuarioDao {
         return false;
     }
 
+    /**
+     * Obtiene y devuelve el dato solicitado.
+     * @param idUsuario Identificador único del usuario.
+     * @return Objeto Usuario encontrado, o `null` si no existe.
+     */
     public Usuario obtenerDocentePorId(int idUsuario) {
         Usuario u = null;
         String sql = "SELECT ID_USUARIO, NOMBRE, APELLIDO_PATERNO, APELLIDO_MATERNO, " +
@@ -436,6 +522,11 @@ public class UsuarioDao {
         return u;
     }
 
+    /**
+     * Cambia el estado (activo/inactivo u otro) del registro indicado en la base de datos.
+     * @param idUsuario Identificador único del usuario.
+     * @return `true` si la operación fue exitosa o la condición se cumple; `false` en caso contrario.
+     */
     public boolean cambiarEstado(int idUsuario) {
         String query = "UPDATE usuario SET activo = CASE WHEN activo = 1 THEN 0 ELSE 1 END WHERE id_usuario = ?";
 
@@ -454,14 +545,32 @@ public class UsuarioDao {
         return false;
     }
 
+    /**
+     * Cambia el estado (activo/inactivo u otro) del registro indicado en la base de datos.
+     * @param idUsuario Identificador único del usuario.
+     * @param nuevoEstado Nuevo valor de estado a asignar.
+     * @return `true` si la operación fue exitosa o la condición se cumple; `false` en caso contrario.
+     */
     public boolean cambiarEstadoUsuario(int idUsuario, int nuevoEstado) {
         return cambiarEstado(idUsuario, nuevoEstado);
     }
 
+    /**
+     * Cambia el estado (activo/inactivo u otro) del registro indicado en la base de datos.
+     * @param idUsuario Identificador único del usuario.
+     * @return `true` si la operación fue exitosa o la condición se cumple; `false` en caso contrario.
+     */
     public boolean cambiarEstadoUsuario(int idUsuario) {
         return cambiarEstado(idUsuario);
     }
 
+    /**
+     * Actualiza en la base de datos el registro indicado con los nuevos datos recibidos.
+     * @param idUsuario Identificador único del usuario.
+     * @param telefono Número de teléfono de contacto.
+     * @param nuevaContrasena Parámetro `nuevaContrasena`.
+     * @return `true` si la operación fue exitosa o la condición se cumple; `false` en caso contrario.
+     */
     public boolean actualizarPerfil(int idUsuario, String telefono, String nuevaContrasena) {
         StringBuilder sql = new StringBuilder("UPDATE usuario SET ");
         boolean tieneTelefono = (telefono != null && !telefono.trim().isEmpty());
@@ -502,6 +611,12 @@ public class UsuarioDao {
         return false;
     }
 
+    /**
+     * Obtiene y devuelve el dato solicitado.
+     * @param idEvento Identificador del evento.
+     * @param idUsuario Identificador único del usuario.
+     * @return Valor entero resultante.
+     */
     public int obtenerIdParticipante(int idEvento, int idUsuario) {
         String sql = "SELECT id_participante FROM participante_evento WHERE id_evento = ? AND id_usuario = ?";
 
@@ -525,6 +640,12 @@ public class UsuarioDao {
         return -1;
     }
 
+    /**
+     * Obtiene y devuelve el dato solicitado.
+     * @param idEvento Identificador del evento.
+     * @param idUsuario Identificador único del usuario.
+     * @return Valor entero resultante.
+     */
     public int obtenerOCrearParticipante(int idEvento, int idUsuario) {
         int idParticipante = obtenerIdParticipante(idEvento, idUsuario);
         if (idParticipante != -1) {
@@ -557,6 +678,10 @@ public class UsuarioDao {
         return obtenerIdParticipante(idEvento, idUsuario);
     }
 
+    /**
+     * Consulta y devuelve la lista completa de registros de la entidad correspondiente.
+     * @return Lista con los registros obtenidos (vacía si no hay resultados).
+     */
     public List<agregarEvento_co> listarTodosEventos() {
         List<agregarEvento_co> lista = new ArrayList<>();
         String sql = "SELECT id_evento, nombre, tipo_evento, institucion, lugar, descripcion, " +
@@ -592,6 +717,11 @@ public class UsuarioDao {
         return lista;
     }
 
+    /**
+     * Obtiene y devuelve el dato solicitado.
+     * @param idUsuario Identificador único del usuario.
+     * @return Lista con los registros obtenidos (vacía si no hay resultados).
+     */
     public List<Evento> obtenerProximosEventosAsignados(int idUsuario) {
         List<Evento> lista = new ArrayList<>();
         String sql = "SELECT e.ID_EVENTO, e.NOMBRE, e.FECHA_INICIO, e.FECHA_FIN " +

@@ -9,6 +9,11 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Clase de acceso a datos (DAO) encargada de las operaciones CRUD sobre la base de datos relacionadas con la entidad correspondiente a 'UsuarioListaDao'.
+ * @author Gael Itzaya Velez Reyez
+ * @since 2026-08-02
+ */
 public class UsuarioListaDao {
 
     private static final int ID_DIVISION_GENERAL = 5;
@@ -43,6 +48,11 @@ public class UsuarioListaDao {
         return null;
     }
 
+    /**
+     * Consulta y devuelve la lista de registros solicitada.
+     * @param roles Parámetro `roles`.
+     * @return Lista con los registros obtenidos (vacía si no hay resultados).
+     */
     public List<Usuario> listarPorRoles(String... roles) {
         List<Usuario> lista = new ArrayList<>();
         if (roles == null || roles.length == 0) return lista;
@@ -84,6 +94,11 @@ public class UsuarioListaDao {
         return lista;
     }
 
+    /**
+     * Consulta y devuelve la lista de registros solicitada.
+     * @param idDivision Identificador de la división académica.
+     * @return Lista con los registros obtenidos (vacía si no hay resultados).
+     */
     public List<agregarEvento_co> listarEventosPorDivision1(int idDivision) {
         List<agregarEvento_co> lista = new ArrayList<>();
 
@@ -124,6 +139,11 @@ public class UsuarioListaDao {
         return lista;
     }
 
+    /**
+     * Consulta y devuelve la lista de registros solicitada.
+     * @param idUsuario Identificador único del usuario.
+     * @return Lista con los registros obtenidos (vacía si no hay resultados).
+     */
     public List<agregarEvento_co> listarEventosAsignados(int idUsuario) {
         List<agregarEvento_co> lista = new ArrayList<>();
 
@@ -204,6 +224,11 @@ public class UsuarioListaDao {
         return lista;
     }
 
+    /**
+     * Consulta y devuelve la lista de registros solicitada.
+     * @param idUsuario Identificador único del usuario.
+     * @return Lista con los registros obtenidos (vacía si no hay resultados).
+     */
     public List<agregarEvento_co> listarEventosPorUsuario(int idUsuario) {
         List<agregarEvento_co> lista = new ArrayList<>();
         String query = "SELECT e.id_evento, e.nombre, e.lugar, e.institucion, e.tipo_evento, e.descripcion, e.fecha_inicio, e.fecha_fin, e.modalidad " +
@@ -240,6 +265,11 @@ public class UsuarioListaDao {
         return lista;
     }
 
+    /**
+     * Consulta y devuelve la lista de registros solicitada.
+     * @param idEvento Identificador del evento.
+     * @return Lista con los registros obtenidos (vacía si no hay resultados).
+     */
     public List<Usuario> listarParticipantesPorEvento(int idEvento) {
         List<Usuario> lista = new ArrayList<>();
         String query = "SELECT u.id_usuario, u.nombre, u.apellido_paterno, u.apellido_materno, " +
@@ -279,6 +309,13 @@ public class UsuarioListaDao {
         return lista;
     }
 
+    /**
+     * Asigna la relación/registro indicado dentro del sistema.
+     * @param idEvento Identificador del evento.
+     * @param idUsuario Identificador único del usuario.
+     * @param idRegistrador Parámetro `idRegistrador`.
+     * @return `true` si la operación fue exitosa o la condición se cumple; `false` en caso contrario.
+     */
     public boolean asignarParticipante(int idEvento, int idUsuario, int idRegistrador) {
         String query = "INSERT INTO participante_evento (id_evento, id_usuario, registrado_por, fecha_registro) VALUES (?, ?, ?, SYSDATE)";
         try (Connection con = DatabaseConnection.getConnection();
@@ -296,6 +333,12 @@ public class UsuarioListaDao {
         return false;
     }
 
+    /**
+     * Elimina la asociación/registro indicado.
+     * @param idEvento Identificador del evento.
+     * @param idUsuario Identificador único del usuario.
+     * @return `true` si la operación fue exitosa o la condición se cumple; `false` en caso contrario.
+     */
     public boolean removerParticipante(int idEvento, int idUsuario) {
         String query = "DELETE FROM participante_evento WHERE id_evento = ? AND id_usuario = ?";
         try (Connection con = DatabaseConnection.getConnection();
@@ -312,6 +355,11 @@ public class UsuarioListaDao {
         return false;
     }
 
+    /**
+     * Actualiza en la base de datos el registro indicado con los nuevos datos recibidos.
+     * @param u Parámetro `u`.
+     * @return `true` si la operación fue exitosa o la condición se cumple; `false` en caso contrario.
+     */
     public boolean actualizarUsuario(Usuario u) {
         boolean estado = false;
         String query = "UPDATE usuario SET nombre = ?, apellido_paterno = ?, apellido_materno = ?, id_division = ?, numero_empleado = ?, telefono = ?, correo_institucional = ? WHERE id_usuario = ?";
@@ -344,6 +392,11 @@ public class UsuarioListaDao {
         return estado;
     }
 
+    /**
+     * Elimina de forma permanente el registro indicado de la base de datos.
+     * @param idUsuario Identificador único del usuario.
+     * @return `true` si la operación fue exitosa o la condición se cumple; `false` en caso contrario.
+     */
     public boolean eliminarUsuario(int idUsuario) {
         String deleteParticipante = "DELETE FROM participante_evento WHERE id_usuario = ?";
         String deleteUsuario = "DELETE FROM usuario WHERE id_usuario = ?";
@@ -372,6 +425,12 @@ public class UsuarioListaDao {
         return false;
     }
 
+    /**
+     * Cambia el estado (activo/inactivo u otro) del registro indicado en la base de datos.
+     * @param idUsuario Identificador único del usuario.
+     * @param nuevoEstado Nuevo valor de estado a asignar.
+     * @return `true` si la operación fue exitosa o la condición se cumple; `false` en caso contrario.
+     */
     public boolean cambiarEstado(int idUsuario, int nuevoEstado) {
         String query = "UPDATE usuario SET activo = ? WHERE id_usuario = ?";
         try (Connection con = DatabaseConnection.getConnection()) {
@@ -405,6 +464,11 @@ public class UsuarioListaDao {
         return false;
     }
 
+    /**
+     * Método auxiliar de la clase.
+     * @param idUsuario Identificador único del usuario.
+     * @return Valor entero resultante.
+     */
     public int contarEventosAsignados(int idUsuario) {
         String sql = "SELECT COUNT(e.ID_EVENTO) " +
                 "FROM EVENTO e " +
@@ -433,6 +497,10 @@ public class UsuarioListaDao {
         return total;
     }
 
+    /**
+     * Método auxiliar de la clase.
+     * @return Valor entero resultante.
+     */
     public int contarEventos() {
         int total = 0;
         String sql = "SELECT COUNT(ID_EVENTO) FROM EVENTO WHERE FECHA_FIN >= SYSDATE";
@@ -454,6 +522,11 @@ public class UsuarioListaDao {
         return total;
     }
 
+    /**
+     * Método auxiliar de la clase.
+     * @param idDivision Identificador de la división académica.
+     * @return Valor entero resultante.
+     */
     public int contarEventosPorDivision(int idDivision) {
         String sql = "SELECT COUNT(ID_EVENTO) FROM EVENTO WHERE ID_DIVISION = ? AND FECHA_FIN >= SYSDATE";
         int total = 0;
@@ -478,6 +551,11 @@ public class UsuarioListaDao {
         return total;
     }
 
+    /**
+     * Método auxiliar de la clase.
+     * @param idDivision Identificador de la división académica.
+     * @return Valor entero resultante.
+     */
     public int contarDocentesYCoordinadoresPorDivision(int idDivision) {
         String sql = "SELECT COUNT(*) FROM USUARIO WHERE LOWER(ROL) IN ('docente', 'coordinador') AND ID_DIVISION = ?";
         int total = 0;
@@ -502,10 +580,19 @@ public class UsuarioListaDao {
         return total;
     }
 
+    /**
+     * Método auxiliar de la clase.
+     * @param idDivision Identificador de la división académica.
+     * @return Valor entero resultante.
+     */
     public int contarDocentesYCoordinadoresPorDivision1(int idDivision) {
         return contarDocentesYCoordinadoresPorDivision(idDivision);
     }
 
+    /**
+     * Método auxiliar de la clase.
+     * @return Valor entero resultante.
+     */
     public int contarDocentesYCoordinadores() {
         String sql = "SELECT COUNT(*) FROM USUARIO WHERE LOWER(ROL) IN ('docente', 'coordinador')";
         int total = 0;
@@ -527,6 +614,12 @@ public class UsuarioListaDao {
         return total;
     }
 
+    /**
+     * Consulta y devuelve la lista de registros solicitada.
+     * @param idDivision Identificador de la división académica.
+     * @param roles Parámetro `roles`.
+     * @return Lista con los registros obtenidos (vacía si no hay resultados).
+     */
     public List<Usuario> listarPorRolesYDivision(int idDivision, String... roles) {
         List<Usuario> lista = new ArrayList<>();
         if (roles == null || roles.length == 0) return lista;
@@ -581,6 +674,12 @@ public class UsuarioListaDao {
         return lista;
     }
 
+    /**
+     * Registra un nuevo registro en la base de datos con los datos recibidos.
+     * @param periodo Objeto Periodo con los datos a utilizar.
+     * @param idUsuario Identificador único del usuario.
+     * @return `true` si la operación fue exitosa o la condición se cumple; `false` en caso contrario.
+     */
     public boolean registrarPeriodo(Periodo periodo, int idUsuario) {
         String sql = "INSERT INTO periodo_carga (ID_DIVISION, FECHA_INICIO, FECHA_FIN, ACTIVO, CREADO_POR) VALUES (?, ?, ?, ?, ?)";
 
@@ -602,6 +701,10 @@ public class UsuarioListaDao {
         }
     }
 
+    /**
+     * Consulta y devuelve todos los registros de la entidad correspondiente.
+     * @return Lista con los registros obtenidos (vacía si no hay resultados).
+     */
     public List<Periodo> obtenerTodosLosPeriodos() {
         List<Periodo> lista = new ArrayList<>();
 
@@ -634,6 +737,11 @@ public class UsuarioListaDao {
         return lista;
     }
 
+    /**
+     * Elimina de forma permanente el registro indicado de la base de datos.
+     * @param idPeriodo Identificador del periodo de carga.
+     * @return `true` si la operación fue exitosa o la condición se cumple; `false` en caso contrario.
+     */
     public boolean eliminarPeriodo(int idPeriodo) {
         String sql = "DELETE FROM periodo_carga WHERE ID_PERIODO = ?";
 
@@ -653,6 +761,12 @@ public class UsuarioListaDao {
     }
 
 
+    /**
+     * Cambia el estado (activo/inactivo u otro) del registro indicado en la base de datos.
+     * @param idPeriodo Identificador del periodo de carga.
+     * @param nuevoEstado Nuevo valor de estado a asignar.
+     * @return Cadena de texto resultante.
+     */
     public String cambiarEstadoPeriodoError(int idPeriodo, boolean nuevoEstado) {
         try (Connection con = DatabaseConnection.getConnection()) {
             if (con == null) return "Sin conexion";
@@ -706,6 +820,12 @@ public class UsuarioListaDao {
         }
     }
 
+    /**
+     * Cambia el estado (activo/inactivo u otro) del registro indicado en la base de datos.
+     * @param idPeriodo Identificador del periodo de carga.
+     * @param nuevoEstado Nuevo valor de estado a asignar.
+     * @return `true` si la operación fue exitosa o la condición se cumple; `false` en caso contrario.
+     */
     public boolean cambiarEstadoPeriodo(int idPeriodo, boolean nuevoEstado) {
 
         String sql = "UPDATE periodo_carga SET ACTIVO = ? WHERE ID_PERIODO = ?";
@@ -726,6 +846,14 @@ public class UsuarioListaDao {
     }
 
 
+    /**
+     * Actualiza en la base de datos el registro indicado con los nuevos datos recibidos.
+     * @param idPeriodo Identificador del periodo de carga.
+     * @param division Parámetro `division`.
+     * @param fechaInicio Fecha de inicio.
+     * @param fechaFin Fecha de fin.
+     * @return Cadena de texto resultante.
+     */
     public String actualizarPeriodoError(int idPeriodo, String division, String fechaInicio, String fechaFin) {
         try (Connection con = DatabaseConnection.getConnection()) {
             if (con == null) return "Sin conexion";
@@ -786,6 +914,14 @@ public class UsuarioListaDao {
         }
     }
 
+    /**
+     * Actualiza en la base de datos el registro indicado con los nuevos datos recibidos.
+     * @param idPeriodo Identificador del periodo de carga.
+     * @param division Parámetro `division`.
+     * @param fechaInicio Fecha de inicio.
+     * @param fechaFin Fecha de fin.
+     * @return `true` si la operación fue exitosa o la condición se cumple; `false` en caso contrario.
+     */
     public boolean actualizarPeriodo(int idPeriodo, String division, String fechaInicio, String fechaFin) {
 
         String sql = "UPDATE periodo_carga SET " +
@@ -816,6 +952,12 @@ public class UsuarioListaDao {
         }
     }
 
+    /**
+     * Verifica si el registro indicado ya existe en la base de datos.
+     * @param division Parámetro `division`.
+     * @param idPeriodoExcluir Parámetro `idPeriodoExcluir`.
+     * @return `true` si la operación fue exitosa o la condición se cumple; `false` en caso contrario.
+     */
     public boolean existeDivision(String division, int idPeriodoExcluir) {
         String sql = "SELECT COUNT(*) FROM periodo_carga p " +
                 "JOIN division d ON p.ID_DIVISION = d.ID_DIVISION " +
@@ -844,6 +986,11 @@ public class UsuarioListaDao {
         return false;
     }
 
+    /**
+     * Obtiene y devuelve el dato solicitado.
+     * @param divisionOrId Parámetro `divisionOrId`.
+     * @return Cadena de texto resultante.
+     */
     public String obtenerNombreDivision(String divisionOrId) {
         String sql = "SELECT NOMBRE FROM division WHERE NOMBRE = ? OR TO_CHAR(ID_DIVISION) = ?";
         try (Connection con = DatabaseConnection.getConnection();
@@ -865,6 +1012,9 @@ public class UsuarioListaDao {
         return divisionOrId;
     }
 
+    /**
+     * Método auxiliar de la clase.
+     */
     public void desactivarPeriodosVencidos() {
         String sql = "UPDATE periodo_carga SET activo = 0 WHERE fecha_fin < TRUNC(SYSDATE) AND activo = 1";
 
@@ -884,6 +1034,11 @@ public class UsuarioListaDao {
         }
     }
 
+    /**
+     * Método auxiliar de la clase.
+     * @param idPeriodo Identificador del periodo de carga.
+     * @return `true` si la operación fue exitosa o la condición se cumple; `false` en caso contrario.
+     */
     public boolean periodoYaVencio(int idPeriodo) {
         String sql = "SELECT CASE WHEN fecha_fin < TRUNC(SYSDATE) THEN 1 ELSE 0 END AS vencido " +
                 "FROM periodo_carga WHERE id_periodo = ?";

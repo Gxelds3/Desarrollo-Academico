@@ -12,10 +12,20 @@ import mx.edu.utez.DesarrolloAcademico.model.dao.AgregarDesarrollador_Dao;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+/**
+ * Controlador (servlet) que gestiona la lógica de 'EditarDesarrollador' en la capa de presentación del patrón MVC.
+ * @author Carlos Apreza Gutierrez
+ * @since 2026-07-31
+ */
 @WebServlet(name = "EditarDesarrollador", value = "/EditarDesarrollador")
 @MultipartConfig
 public class EditarDesarrollador extends HttpServlet {
 
+    /**
+     * Método auxiliar de la clase.
+     * @param valor Parámetro `valor`.
+     * @return Cadena de texto resultante.
+     */
     private String escapar(String valor) {
         if (valor == null) return "";
         return valor.replace("\\", "\\\\").replace("\"", "\\\"");
@@ -46,6 +56,13 @@ public class EditarDesarrollador extends HttpServlet {
         response.sendRedirect(request.getContextPath() + "/gestion_desarrolladores_de.jsp");
     }
 
+    /**
+     * Maneja las peticiones HTTP POST recibidas por este servlet.
+     * @param request Objeto de la petición HTTP entrante.
+     * @param response Objeto de la respuesta HTTP a generar.
+     * @throws ServletException Si ocurre un error al procesar la petición dentro del servlet.
+     * @throws IOException Si ocurre un error de entrada/salida al leer o escribir la petición/respuesta.
+     */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");

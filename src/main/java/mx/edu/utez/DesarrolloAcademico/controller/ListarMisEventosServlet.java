@@ -14,6 +14,11 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
 
+/**
+ * Servlet controlador que atiende las peticiones HTTP relacionadas con 'ListarMisEventos' dentro de la arquitectura MVC del proyecto.
+ * @author Gael Itzaya Velez Reyez
+ * @since 2026-08-02
+ */
 @WebServlet(name = "ListarMisEventosServlet", value = "/ListarMisEventosServlet")
 public class ListarMisEventosServlet extends HttpServlet {
 
@@ -71,6 +76,11 @@ public class ListarMisEventosServlet extends HttpServlet {
         out.flush();
     }
 
+    /**
+     * Método auxiliar de la clase.
+     * @param v Parámetro `v`.
+     * @return Cadena de texto resultante.
+     */
     private String esc(String v) {
         if (v == null) return "";
         return v

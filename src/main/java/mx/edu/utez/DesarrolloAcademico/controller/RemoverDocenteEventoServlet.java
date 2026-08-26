@@ -11,6 +11,11 @@ import mx.edu.utez.DesarrolloAcademico.model.dao.UsuarioListaDao;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+/**
+ * Servlet controlador que atiende las peticiones HTTP relacionadas con 'RemoverDocenteEvento' dentro de la arquitectura MVC del proyecto.
+ * @author Gael Itzaya Velez Reyez
+ * @since 2026-08-02
+ */
 @WebServlet(name = "RemoverDocenteEventoServlet", value = "/RemoverDocenteEventoServlet")
 public class RemoverDocenteEventoServlet extends HttpServlet {
 

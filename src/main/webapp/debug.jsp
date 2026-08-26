@@ -1,3 +1,7 @@
+<%--
+  Vista: debug.jsp
+  Descripción: Página de utilidad para depuración/pruebas manuales durante el desarrollo; no forma parte del flujo funcional para el usuario final.
+--%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="java.sql.*" %>
 <%@ page import="mx.edu.utez.DesarrolloAcademico.utils.DatabaseConnection" %>

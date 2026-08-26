@@ -13,9 +13,19 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
+/**
+ * Filtro de seguridad que protege las vistas JSP restringidas por rol (sufijos _de, _co, _do): valida que exista una sesión activa y que el usuario en sesión siga activo en la base de datos antes de permitir el acceso.
+ * @author Gael Itzaya Velez Reyez
+ * @since 2026-08-04
+ */
 @WebFilter(urlPatterns = {"*.jsp"})
 public class SecurityFilter implements Filter {
 
+    /**
+     * Inicializa el filtro/servlet antes de que comience a atender peticiones.
+     * @param filterConfig Configuración del filtro proporcionada por el contenedor de servlets.
+     * @throws ServletException Si ocurre un error al procesar la petición dentro del servlet.
+     */
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
     }
@@ -73,6 +83,11 @@ public class SecurityFilter implements Filter {
         chain.doFilter(request, response);
     }
 
+    /**
+     * Método auxiliar de la clase.
+     * @param idUsuario Identificador único del usuario.
+     * @return `true` si la operación fue exitosa o la condición se cumple; `false` en caso contrario.
+     */
     private boolean usuarioSigueActivo(int idUsuario) {
         String sql = "SELECT activo FROM usuario WHERE id_usuario = ?";
         try (Connection con = DatabaseConnection.getConnection();
@@ -91,6 +106,9 @@ public class SecurityFilter implements Filter {
         return false;
     }
 
+    /**
+     * Libera los recursos utilizados por el filtro/servlet al finalizar su ciclo de vida.
+     */
     @Override
     public void destroy() {
     }

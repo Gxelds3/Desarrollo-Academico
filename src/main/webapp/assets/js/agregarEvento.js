@@ -1,3 +1,9 @@
+/**
+ * agregarEvento.js
+ *
+ * Lógica de la vista para agregar/asignar participantes (docentes) a un evento: catálogo de usuarios disponibles, búsqueda y tabla de asignados.
+ */
+
 // =====================================================================
 // agregarEvento.js – Lógica para agregar evento con asignación de docentes
 // =====================================================================
@@ -12,10 +18,30 @@ let docentesAsignados = [];       // Lista local de docentes a asignar (aún no 
 let filtroParticipante = '';
 
 // ---- Helpers ----
+/**
+ * Obtiene el identificador de un usuario contemplando distintos nombres posibles de la propiedad (idUsuario o id).
+ * @param {*} u
+ */
 function getIdUsuario(u) { return u.idUsuario || u.id; }
+/**
+ * Obtiene el correo institucional de un usuario contemplando distintos nombres posibles de la propiedad.
+ * @param {*} u
+ */
 function getCorreoUsuario(u) { return u.correoInstitucional || u.correo || ''; }
+/**
+ * Escapa los caracteres especiales de HTML (&, <, >) de un texto para insertarlo de forma segura en el DOM y prevenir inyección de HTML/XSS.
+ * @param {*} t
+ */
 function escHtml(t) { return String(t || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+/**
+ * Normaliza un texto a minúsculas y sin acentos/diacríticos, para poder comparar cadenas de forma insensible a mayúsculas y tildes (usado en buscadores/filtros).
+ * @param {*} t
+ */
 function normStr(t) { return String(t||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,''); }
+/**
+ * Devuelve el nombre legible de la división académica a partir de su identificador numérico.
+ * @param {*} id
+ */
 function getDivisionName(id) {
     if (!id) return 'N/A';
     switch(Number(id)) {
@@ -27,6 +53,10 @@ function getDivisionName(id) {
         default: return 'N/A';
     }
 }
+/**
+ * Concatena nombre y apellidos de un usuario en una sola cadena de nombre completo, ignorando los campos vacíos.
+ * @param {*} u
+ */
 function getNombreCompleto(u) {
     return [u.nombre, u.apellidoPaterno, u.apellidoMaterno].filter(Boolean).join(' ');
 }
@@ -38,6 +68,9 @@ const inputBuscarDocente = document.getElementById('inputBuscarDocente');
 const tbodyBusquedaDocentes = document.getElementById('tbodyBusquedaDocentes');
 const hiddenContainer = document.getElementById('hiddenDocentesContainer');
 
+/**
+ * Renderiza en el DOM la tabla de usuarios/docentes ya asignados al evento.
+ */
 function renderTablaAsignados() {
     if (!tbodyParticipantes) return;
     var filtro = normStr(filtroParticipante);
@@ -118,6 +151,9 @@ if (tbodyParticipantes) {
 }
 
 // ---- Modal buscador ----
+/**
+ * Obtiene del servidor el catálogo completo de usuarios disponibles para ser asignados/agregados.
+ */
 function cargarTodosLosUsuarios() {
     fetch(contextPath + '/ListarUsuariosServlet?t=' + Date.now(), { credentials: 'same-origin' })
         .then(function(res) { return res.json(); })
@@ -125,6 +161,10 @@ function cargarTodosLosUsuarios() {
         .catch(function(err) { console.error('Error al cargar usuarios:', err); });
 }
 
+/**
+ * Renderiza en el DOM los resultados del buscador de docentes/usuarios disponibles para asignar, según el filtro indicado.
+ * @param {*} filtro
+ */
 function renderBusquedaDocentes(filtro) {
     if (!tbodyBusquedaDocentes) return;
     var texto = normStr(filtro);

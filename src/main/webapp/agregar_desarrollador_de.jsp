@@ -1,3 +1,11 @@
+<%--
+  Vista: agregar_desarrollador_de.jsp
+  Rol: Desarrollador
+  Descripción: Formulario para registrar un nuevo desarrollador en el sistema.
+  Incluye los fragmentos: sidebar_de.jsp
+  Formulario(s): envía a '#' por POST
+  Scripts propios: assets/js/coordinador.js, assets/js/AgregarDesarrollador.js
+--%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!doctype html>
 <html lang="es">
@@ -11,6 +19,7 @@
 </head>
 <body>
 
+<%-- Fragmento incluido: sidebar_de.jsp --%>
 <jsp:include page="sidebar_de.jsp">
     <jsp:param name="active" value="gestion_usuarios" />
     <jsp:param name="active_sub" value="desarrollador" />
@@ -24,6 +33,7 @@
         <h5 class="mb-0 fw-bold">DATOS DEL DESARROLLADOR</h5>
     </div>
 
+        <!-- Formulario: envía a '#' por POST -->
     <form id="formAgregarDesarrollador" action="#" method="POST">
         <div class="row mb-4">
             <div class="col-md-4">

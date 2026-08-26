@@ -1,3 +1,12 @@
+<%--
+  Vista: agregar_docente_co.jsp
+  Rol: Coordinador
+  Descripción: Formulario para registrar un nuevo docente o coordinador en el sistema.
+  Espera en sesión: usuario
+  Incluye los fragmentos: sidebar_co.jsp
+  Formulario(s): envía a '#' por POST
+  Scripts propios: assets/js/coordinador.js, assets/js/AgregarDocente.js
+--%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="mx.edu.utez.DesarrolloAcademico.model.Usuario" %>
 <% 
@@ -24,6 +33,7 @@
 </head>
 <body>
 
+<%-- Fragmento incluido: sidebar_co.jsp --%>
 <jsp:include page="sidebar_co.jsp">
     <jsp:param name="active" value="gestion_docente" />
 </jsp:include>
@@ -36,6 +46,7 @@
         <h5 class="mb-0 fw-bold">DATOS DEL DOCENTE</h5>
     </div>
 
+        <!-- Formulario: envía a '#' por POST -->
     <form id="formAgregarDocente" action="#" method="POST">
         <div class="row mb-4">
             <div class="col-md-4">

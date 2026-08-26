@@ -1,3 +1,9 @@
+<%--
+  Vista: sidebar_do.jsp
+  Rol: Docente
+  Descripción: Fragmento reutilizable de menú lateral (sidebar), incluido dentro de las demás vistas de este rol.
+  Espera en sesión: usuario
+--%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="mx.edu.utez.DesarrolloAcademico.model.Usuario" %>
 <%

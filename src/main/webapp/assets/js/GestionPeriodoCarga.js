@@ -1,3 +1,9 @@
+/**
+ * GestionPeriodoCarga.js
+ *
+ * Lógica de la vista de gestión de periodos de carga: listado, resaltado de vigencia y cambio de estado (activar/desactivar) de cada periodo.
+ */
+
 document.addEventListener("DOMContentLoaded", function() {
     cargarPeriodos();
 
@@ -12,6 +18,9 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 });
 
+/**
+ * Obtiene del servidor la lista de periodos de carga y los muestra en la tabla.
+ */
 function cargarPeriodos() {
     const tbody = document.getElementById("tablaPeriodosBody");
     tbody.innerHTML = `<tr><td colspan="5" class="py-4 text-muted">Cargando periodos...</td></tr>`;
@@ -76,6 +85,11 @@ function cargarPeriodos() {
         });
 }
 
+/**
+ * Solicita confirmación al usuario y, si acepta, envía al servidor la petición para cambiar el estado del periodo de carga.
+ * @param {*} id
+ * @param {*} nuevoEstado
+ */
 function confirmarCambioEstado(id, nuevoEstado) {
     const accionTexto = nuevoEstado ? "activar" : "desactivar";
 

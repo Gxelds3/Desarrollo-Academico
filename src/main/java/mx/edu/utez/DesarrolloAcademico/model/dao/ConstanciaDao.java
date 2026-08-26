@@ -8,9 +8,20 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Clase de acceso a datos (DAO) encargada de las operaciones CRUD sobre la base de datos relacionadas con la entidad correspondiente a 'ConstanciaDao'.
+ * @author Gael Itzaya Velez Reyez
+ * @since 2026-08-02
+ */
 public class ConstanciaDao {
 
     // Obtiene el id_participante dado un evento y usuario
+    /**
+     * Obtiene y devuelve el dato solicitado.
+     * @param idEvento Identificador del evento.
+     * @param idUsuario Identificador único del usuario.
+     * @return Valor entero resultante.
+     */
     public int obtenerIdParticipante(int idEvento, int idUsuario) {
         int idParticipante = -1;
         String query = "SELECT id_participante FROM participante_evento WHERE id_evento = ? AND id_usuario = ?";
@@ -37,6 +48,11 @@ public class ConstanciaDao {
     }
 
     // Verifica si ya existe una constancia para el participante
+    /**
+     * Verifica que la condición o dato indicado sea correcto.
+     * @param idParticipante Parámetro `idParticipante`.
+     * @return `true` si la operación fue exitosa o la condición se cumple; `false` en caso contrario.
+     */
     public boolean verificarConstanciaExistente(int idParticipante) {
         String query = "SELECT id_constancia FROM constancia WHERE id_participante = ?";
 
@@ -56,6 +72,17 @@ public class ConstanciaDao {
     }
 
     // Guarda una constancia con el archivo como BLOB en Oracle
+    /**
+     * Método auxiliar de la clase.
+     * @param idParticipante Parámetro `idParticipante`.
+     * @param nombreArchivo Parámetro `nombreArchivo`.
+     * @param contenidoArchivo Parámetro `contenidoArchivo`.
+     * @param contentType Parámetro `contentType`.
+     * @param tieneVigencia Parámetro `tieneVigencia`.
+     * @param fechaVencimiento Parámetro `fechaVencimiento`.
+     * @param subidoPor Parámetro `subidoPor`.
+     * @return `true` si la operación fue exitosa o la condición se cumple; `false` en caso contrario.
+     */
     public boolean guardarConstancia(int idParticipante, String nombreArchivo, byte[] contenidoArchivo,
                                      String contentType, boolean tieneVigencia, String fechaVencimiento, int subidoPor) {
         String query;
@@ -90,6 +117,17 @@ public class ConstanciaDao {
     }
 
     // Alias para coordinador — misma lógica
+    /**
+     * Método auxiliar de la clase.
+     * @param idParticipante Parámetro `idParticipante`.
+     * @param nombreArchivo Parámetro `nombreArchivo`.
+     * @param contenidoArchivo Parámetro `contenidoArchivo`.
+     * @param contentType Parámetro `contentType`.
+     * @param tieneVigencia Parámetro `tieneVigencia`.
+     * @param fechaVencimiento Parámetro `fechaVencimiento`.
+     * @param subidoPor Parámetro `subidoPor`.
+     * @return `true` si la operación fue exitosa o la condición se cumple; `false` en caso contrario.
+     */
     public boolean guardarConstanciaCO(int idParticipante, String nombreArchivo, byte[] contenidoArchivo,
                                        String contentType, boolean tieneVigencia, String fechaVencimiento, int subidoPor) {
         if (idParticipante <= 0) {
@@ -100,6 +138,11 @@ public class ConstanciaDao {
     }
 
     // Obtiene metadatos de la constancia (SIN el BLOB para no saturar memoria)
+    /**
+     * Obtiene y devuelve el dato solicitado.
+     * @param idParticipante Parámetro `idParticipante`.
+     * @return Resultado de tipo `Map<String, Object>`.
+     */
     public Map<String, Object> obtenerConstancia(int idParticipante) {
         Map<String, Object> datos = null;
         String query = "SELECT id_constancia, nombre_archivo, content_type, tiene_vigencia, fecha_vencimiento, fecha_subida " +
@@ -129,6 +172,11 @@ public class ConstanciaDao {
     }
 
     // Obtiene el BLOB del archivo para servirlo como descarga
+    /**
+     * Obtiene y devuelve el dato solicitado.
+     * @param idConstancia Parámetro `idConstancia`.
+     * @return Resultado de tipo `byte[]`.
+     */
     public byte[] obtenerContenidoArchivo(int idConstancia) {
         String query = "SELECT contenido_archivo FROM constancia WHERE id_constancia = ?";
 
@@ -150,6 +198,11 @@ public class ConstanciaDao {
     }
 
     // Obtiene nombre y content_type de una constancia (para el servlet de descarga)
+    /**
+     * Obtiene y devuelve el dato solicitado.
+     * @param idConstancia Parámetro `idConstancia`.
+     * @return Resultado de tipo `Map<String, String>`.
+     */
     public Map<String, String> obtenerMetaDescarga(int idConstancia) {
         String query = "SELECT nombre_archivo, content_type FROM constancia WHERE id_constancia = ?";
 
@@ -175,6 +228,12 @@ public class ConstanciaDao {
     }
 
     // Elimina la constancia de la BD
+    /**
+     * Elimina de forma permanente el registro indicado de la base de datos.
+     * @param idConstancia Parámetro `idConstancia`.
+     * @param idParticipante Parámetro `idParticipante`.
+     * @return `true` si la operación fue exitosa o la condición se cumple; `false` en caso contrario.
+     */
     public boolean eliminarConstancia(int idConstancia, int idParticipante) {
         String queryDelete = "DELETE FROM constancia WHERE id_constancia = ? AND id_participante = ?";
 
@@ -192,6 +251,11 @@ public class ConstanciaDao {
         return false;
     }
 
+    /**
+     * Método auxiliar de la clase.
+     * @param idDivision Identificador de la división académica.
+     * @return `true` si la operación fue exitosa o la condición se cumple; `false` en caso contrario.
+     */
     public boolean esPeriodoActivo(int idDivision) {
         boolean activo = false;
         String sql = "SELECT 1 FROM periodo_carga WHERE ID_DIVISION = ? AND ACTIVO = 1 AND TRUNC(SYSDATE) BETWEEN TRUNC(FECHA_INICIO) AND TRUNC(FECHA_FIN)";

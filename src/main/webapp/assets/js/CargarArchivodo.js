@@ -1,3 +1,9 @@
+/**
+ * CargarArchivodo.js
+ *
+ * Lógica de la vista de carga de constancia para el rol Docente: validación del periodo de carga vigente, control de vigencia del archivo y envío de la entrega.
+ */
+
 const params = new URLSearchParams(window.location.search);
 const idEvento = params.get('id');
 const idUsuarioTarget = params.get('idUsuarioTarget'); // Capturamos objetivo si viene de admin/coordinador
@@ -17,6 +23,10 @@ if (idEvento) {
     });
 }
 
+/**
+ * Convierte una fecha en formato ISO a un formato de fecha legible para mostrar en la interfaz.
+ * @param {*} iso
+ */
 function aFechaVisible(iso) {
     if (!iso) return '';
     const partes = iso.split('-');
@@ -24,16 +34,28 @@ function aFechaVisible(iso) {
     return partes[2] + '/' + partes[1] + '/' + partes[0].slice(2);
 }
 
+/**
+ * Devuelve el texto recibido con la primera letra en mayúscula.
+ * @param {*} texto
+ */
 function capitalizar(texto) {
     if (!texto) return '';
     return texto.charAt(0).toUpperCase() + texto.slice(1);
 }
 
+/**
+ * Muestra el formulario de carga/entrega, ocultando otros estados de la vista (cargando, error, etc.).
+ */
 function mostrarFormulario() {
     document.getElementById('formCargaArchivo').style.display = '';
     document.getElementById('constanciaCard').style.display = 'none';
 }
 
+/**
+ * Muestra en la vista los datos de la constancia ya entregada, indicando si se encuentra vencida.
+ * @param {*} c
+ * @param {*} estaBloqueado
+ */
 function mostrarConstancia(c, estaBloqueado) {
     document.getElementById('formCargaArchivo').style.display = 'none';
     const card = document.getElementById('constanciaCard');
@@ -62,6 +84,11 @@ function mostrarConstancia(c, estaBloqueado) {
     }
 }
 
+/**
+ * Deshabilita el formulario de carga y muestra el mensaje indicado al usuario.
+ * @param {*} mensaje
+ * @param {*} titulo
+ */
 function bloquearFormularioCarga(mensaje, titulo) {
     // Ocultar el data-card de subida dentro del form
     const form = document.getElementById('formCargaArchivo');
@@ -80,6 +107,10 @@ function bloquearFormularioCarga(mensaje, titulo) {
     }
 }
 
+/**
+ * Inicializa la página: valida el periodo de carga vigente, carga los datos del evento/constancia y configura los listeners del formulario.
+ * @returns {Promise<void>}
+ */
 async function inicializarPagina() {
     let estaBloqueado = false;
     let motivoBloqueo = "El periodo de recepción de constancias no está activo.";

@@ -1,3 +1,9 @@
+/**
+ * GestionDesarrolladores.js
+ *
+ * Lógica de la vista de gestión (listado) de desarrolladores: búsqueda, activar/desactivar y eliminación permanente.
+ */
+
 const contextPath = window.contextPath || '';
 const tbody = document.getElementById('tablaDesarrolladoresBody');
 const inputBuscar = document.getElementById('buscarDesarrollador');
@@ -15,6 +21,12 @@ let desarrolladoresOriginales = [];
 let filtroTexto = '';
 
 // Helper para alertas SweetAlert2
+/**
+ * Muestra una alerta emergente (SweetAlert2) al usuario; si SweetAlert2 no está disponible, recurre a `alert()` nativo como respaldo.
+ * @param {*} titulo
+ * @param {*} mensaje
+ * @param {*} [icono='warning']
+ */
 function mostrarAlerta(titulo, mensaje, icono = 'warning') {
     if (typeof Swal !== 'undefined') {
         Swal.fire({
@@ -31,6 +43,10 @@ function mostrarAlerta(titulo, mensaje, icono = 'warning') {
 // ------------------------------------------------------------------
 //  VALIDACIONES DE FRONTEND (TODAS LAS REGLAS REQUERIDAS)
 // ------------------------------------------------------------------
+/**
+ * Valida en el frontend los campos obligatorios y el formato de los datos de un docente antes de enviarlos al servidor.
+ * @param {*} datos
+ */
 function validarFormularioDocente(datos) {
     const { nombre, apeP, apeM, division, numEmp, tel, correo, pass, confirmPass } = datos;
 
@@ -85,6 +101,10 @@ function validarFormularioDocente(datos) {
     return true;
 }
 
+/**
+ * Escapa los caracteres especiales de HTML (&, <, >) de un texto para insertarlo de forma segura en el DOM y prevenir inyección de HTML/XSS.
+ * @param {*} texto
+ */
 function escapeHtml(texto) {
     if (texto === null || texto === undefined) return '';
     return String(texto)
@@ -93,6 +113,10 @@ function escapeHtml(texto) {
         .replace(/>/g, '&gt;'); // CORREGIDO: > en lugar de $
 }
 
+/**
+ * Normaliza un texto a minúsculas y sin acentos/diacríticos, para poder comparar cadenas de forma insensible a mayúsculas y tildes (usado en buscadores/filtros).
+ * @param {*} texto
+ */
 function normalizar(texto) {
     return String(texto || '')
         .toLowerCase()
@@ -100,11 +124,19 @@ function normalizar(texto) {
         .replace(/[\u0300-\u036f]/g, ''); // quita acentos para que "búsqueda" == "busqueda"
 }
 
+/**
+ * Concatena nombre y apellidos de un registro en una sola cadena de nombre completo, ignorando los campos vacíos.
+ * @param {*} dev
+ */
 function nombreCompleto(dev) {
     return [dev.nombre, dev.apellidoPaterno, dev.apellidoMaterno].filter(Boolean).join(' ');
 }
 
 // Función helper para obtener las primeras dos iniciales
+/**
+ * Obtiene las iniciales (hasta dos letras) a partir de un nombre completo, usadas para mostrar un avatar/placeholder visual.
+ * @param {*} nombreStr
+ */
 function obtenerIniciales(nombreStr) {
     if (!nombreStr) return '';
     const palabras = nombreStr.trim().split(/\s+/);
@@ -114,6 +146,9 @@ function obtenerIniciales(nombreStr) {
     return (palabras[0][0] + palabras[1][0]).toUpperCase();
 }
 
+/**
+ * Devuelve la lista de desarrolladores que coinciden con el texto de búsqueda actual (filtrado en memoria sobre la lista maestra).
+ */
 function obtenerDesarrolladoresFiltrados() {
     const texto = normalizar(filtroTexto);
     if (texto === '') return desarrolladoresOriginales;
@@ -124,6 +159,10 @@ function obtenerDesarrolladoresFiltrados() {
     });
 }
 
+/**
+ * Renderiza en el DOM la tabla de desarrolladores a partir de la lista recibida.
+ * @param {*} lista
+ */
 function renderDesarrolladores(lista) {
     if (!tbody) return;
 
@@ -169,10 +208,16 @@ function renderDesarrolladores(lista) {
     });
 }
 
+/**
+ * Aplica el filtro de búsqueda vigente sobre la lista maestra y vuelve a renderizar la tabla con el resultado.
+ */
 function aplicarFiltro() {
     window.renderPaginator(obtenerDesarrolladoresFiltrados(), 20, 'paginationContainer', renderDesarrolladores);
 }
 
+/**
+ * Obtiene del servidor la lista de desarrolladores y la muestra en la tabla, aplicando el filtro de búsqueda vigente.
+ */
 function cargarDesarrolladores() {
     if (!tbody) return;
     tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted py-4">Cargando...</td></tr>';
@@ -197,6 +242,11 @@ function cargarDesarrolladores() {
 }
 
 //  FUNCIÃ“N PARA EL SWITCH: Cambiar estado Activo/Inactivo
+/**
+ * Envía al servidor la petición para activar/desactivar (o cambiar de estado) el registro indicado.
+ * @param {*} id
+ * @param {*} nuevoEstado
+ */
 function cambiarEstado(id, nuevoEstado) {
     const datos = new URLSearchParams();
     datos.append('id', id);
@@ -215,6 +265,10 @@ function cambiarEstado(id, nuevoEstado) {
 }
 
 // FUNCIÃ“N PARA LA PAPELERA: Eliminar definitivamente de BD
+/**
+ * Solicita confirmación al usuario y, si acepta, envía al servidor la petición para eliminar de forma permanente al desarrollador indicado.
+ * @param {*} id
+ */
 function eliminarDesarrolladorPermanente(id) {
     const datos = new URLSearchParams();
     datos.append('idUsuario', id);

@@ -1,3 +1,9 @@
+/**
+ * AgregarDocente.js
+ *
+ * Lógica de la vista de alta (registro) de un nuevo docente: validaciones en tiempo real de los campos y envío del formulario al servidor.
+ */
+
 document.addEventListener("DOMContentLoaded", () => {
     // 1. RESTRICCIÓN EN TIEMPO REAL: Solo números
     const inputsNumericos = document.querySelectorAll('#campoTelefono, #campoNumEmpleado, [name="telefono"], [name="numero_empleado"]');
@@ -26,6 +32,12 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 // Función auxiliar para mostrar alertas de SweetAlert2 rápidamente
+/**
+ * Muestra una alerta emergente (SweetAlert2) al usuario; si SweetAlert2 no está disponible, recurre a `alert()` nativo como respaldo.
+ * @param {*} titulo
+ * @param {*} mensaje
+ * @param {*} [icono='warning']
+ */
 function mostrarAlerta(titulo, mensaje, icono = 'warning') {
     Swal.fire({
         icon: icono,
@@ -35,6 +47,9 @@ function mostrarAlerta(titulo, mensaje, icono = 'warning') {
     });
 }
 
+/**
+ * Determina, según el rol del usuario en sesión, a qué página debe redirigir tras completar una acción.
+ */
 function obtenerPaginaDestino() {
     const pathActual = window.location.pathname;
     if (pathActual.includes('_de.jsp')) return 'gestion_docente_de.jsp';
@@ -42,6 +57,10 @@ function obtenerPaginaDestino() {
     return 'gestion_docente_co.jsp';
 }
 
+/**
+ * Recolecta y valida los datos del formulario y envía al servidor la petición para registrar un nuevo docente.
+ * @param {*} e
+ */
 function registrarDocente(e) {
     if (e && e.preventDefault) e.preventDefault();
 

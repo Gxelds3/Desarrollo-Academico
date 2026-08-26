@@ -15,17 +15,36 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import mx.edu.utez.DesarrolloAcademico.utils.DatabaseConnection;
 
+/**
+ * Servlet controlador que atiende las peticiones HTTP relacionadas con 'Login' dentro de la arquitectura MVC del proyecto.
+ * @author Gael Itzaya Velez Reyez
+ * @since 2026-07-27
+ */
 @WebServlet(name = "LoginServlet", urlPatterns = {"/login"})
 public class LoginServlet extends HttpServlet {
 
     private UsuarioDao usuarioDao = new UsuarioDao();
 
+    /**
+     * Maneja las peticiones HTTP GET recibidas por este servlet.
+     * @param request Objeto de la petición HTTP entrante.
+     * @param response Objeto de la respuesta HTTP a generar.
+     * @throws ServletException Si ocurre un error al procesar la petición dentro del servlet.
+     * @throws IOException Si ocurre un error de entrada/salida al leer o escribir la petición/respuesta.
+     */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         // Si intenta acceder a /login por GET, lo mandamos al jsp
         request.getRequestDispatcher("login.jsp").forward(request, response);
     }
 
+    /**
+     * Maneja las peticiones HTTP POST recibidas por este servlet.
+     * @param request Objeto de la petición HTTP entrante.
+     * @param response Objeto de la respuesta HTTP a generar.
+     * @throws ServletException Si ocurre un error al procesar la petición dentro del servlet.
+     * @throws IOException Si ocurre un error de entrada/salida al leer o escribir la petición/respuesta.
+     */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String credencial = request.getParameter("email");

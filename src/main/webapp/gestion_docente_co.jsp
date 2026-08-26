@@ -1,3 +1,10 @@
+<%--
+  Vista: gestion_docente_co.jsp
+  Rol: Coordinador
+  Descripción: Listado/gestión de los docentes/coordinadores registrados (búsqueda, activar/desactivar, eliminar).
+  Incluye los fragmentos: sidebar_co.jsp
+  Scripts propios: assets/js/paginator.js, assets/js/coordinador.js, assets/js/GestionDocenteCO.js?v=5
+--%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!doctype html>
 <html lang="es">
@@ -12,6 +19,7 @@
 </head>
 <body>
 
+<%-- Fragmento incluido: sidebar_co.jsp --%>
 <jsp:include page="sidebar_co.jsp">
     <jsp:param name="active" value="gestion_docente" />
 </jsp:include>
@@ -30,6 +38,7 @@
     </div>
 
     <div class="data-card p-0 mb-4" style="overflow: hidden;">
+                <!-- Tabla de datos: se llena dinámicamente vía JS/fetch al servlet correspondiente -->
         <table class="table-custom mb-0">
             <!-- Corregido a 7 columnas para alinearse con <thead> -->
             <colgroup>

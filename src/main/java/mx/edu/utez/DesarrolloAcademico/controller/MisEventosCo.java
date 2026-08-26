@@ -15,6 +15,11 @@ import java.io.PrintWriter;
 import java.util.List;
 
 
+/**
+ * Controlador (servlet) que gestiona la lógica de 'MisEventosCo' en la capa de presentación del patrón MVC.
+ * @author Gael Itzaya Velez Reyez
+ * @since 2026-08-02
+ */
 @WebServlet(name = "MisEventosCo", value = "/MisEventosCo")
 public class MisEventosCo extends HttpServlet {
 
@@ -60,6 +65,11 @@ public class MisEventosCo extends HttpServlet {
         out.flush();
     }
 
+    /**
+     * Método auxiliar de la clase.
+     * @param v Parámetro `v`.
+     * @return Cadena de texto resultante.
+     */
     private String esc(String v) {
         if (v == null) return "";
         return v.replace("\\", "\\\\").replace("\"", "\\\"");

@@ -1,3 +1,9 @@
+/**
+ * historial_evento.js
+ *
+ * Lógica de la vista de historial de eventos: búsqueda/filtros, paginación y renderizado de la tabla de eventos pasados.
+ */
+
 ﻿const contextPath = window.contextPath || '';
 const tbody = document.getElementById('tablaEventosBody');
 const inputBuscar = document.getElementById('buscarEvento');
@@ -12,6 +18,10 @@ let filtroTipo = 'todos';
 let paginaActual = 1;
 const eventosPorPagina = 5; // Cambia este valor segÃºn cuÃ¡ntos registros quieras ver por pÃ¡gina
 
+/**
+ * Escapa los caracteres especiales de HTML (&, <, >) de un texto para insertarlo de forma segura en el DOM y prevenir inyección de HTML/XSS.
+ * @param {*} texto
+ */
 function escapeHtml(texto) {
     if (texto === null || texto === undefined) return '';
     return String(texto)
@@ -20,6 +30,10 @@ function escapeHtml(texto) {
         .replace(/>/g, '&gt;');
 }
 
+/**
+ * Normaliza un texto a minúsculas y sin acentos/diacríticos, para poder comparar cadenas de forma insensible a mayúsculas y tildes (usado en buscadores/filtros).
+ * @param {*} texto
+ */
 function normalizar(texto) {
     return String(texto || '')
         .toLowerCase()
@@ -27,6 +41,10 @@ function normalizar(texto) {
         .replace(/[\u0300-\u036f]/g, '');
 }
 
+/**
+ * Convierte una fecha en formato ISO a un formato de fecha legible para mostrar en la interfaz.
+ * @param {*} fechaIso
+ */
 function formatearFecha(fechaIso) {
     if (!fechaIso) return '';
     const partes = fechaIso.split('-');
@@ -34,6 +52,9 @@ function formatearFecha(fechaIso) {
     return partes[2] + '/' + partes[1] + '/' + partes[0].slice(2);
 }
 
+/**
+ * Devuelve la lista de eventos que coinciden con el texto de búsqueda / filtros actuales (filtrado en memoria sobre la lista maestra).
+ */
 function obtenerEventosFiltrados() {
     const texto = normalizar(filtroTexto);
 
@@ -49,6 +70,10 @@ function obtenerEventosFiltrados() {
 }
 
 // Renderiza los registros correspondientes a la pÃ¡gina activa
+/**
+ * Renderiza en el DOM la tabla/listado de eventos a partir de la lista recibida.
+ * @param {*} eventos
+ */
 function renderEventos(eventos) {
     if (!eventos.length) {
         tbody.innerHTML = '<tr><td colspan="5" class="text-center text-muted py-4">No se encontraron eventos.</td></tr>';
@@ -89,6 +114,10 @@ function renderEventos(eventos) {
 }
 
 // Renderiza los botones dinÃ¡micos de paginaciÃ³n
+/**
+ * Genera y renderiza en el DOM los controles de paginación según el total de registros/páginas.
+ * @param {*} totalPaginas
+ */
 function renderPaginacion(totalPaginas) {
     if (!contenedorPaginacion) return;
     contenedorPaginacion.innerHTML = '';
@@ -152,10 +181,16 @@ function renderPaginacion(totalPaginas) {
     contenedorPaginacion.appendChild(btnSig);
 }
 
+/**
+ * Aplica los filtros de búsqueda vigentes sobre la lista maestra y vuelve a renderizar la tabla con el resultado.
+ */
 function aplicarFiltros() {
     window.renderPaginator(obtenerEventosFiltrados(), 20, 'paginationContainer', renderEventos);
 }
 
+/**
+ * Obtiene del servidor la lista de eventos y la muestra en la tabla/listado, aplicando el filtro de búsqueda vigente.
+ */
 function cargarEventos() {
     let url = contextPath + '/ListarMisEventosServlet';
 

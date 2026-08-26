@@ -6,12 +6,22 @@ import java.sql.SQLException;
 import mx.edu.utez.DesarrolloAcademico.utils.DatabaseConnection;
 
 
+/**
+ * Clase de acceso a datos (DAO) encargada de las operaciones CRUD sobre la base de datos relacionadas con la entidad correspondiente a 'ConstanciaDao'.
+ * @author Carlos Apreza Gutierrez
+ * @since 2026-08-07
+ */
 public class ConstanciaDao {
 
 
 
 
 
+    /**
+     * Verifica que la condición o dato indicado sea correcto.
+     * @param idParticipante Parámetro `idParticipante`.
+     * @return `true` si la operación fue exitosa o la condición se cumple; `false` en caso contrario.
+     */
     public boolean verificarConstanciaExistente(int idParticipante) {
         String sql = "SELECT COUNT(*) FROM constancia WHERE id_participante = ?";
         try (Connection con = DatabaseConnection.getConnection();
@@ -29,6 +39,16 @@ public class ConstanciaDao {
         return false;
     }
 
+    /**
+     * Método auxiliar de la clase.
+     * @param idParticipante Parámetro `idParticipante`.
+     * @param rutaArchivo Parámetro `rutaArchivo`.
+     * @param nombreArchivo Parámetro `nombreArchivo`.
+     * @param tieneVigencia Parámetro `tieneVigencia`.
+     * @param fechaVencimiento Parámetro `fechaVencimiento`.
+     * @param subidoPor Parámetro `subidoPor`.
+     * @return `true` si la operación fue exitosa o la condición se cumple; `false` en caso contrario.
+     */
     public boolean guardarConstancia(int idParticipante, String rutaArchivo, String nombreArchivo, boolean tieneVigencia, String fechaVencimiento, int subidoPor) {
         if (idParticipante <= 0) return false;
 

@@ -1,7 +1,17 @@
+/**
+ * EditarDesarrollador.js
+ *
+ * Lógica de la vista de edición de un desarrollador existente: carga de sus datos, validaciones en tiempo real y envío de los cambios al servidor.
+ */
+
 const params = new URLSearchParams(window.location.search);
 const idDev  = params.get('id');
 
 // Función global para mostrar/ocultar contraseñas
+/**
+ * Alterna la visibilidad (texto plano / oculto) del campo de contraseña indicado y actualiza el icono del ojito.
+ * @param {*} inputId
+ */
 function togglePassword(inputId) {
     const input = document.getElementById(inputId);
     const icon  = document.getElementById('icon-' + inputId);
@@ -23,6 +33,12 @@ function togglePassword(inputId) {
     }
 }
 
+/**
+ * Muestra una alerta emergente (SweetAlert2) al usuario; si SweetAlert2 no está disponible, recurre a `alert()` nativo como respaldo.
+ * @param {*} titulo
+ * @param {*} mensaje
+ * @param {*} [icono='warning']
+ */
 function mostrarAlerta(titulo, mensaje, icono = 'warning') {
     if (typeof Swal !== 'undefined') {
         Swal.fire({ icon: icono, title: titulo, text: mensaje, confirmButtonColor: '#00847b' });
@@ -31,6 +47,10 @@ function mostrarAlerta(titulo, mensaje, icono = 'warning') {
     }
 }
 
+/**
+ * Rellena los campos del formulario con los datos recibidos desde el servidor para su edición.
+ * @param {*} data
+ */
 function llenarFormulario(data) {
     if (!data) return;
 
@@ -72,6 +92,9 @@ function llenarFormulario(data) {
     }
 }
 
+/**
+ * Obtiene del servidor los datos del registro a editar y rellena el formulario correspondiente.
+ */
 function cargarDatos() {
     if (!idDev) {
         mostrarAlerta('Falta ID', 'Accede a esta página desde la gestión de desarrolladores.', 'error');
@@ -137,6 +160,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
+/**
+ * Recolecta y valida los datos del formulario y envía al servidor la petición para guardar los cambios del registro editado.
+ */
 function guardarCambios() {
     const campoIdUsuario      = document.getElementById('campoIdUsuario');
     const campoNombre         = document.getElementById('campoNombre');

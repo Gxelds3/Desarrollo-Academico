@@ -1,3 +1,11 @@
+<%--
+  Vista: mi_cuenta_do.jsp
+  Rol: Docente
+  Descripción: Vista de perfil del usuario en sesión: edición de datos personales y cambio de contraseña.
+  Espera en sesión: usuario
+  Incluye los fragmentos: sidebar_do.jsp
+  Scripts propios: assets/js/coordinador.js, assets/js/MiCuenta.js
+--%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="mx.edu.utez.DesarrolloAcademico.model.Usuario" %>
 <%
@@ -35,6 +43,7 @@
 </head>
 <body>
 
+<%-- Fragmento incluido: sidebar_do.jsp --%>
 <jsp:include page="sidebar_do.jsp">
     <jsp:param name="active" value="mi_cuenta" />
 </jsp:include>

@@ -1,3 +1,8 @@
+<%--
+  Vista: archivo_subido_de.jsp
+  Rol: Desarrollador
+  Descripción: Vista de confirmación que se muestra tras subir/entregar exitosamente una constancia.
+--%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!doctype html>
 <html lang="es">

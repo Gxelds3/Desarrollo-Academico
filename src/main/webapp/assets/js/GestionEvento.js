@@ -1,3 +1,9 @@
+/**
+ * GestionEvento.js
+ *
+ * Lógica de la vista de gestión (listado) de eventos: colores por división, búsqueda/filtros y renderizado de la tabla.
+ */
+
 
 
 const contextPath = window.contextPath || '';
@@ -46,6 +52,10 @@ const COLORES_DIVISION = {
 
 
 
+/**
+ * Devuelve el color hexadecimal asociado a una división académica, usado para pintar etiquetas/badges en la interfaz.
+ * @param {*} nombreDivision
+ */
 function obtenerColorDivision(nombreDivision) {
 
     const clave = (nombreDivision || '').toString().toUpperCase().trim();
@@ -56,6 +66,10 @@ function obtenerColorDivision(nombreDivision) {
 
 
 
+/**
+ * Devuelve el color hexadecimal asociado a una división académica, usado para pintar etiquetas/badges en la interfaz.
+ * @param {*} nombreDivision
+ */
 function obtenerColorDivision(nombreDivision) {
 
     return COLORES_DIVISION[nombreDivision] || '#adb5bd';
@@ -64,6 +78,10 @@ function obtenerColorDivision(nombreDivision) {
 
 
 
+/**
+ * Determina si el texto sobre un color de fondo debe ser claro u oscuro, para mantener buen contraste visual.
+ * @param {*} colorFondoHex
+ */
 function obtenerColorTexto(colorFondoHex) {
 
     const clarosSinContrasteBlanco = ['#CCFF00', '#00FFFF'];
@@ -74,6 +92,10 @@ function obtenerColorTexto(colorFondoHex) {
 
 
 
+/**
+ * Escapa los caracteres especiales de HTML (&, <, >) de un texto para insertarlo de forma segura en el DOM y prevenir inyección de HTML/XSS.
+ * @param {*} texto
+ */
 function escapeHtml(texto) {
 
     if (texto === null || texto === undefined) return '';
@@ -90,6 +112,10 @@ function escapeHtml(texto) {
 
 
 
+/**
+ * Normaliza un texto a minúsculas y sin acentos/diacríticos, para poder comparar cadenas de forma insensible a mayúsculas y tildes (usado en buscadores/filtros).
+ * @param {*} texto
+ */
 function normalizar(texto) {
 
     return String(texto || '')
@@ -104,6 +130,10 @@ function normalizar(texto) {
 
 
 
+/**
+ * Convierte una fecha en formato ISO a un formato de fecha legible para mostrar en la interfaz.
+ * @param {*} fechaIso
+ */
 function formatearFecha(fechaIso) {
 
     if (!fechaIso) return '';
@@ -118,6 +148,9 @@ function formatearFecha(fechaIso) {
 
 
 
+/**
+ * Devuelve la lista de eventos que coinciden con el texto de búsqueda / filtros actuales (filtrado en memoria sobre la lista maestra).
+ */
 function obtenerEventosFiltrados() {
 
     const texto = normalizar(filtroTexto);
@@ -146,6 +179,10 @@ function obtenerEventosFiltrados() {
 
 
 
+/**
+ * Renderiza en el DOM la tabla/listado de eventos a partir de la lista recibida.
+ * @param {*} eventos
+ */
 function renderEventos(eventos) {
 
     if (!eventos.length) {
@@ -230,6 +267,9 @@ function renderEventos(eventos) {
 
 
 
+/**
+ * Aplica los filtros de búsqueda vigentes sobre la lista maestra y vuelve a renderizar la tabla con el resultado.
+ */
 function aplicarFiltros() {
 
     window.renderPaginator(obtenerEventosFiltrados(), 20, 'paginationContainer', renderEventos);
@@ -238,6 +278,9 @@ function aplicarFiltros() {
 
 
 
+/**
+ * Obtiene del servidor la lista de eventos y la muestra en la tabla/listado, aplicando el filtro de búsqueda vigente.
+ */
 function cargarEventos() {
 
     fetch(contextPath + '/ListarEventosServlet', { credentials: 'same-origin' })

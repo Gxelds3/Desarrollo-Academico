@@ -1,3 +1,11 @@
+<%--
+  Vista: vista_general_coordinador_co.jsp
+  Rol: Coordinador
+  Descripción: Panel principal (dashboard) del rol Coordinador tras iniciar sesión.
+  Espera en sesión: usuario
+  Incluye los fragmentos: sidebar_co.jsp
+  Scripts propios: assets/js/coordinador.js
+--%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="mx.edu.utez.DesarrolloAcademico.model.dao.UsuarioListaDao" %>
 <%@ page import="mx.edu.utez.DesarrolloAcademico.model.dao.UsuarioDao" %>
@@ -26,6 +34,7 @@
 </head>
 <body>
 
+<%-- Fragmento incluido: sidebar_co.jsp --%>
 <jsp:include page="sidebar_co.jsp">
     <jsp:param name="active" value="eventos_proximo" />
 </jsp:include>

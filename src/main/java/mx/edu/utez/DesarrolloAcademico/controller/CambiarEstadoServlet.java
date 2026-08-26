@@ -11,6 +11,11 @@ import mx.edu.utez.DesarrolloAcademico.model.dao.UsuarioListaDao;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+/**
+ * Servlet controlador que atiende las peticiones HTTP relacionadas con 'CambiarEstado' dentro de la arquitectura MVC del proyecto.
+ * @author Carlos Apreza Gutierrez
+ * @since 2026-08-07
+ */
 @WebServlet("/CambiarEstadoServlet")
 public class CambiarEstadoServlet extends HttpServlet {
 

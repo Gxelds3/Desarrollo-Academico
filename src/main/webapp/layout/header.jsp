@@ -1,3 +1,7 @@
+<%--
+  Vista: header.jsp
+  Descripción: Fragmento de plantilla (header) con barra de navegación genérica; parece boilerplate de plantilla base, sin evidencia de estar incluido activamente por las vistas del proyecto (revisar si sigue en uso).
+--%>
 <!doctype html>
 <html lang="es">
 <head>

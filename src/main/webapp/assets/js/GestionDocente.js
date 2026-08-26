@@ -1,3 +1,9 @@
+/**
+ * GestionDocente.js
+ *
+ * Lógica de la vista de gestión (listado) de docentes: búsqueda, colores por división/rol, activar/desactivar y eliminación.
+ */
+
 const contextPath = window.contextPath || '';
 const tbody = document.getElementById('tablaDocentesBody');
 const inputBuscar = document.getElementById('buscarDocente');
@@ -20,6 +26,10 @@ const COLORES_DIVISION = {
     'General': '#6c757d'   // Gris (neutro, no especificado)
 };
 
+/**
+ * Devuelve el color hexadecimal asociado a una división académica, usado para pintar etiquetas/badges en la interfaz.
+ * @param {*} nombreDivision
+ */
 function obtenerColorDivision(nombreDivision) {
     return COLORES_DIVISION[nombreDivision] || '#adb5bd';
 }
@@ -31,6 +41,10 @@ const COLORES_ROL = {
     'desarrollador': '#00FFFF'   // Azul Turquesa (Desarrollo Académico)
 };
 
+/**
+ * Devuelve el color hexadecimal asociado a un rol de usuario, usado para pintar etiquetas/badges en la interfaz.
+ * @param {*} rol
+ */
 function obtenerColorRol(rol) {
     const rolNormalizado = (rol || 'docente').toLowerCase();
     return COLORES_ROL[rolNormalizado] || '#adb5bd';
@@ -38,6 +52,10 @@ function obtenerColorRol(rol) {
 
 // Devuelve el color de texto adecuado según el fondo, para mantener buen contraste.
 // Los fondos muy claros (amarillo limón, turquesa) usan texto oscuro; el resto, texto blanco.
+/**
+ * Determina si el texto sobre un color de fondo debe ser claro u oscuro, para mantener buen contraste visual.
+ * @param {*} colorFondoHex
+ */
 function obtenerColorTexto(colorFondoHex) {
     const clarosSinContrasteBlanco = ['#CCFF00', '#00FFFF'];
     return clarosSinContrasteBlanco.includes(colorFondoHex) ? '#212529' : '#ffffff';
@@ -48,6 +66,12 @@ let docentesOriginales = [];
 let filtroTexto = '';
 
 // Helper para alertas SweetAlert2 unificadas
+/**
+ * Muestra una alerta emergente (SweetAlert2) al usuario; si SweetAlert2 no está disponible, recurre a `alert()` nativo como respaldo.
+ * @param {*} titulo
+ * @param {*} mensaje
+ * @param {*} [icono='warning']
+ */
 function mostrarAlerta(titulo, mensaje, icono = 'warning') {
     if (typeof Swal !== 'undefined') {
         Swal.fire({
@@ -64,6 +88,11 @@ function mostrarAlerta(titulo, mensaje, icono = 'warning') {
 // ------------------------------------------------------------------
 // 👁ALTERNAR VISIBILIDAD DE CONTRASEÑA (SI APLICA EN FORMULARIO/MODAL)
 // ------------------------------------------------------------------
+/**
+ * Configura el botón de mostrar/ocultar contraseña para un campo de contraseña específico del formulario.
+ * @param {*} btnId
+ * @param {*} inputId
+ */
 function setupTogglePassword(btnId, inputId) {
     const btn = document.getElementById(btnId);
     const input = document.getElementById(inputId);
@@ -84,6 +113,10 @@ function setupTogglePassword(btnId, inputId) {
 // ------------------------------------------------------------------
 //  VALIDACIONES EN EL FRONTEND (GUARDAR / EDITAR)
 // ------------------------------------------------------------------
+/**
+ * Valida en el frontend los campos obligatorios y el formato de los datos de un docente antes de enviarlos al servidor.
+ * @param {*} datos
+ */
 function validarFormularioDocente(datos) {
     const { nombre, apeP, apeM, division, numEmp, tel, correo, pass, confirmPass } = datos;
 
@@ -130,6 +163,10 @@ function validarFormularioDocente(datos) {
     return true;
 }
 
+/**
+ * Escapa los caracteres especiales de HTML (&, <, >) de un texto para insertarlo de forma segura en el DOM y prevenir inyección de HTML/XSS.
+ * @param {*} texto
+ */
 function escapeHtml(texto) {
     if (texto === null || texto === undefined) return '';
     return String(texto)
@@ -138,6 +175,10 @@ function escapeHtml(texto) {
         .replace(/>/g, '&gt;');
 }
 
+/**
+ * Normaliza un texto a minúsculas y sin acentos/diacríticos, para poder comparar cadenas de forma insensible a mayúsculas y tildes (usado en buscadores/filtros).
+ * @param {*} texto
+ */
 function normalizar(texto) {
     return String(texto || '')
         .toLowerCase()
@@ -145,11 +186,19 @@ function normalizar(texto) {
         .replace(/[\u0300-\u036f]/g, '');
 }
 
+/**
+ * Concatena nombre y apellidos de un registro en una sola cadena de nombre completo, ignorando los campos vacíos.
+ * @param {*} doc
+ */
 function nombreCompleto(doc) {
     return [doc.nombre, doc.apellidoPaterno, doc.apellidoMaterno].filter(Boolean).join(' ');
 }
 
 // Función helper para obtener las primeras dos iniciales
+/**
+ * Obtiene las iniciales (hasta dos letras) a partir de un nombre completo, usadas para mostrar un avatar/placeholder visual.
+ * @param {*} nombreStr
+ */
 function obtenerIniciales(nombreStr) {
     if (!nombreStr) return '';
     const palabras = nombreStr.trim().split(/\s+/);
@@ -159,6 +208,9 @@ function obtenerIniciales(nombreStr) {
     return (palabras[0][0] + palabras[1][0]).toUpperCase();
 }
 
+/**
+ * Devuelve la lista de docentes que coinciden con el texto de búsqueda actual (filtrado en memoria sobre la lista maestra).
+ */
 function obtenerDocentesFiltrados() {
     const texto = normalizar(filtroTexto);
     if (texto === '') return docentesOriginales;
@@ -169,6 +221,10 @@ function obtenerDocentesFiltrados() {
     });
 }
 
+/**
+ * Renderiza en el DOM la tabla de docentes a partir de la lista recibida.
+ * @param {*} lista
+ */
 function renderDocentes(lista) {
     if (!tbody) return;
 
@@ -238,6 +294,9 @@ function renderDocentes(lista) {
     });
 }
 
+/**
+ * Aplica el filtro de búsqueda vigente sobre la lista maestra y vuelve a renderizar la tabla con el resultado.
+ */
 function aplicarFiltro() {
     if (typeof window.renderPaginator === 'function') {
         window.renderPaginator(obtenerDocentesFiltrados(), 20, 'paginationContainer', renderDocentes);
@@ -246,6 +305,9 @@ function aplicarFiltro() {
     }
 }
 
+/**
+ * Obtiene del servidor la lista de docentes y la muestra en la tabla, aplicando el filtro de búsqueda vigente.
+ */
 function cargarDocentes() {
     if (!tbody) return;
     tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted py-4">Cargando...</td></tr>';
@@ -269,6 +331,11 @@ function cargarDocentes() {
         });
 }
 
+/**
+ * Envía al servidor la petición para activar/desactivar (o cambiar de estado) el registro indicado.
+ * @param {*} id
+ * @param {*} nuevoEstado
+ */
 function cambiarEstado(id, nuevoEstado) {
     const datos = new URLSearchParams();
     datos.append('id', id);

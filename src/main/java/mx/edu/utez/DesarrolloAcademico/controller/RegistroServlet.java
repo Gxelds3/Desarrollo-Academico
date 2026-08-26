@@ -10,17 +10,36 @@ import mx.edu.utez.DesarrolloAcademico.model.dao.UsuarioDao;
 
 import java.io.IOException;
 
+/**
+ * Servlet controlador que atiende las peticiones HTTP relacionadas con 'Registro' dentro de la arquitectura MVC del proyecto.
+ * @author Gael Itzaya Velez Reyez
+ * @since 2026-08-02
+ */
 @WebServlet(name = "RegistroServlet", urlPatterns = {"/registro"})
 public class RegistroServlet extends HttpServlet {
 
     private UsuarioDao usuarioDao = new UsuarioDao();
 
+    /**
+     * Maneja las peticiones HTTP GET recibidas por este servlet.
+     * @param request Objeto de la petición HTTP entrante.
+     * @param response Objeto de la respuesta HTTP a generar.
+     * @throws ServletException Si ocurre un error al procesar la petición dentro del servlet.
+     * @throws IOException Si ocurre un error de entrada/salida al leer o escribir la petición/respuesta.
+     */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         // Redirigir al JSP de registro por GET
         request.getRequestDispatcher("registro.jsp").forward(request, response);
     }
 
+    /**
+     * Maneja las peticiones HTTP POST recibidas por este servlet.
+     * @param request Objeto de la petición HTTP entrante.
+     * @param response Objeto de la respuesta HTTP a generar.
+     * @throws ServletException Si ocurre un error al procesar la petición dentro del servlet.
+     * @throws IOException Si ocurre un error de entrada/salida al leer o escribir la petición/respuesta.
+     */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
@@ -145,6 +164,14 @@ public class RegistroServlet extends HttpServlet {
         }
     }
 
+    /**
+     * Método auxiliar de la clase.
+     * @param request Objeto de la petición HTTP entrante.
+     * @param response Objeto de la respuesta HTTP a generar.
+     * @param mensaje Parámetro `mensaje`.
+     * @throws ServletException Si ocurre un error al procesar la petición dentro del servlet.
+     * @throws IOException Si ocurre un error de entrada/salida al leer o escribir la petición/respuesta.
+     */
     private void errorResponse(HttpServletRequest request, HttpServletResponse response, String mensaje) throws ServletException, IOException {
         request.setAttribute("error", mensaje);
         // Regresar valores al formulario para que el usuario no tenga que reescribir todo

@@ -1,3 +1,10 @@
+<%--
+  Vista: registro.jsp
+  Descripción: Formulario de registro de un nuevo usuario en el sistema.
+  Usa atributos de request (enviados por el servlet): error
+  Formulario(s): envía a 'registro' por POST
+  Scripts propios: assets/js/login.js
+--%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!doctype html>
 <html lang="es">
@@ -32,6 +39,7 @@
                     </div>
                 <% } %>
 
+                                <!-- Formulario: envía a 'registro' por POST -->
                 <form action="registro" method="post">
 
                     <div class="mb-3">

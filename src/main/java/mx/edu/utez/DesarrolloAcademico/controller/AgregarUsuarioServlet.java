@@ -12,6 +12,11 @@ import mx.edu.utez.DesarrolloAcademico.model.dao.UsuarioDao;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+/**
+ * Servlet controlador que atiende las peticiones HTTP relacionadas con 'AgregarUsuario' dentro de la arquitectura MVC del proyecto.
+ * @author Gael Itzaya Velez Reyez
+ * @since 2026-08-02
+ */
 @WebServlet(name = "AgregarUsuarioServlet", value = "/AgregarUsuarioServlet")
 public class AgregarUsuarioServlet extends HttpServlet {
 

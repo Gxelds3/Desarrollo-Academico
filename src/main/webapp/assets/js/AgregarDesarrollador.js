@@ -1,3 +1,9 @@
+/**
+ * AgregarDesarrollador.js
+ *
+ * Lógica de la vista de alta (registro) de un nuevo desarrollador: validaciones en tiempo real de los campos y envío del formulario al servidor.
+ */
+
 const contextPath = window.contextPath || '';
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -180,6 +186,11 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 // Función auxiliar para SweetAlerts
+/**
+ * Muestra una alerta emergente (SweetAlert2) al usuario; si SweetAlert2 no está disponible, recurre a `alert()` nativo como respaldo.
+ * @param {*} titulo
+ * @param {*} texto
+ */
 function mostrarAlerta(titulo, texto) {
     Swal.fire({
         icon: 'warning',

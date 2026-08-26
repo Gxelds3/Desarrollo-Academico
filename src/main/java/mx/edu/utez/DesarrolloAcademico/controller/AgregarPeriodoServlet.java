@@ -15,6 +15,11 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.sql.Date;
 
+/**
+ * Servlet controlador que atiende las peticiones HTTP relacionadas con 'AgregarPeriodo' dentro de la arquitectura MVC del proyecto.
+ * @author Carlos Apreza Gutierrez
+ * @since 2026-08-07
+ */
 @WebServlet("/AgregarPeriodoServlet")
 public class AgregarPeriodoServlet extends HttpServlet {
 
@@ -88,6 +93,12 @@ public class AgregarPeriodoServlet extends HttpServlet {
         }
     }
 
+    /**
+     * Método auxiliar de la clase.
+     * @param json Parámetro `json`.
+     * @param clave Parámetro `clave`.
+     * @return Cadena de texto resultante.
+     */
     private String extraerValor(String json, String clave) {
         String patron = "\"" + clave + "\":\"";
         int inicio = json.indexOf(patron);

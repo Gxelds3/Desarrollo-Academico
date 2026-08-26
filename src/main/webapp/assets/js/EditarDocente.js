@@ -1,3 +1,9 @@
+/**
+ * EditarDocente.js
+ *
+ * Lógica de la vista de edición de un docente existente: carga de sus datos, selección de rol, validaciones en tiempo real y envío de los cambios al servidor.
+ */
+
 const params = new URLSearchParams(window.location.search);
 const idDocente = params.get('id');
 
@@ -5,6 +11,10 @@ const idDocente = params.get('id');
 let rolOriginal = 'docente';
 
 // Función global para mostrar/ocultar contraseñas
+/**
+ * Alterna la visibilidad (texto plano / oculto) del campo de contraseña indicado y actualiza el icono del ojito.
+ * @param {*} inputId
+ */
 function togglePassword(inputId) {
     const input = document.getElementById(inputId);
     const icon = document.getElementById('icon-' + inputId);
@@ -26,6 +36,12 @@ function togglePassword(inputId) {
     }
 }
 
+/**
+ * Muestra una alerta emergente (SweetAlert2) al usuario; si SweetAlert2 no está disponible, recurre a `alert()` nativo como respaldo.
+ * @param {*} titulo
+ * @param {*} mensaje
+ * @param {*} [icono='warning']
+ */
 function mostrarAlerta(titulo, mensaje, icono = 'warning') {
     if (typeof Swal !== 'undefined') {
         Swal.fire({
@@ -39,6 +55,9 @@ function mostrarAlerta(titulo, mensaje, icono = 'warning') {
     }
 }
 
+/**
+ * Determina, según el rol del usuario en sesión, a qué página debe redirigir tras completar una acción.
+ */
 function obtenerPaginaDestino() {
     const pathActual = window.location.pathname;
     if (pathActual.includes('_de.jsp')) {
@@ -53,6 +72,10 @@ function obtenerPaginaDestino() {
    MANEJO DEL SELECTOR DE ROL (Docente / Coordinador)
    ========================================================= */
 
+/**
+ * Marca visualmente como seleccionado el rol indicado dentro del selector de roles del formulario.
+ * @param {*} rol
+ */
 function selectRol(rol) {
     const cardDocente = document.getElementById('cardDocente');
     const cardCoordinador = document.getElementById('cardCoordinador');
@@ -91,6 +114,9 @@ function selectRol(rol) {
     }
 }
 
+/**
+ * Obtiene el valor del rol actualmente seleccionado en el formulario.
+ */
 function obtenerRolSeleccionado() {
     const radioCoordinador = document.getElementById('radioCoordinador');
     return (radioCoordinador && radioCoordinador.checked) ? 'coordinador' : 'docente';
@@ -100,6 +126,10 @@ function obtenerRolSeleccionado() {
    CARGA DE DATOS DEL DOCENTE
    ========================================================= */
 
+/**
+ * Rellena los campos del formulario de docente con los datos recibidos desde el servidor para su edición.
+ * @param {*} data
+ */
 function llenarFormularioDocente(data) {
     if (!data) return;
 
@@ -153,6 +183,9 @@ function llenarFormularioDocente(data) {
     selectRol(rolOriginal);
 }
 
+/**
+ * Obtiene del servidor los datos del docente a editar y rellena el formulario correspondiente.
+ */
 function cargarDatosDocente() {
     if (!idDocente) {
         mostrarAlerta('Falta ID del usuario', 'Accede a esta página desde la gestión de docentes.', 'error');
@@ -218,6 +251,10 @@ document.addEventListener("DOMContentLoaded", () => {
    GUARDADO
    ========================================================= */
 
+/**
+ * Recolecta y valida los datos del formulario y envía al servidor la petición para guardar los cambios del registro editado.
+ * @param {*} e
+ */
 function guardarCambios(e) {
     if (e && e.preventDefault) e.preventDefault();
 
@@ -364,6 +401,10 @@ function guardarCambios(e) {
 }
 
 // Confirmación general de guardado + envío real al servlet
+/**
+ * Solicita confirmación al usuario y, si acepta, envía al servidor los datos para guardar los cambios.
+ * @param {*} datos
+ */
 function confirmarYGuardar(datos) {
     Swal.fire({
         icon: 'question',

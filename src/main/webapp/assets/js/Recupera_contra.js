@@ -1,5 +1,17 @@
+/**
+ * Recupera_contra.js
+ *
+ * Lógica de la vista de recuperación de contraseña: envío de la solicitud y retroalimentación visual (barra de progreso) al usuario.
+ */
+
 document.addEventListener('DOMContentLoaded', function () {
 
+    /**
+     * Muestra una alerta emergente (SweetAlert2) con el icono, título y texto indicados.
+     * @param {*} title
+     * @param {*} text
+     * @param {*} icon
+     */
     function alertaSwal(title, text, icon) {
         Swal.fire({
             icon: icon,
@@ -10,6 +22,13 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // --- HELPER: Preloader con porcentaje genérico ---
+    /**
+     * Muestra un modal de SweetAlert2 con una barra de progreso simulada
+     * (incrementa hasta 90% mientras se espera la respuesta del servidor).
+     * @param {*} titulo
+     * @param {*} [colorProgreso='#4cbab8']
+     * @returns {number} El identificador del temporizador (setInterval) que anima el porcentaje.
+     */
     function mostrarPreloader(titulo, colorProgreso = '#4cbab8') {
         let porcentaje = 0;
         let timerCarga;

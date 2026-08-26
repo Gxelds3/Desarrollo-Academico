@@ -1,3 +1,9 @@
+<%--
+  Vista: recuperar-contra.jsp
+  Descripción: Flujo de recuperación de contraseña en 3 pasos: solicitar código, validar código y restablecer la contraseña.
+  Usa atributos de request (enviados por el servlet): emailParaReenvio, mensajeError, mensajeInfo, step
+  Formulario(s): envía a 'recuperar' por POST; envía a 'recuperar' por POST; envía a 'recuperar' por POST; envía a 'recuperar' por POST
+--%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%
   String step = (String) request.getAttribute("step");
@@ -155,6 +161,7 @@
       <div class="subtitulo-recuperar">Ingresa tu correo o número de empleado y te enviaremos un código</div>
     </div>
 
+        <!-- Formulario: envía a 'recuperar' por POST -->
     <form action="recuperar" method="post">
       <input type="hidden" name="action" value="solicitar">
       <div class="mb-4">
@@ -178,6 +185,7 @@
       <div class="subtitulo-recuperar">Introduce los 6 caracteres enviados a tu correo</div>
     </div>
 
+        <!-- Formulario: envía a 'recuperar' por POST -->
     <form action="recuperar" method="post" id="formVerificar">
       <input type="hidden" name="action" value="verificar">
       <!-- CORRECCIÓN: Mantener el dato del usuario en este paso -->
@@ -199,6 +207,7 @@
     </form>
 
     <div class="text-center mt-3">
+            <!-- Formulario: envía a 'recuperar' por POST -->
       <form action="recuperar" method="post" style="display:inline;">
         <input type="hidden" name="action" value="solicitar">
         <% if (emailParaReenvio != null) { %>
@@ -253,6 +262,7 @@
       <div class="subtitulo-recuperar">Ingresa tu nueva contraseña (12–15 caracteres)</div>
     </div>
 
+        <!-- Formulario: envía a 'recuperar' por POST -->
     <form action="recuperar" method="post" id="formCambiar" onsubmit="return validarPass()">
       <input type="hidden" name="action" value="cambiar">
       <!-- CORRECCIÓN: Mantener el dato del usuario para la actualización final -->

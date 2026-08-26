@@ -1,3 +1,10 @@
+<%--
+  Vista: historial_evento_do.jsp
+  Rol: Docente
+  Descripción: Historial de eventos pasados en los que participó el usuario.
+  Incluye los fragmentos: sidebar_do.jsp
+  Scripts propios: assets/js/coordinador.js, assets/js/historial_evento_do.js
+--%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!doctype html>
 <html lang="es">
@@ -12,6 +19,7 @@
 </head>
 <body>
 
+<%-- Fragmento incluido: sidebar_do.jsp --%>
 <jsp:include page="sidebar_do.jsp">
     <jsp:param name="active" value="mis_eventos" />
 </jsp:include>
@@ -39,6 +47,7 @@
 
     <!-- Tabla dinámica -->
     <div class="data-card p-0 mb-4" style="overflow: hidden;">
+                <!-- Tabla de datos: se llena dinámicamente vía JS/fetch al servlet correspondiente -->
         <table class="table-custom mb-0 text-center">
             <colgroup>
                 <col style="width: 25%;">

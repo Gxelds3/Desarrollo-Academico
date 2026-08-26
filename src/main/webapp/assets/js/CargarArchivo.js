@@ -1,3 +1,9 @@
+/**
+ * CargarArchivo.js
+ *
+ * Lógica de la vista de carga de archivo/constancia de un evento: obtención de datos del evento, control de vigencia y subida del archivo por XHR con barra de progreso.
+ */
+
 const contextPath = window.contextPath || '';
 const urlParams = new URLSearchParams(window.location.search);
 const idEvento = urlParams.get('id');
@@ -17,6 +23,10 @@ document.addEventListener('DOMContentLoaded', function () {
     configurarVigenciaYArchivo();
 });
 
+/**
+ * Obtiene del servidor los datos del evento indicado por su id.
+ * @param {*} id
+ */
 function cargarDatosEvento(id) {
     fetch(contextPath + '/ListarEventosServlet')
         .then(res => res.json())
@@ -38,6 +48,10 @@ function cargarDatosEvento(id) {
         .catch(err => console.error("Error al obtener evento:", err));
 }
 
+/**
+ * Convierte una fecha en formato ISO a un formato de fecha legible para mostrar en la interfaz.
+ * @param {*} fechaIso
+ */
 function formatearFecha(fechaIso) {
     if (!fechaIso) return '';
     const partes = fechaIso.split('-');
@@ -46,6 +60,9 @@ function formatearFecha(fechaIso) {
 }
 
 // Configurar inputs de archivo, fecha de vigencia y formulario
+/**
+ * Configura el comportamiento de los campos de vigencia y de carga de archivo (mostrar/ocultar, validar tipo/tamaño, etc.).
+ */
 function configurarVigenciaYArchivo() {
     const radioSi = document.getElementById('vigenciaSi');
     const radioNo = document.getElementById('vigenciaNo');

@@ -1,3 +1,9 @@
+/**
+ * VerMasEventoDo.js
+ *
+ * Lógica de la vista de detalle de un evento para el rol Docente: carga del evento, sus participantes y el estado de constancias entregadas.
+ */
+
 // Obtiene el contextPath definido dinámicamente desde el HTML/JSP
 const contextPath = window.contextPath || (window.location.pathname.substring(0, window.location.pathname.indexOf("/", 1))) || '';
 const params = new URLSearchParams(window.location.search);
@@ -13,6 +19,10 @@ const campoFechaInicio = document.getElementById('campoFechaInicio');
 const campoFechaFin = document.getElementById('campoFechaFin');
 const campoModalidad = document.getElementById('campoModalidad');
 
+/**
+ * Convierte una fecha en formato ISO a un formato de fecha legible para mostrar en la interfaz.
+ * @param {*} iso
+ */
 function aFechaVisible(iso) {
     if (!iso) return '';
     const partes = iso.split('-');
@@ -20,11 +30,19 @@ function aFechaVisible(iso) {
     return partes[2] + '/' + partes[1] + '/' + partes[0].slice(2);
 }
 
+/**
+ * Devuelve el texto recibido con la primera letra en mayúscula.
+ * @param {*} texto
+ */
 function capitalizar(texto) {
     if (!texto) return '';
     return texto.charAt(0).toUpperCase() + texto.slice(1);
 }
 
+/**
+ * Actualiza en la vista el contador de constancias entregadas frente al total de docentes participantes.
+ * @param {*} docentes
+ */
 function actualizarContadorConstancias(docentes) {
     const elContador = document.getElementById('contadorEntregados');
     const elPorcentaje = document.getElementById('porcentajeEntregados');
@@ -50,6 +68,10 @@ function actualizarContadorConstancias(docentes) {
     if (elBarra) elBarra.style.width = porcentaje + '%';
 }
 
+/**
+ * Renderiza en el DOM la tabla de docentes participantes junto con el estado de su constancia.
+ * @param {*} docentes
+ */
 function renderizarDocentes(docentes) {
     const tbody = document.getElementById('tablaDocentesBody');
     if (!tbody) return;
@@ -89,6 +111,9 @@ function renderizarDocentes(docentes) {
     });
 }
 
+/**
+ * Obtiene del servidor la lista de participantes/docentes asociados al evento y los muestra en la vista.
+ */
 function cargarParticipantes() {
     fetch(contextPath + '/ListarParticipantesEventoServlet?id=' + encodeURIComponent(idEvento) + '&t=' + Date.now())
         .then(function (res) { return res.json(); })
@@ -101,6 +126,9 @@ function cargarParticipantes() {
         });
 }
 
+/**
+ * Obtiene del servidor la información del evento actual (según el id de la URL) y la muestra en la vista.
+ */
 function cargarEvento() {
     if (!idEvento) {
         Swal.fire({

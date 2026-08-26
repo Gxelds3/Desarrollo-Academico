@@ -1,3 +1,11 @@
+<%--
+  Vista: agregar_docente_de.jsp
+  Rol: Desarrollador
+  Descripción: Formulario para registrar un nuevo docente o coordinador en el sistema.
+  Incluye los fragmentos: sidebar_de.jsp
+  Formulario(s): envía a 'AgregarUsuarioServlet' por POST
+  Scripts propios: assets/js/AgregarDocente.js, assets/js/coordinador.js
+--%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!doctype html>
 <html lang="es">
@@ -14,6 +22,7 @@
 </head>
 <body>
 
+<%-- Fragmento incluido: sidebar_de.jsp --%>
 <jsp:include page="sidebar_de.jsp">
     <jsp:param name="active" value="gestion_usuarios" />
     <jsp:param name="active_sub" value="docente" />
@@ -27,6 +36,7 @@
         <h5 class="mb-0 fw-bold">DATOS DEL DOCENTE/COORDINADOR</h5>
     </div>
 
+        <!-- Formulario: envía a 'AgregarUsuarioServlet' por POST -->
     <form id="formAgregarDocente" action="AgregarUsuarioServlet" method="POST">
         <div class="row mb-4">
             <div class="col-md-4">

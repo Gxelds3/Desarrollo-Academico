@@ -1,3 +1,9 @@
+/**
+ * VerMasEventoDe.js
+ *
+ * Lógica de la vista de detalle de un evento para el rol Desarrollador: carga del evento y de sus participantes.
+ */
+
 const contextPath = window.contextPath || '';
 const params = new URLSearchParams(window.location.search);
 const idEvento = params.get('id');
@@ -13,6 +19,10 @@ const campoFechaFin = document.getElementById('campoFechaFin');
 const campoModalidad = document.getElementById('campoModalidad');
 
 // Convierte "yyyy-MM-dd" (formato que maneja el servidor) a "dd/mm/yy" (formato que usa esta vista)
+/**
+ * Convierte una fecha en formato ISO a un formato de fecha legible para mostrar en la interfaz.
+ * @param {*} iso
+ */
 function aFechaVisible(iso) {
     if (!iso) return '';
     const partes = iso.split('-');
@@ -20,11 +30,18 @@ function aFechaVisible(iso) {
     return partes[2] + '/' + partes[1] + '/' + partes[0].slice(2);
 }
 
+/**
+ * Devuelve el texto recibido con la primera letra en mayúscula.
+ * @param {*} texto
+ */
 function capitalizar(texto) {
     if (!texto) return '';
     return texto.charAt(0).toUpperCase() + texto.slice(1);
 }
 
+/**
+ * Obtiene del servidor la información del evento actual (según el id de la URL) y la muestra en la vista.
+ */
 function cargarEvento() {
     if (!idEvento) {
         Swal.fire({
@@ -97,6 +114,9 @@ function cargarEvento() {
         });
 }
 
+/**
+ * Obtiene del servidor la lista de participantes/docentes asociados al evento y los muestra en la vista.
+ */
 function cargarParticipantes() {
     fetch(contextPath + '/ListarParticipantesEventoServlet?id=' + encodeURIComponent(idEvento) + '&t=' + Date.now())
         .then(res => res.json())

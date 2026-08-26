@@ -1,3 +1,9 @@
+/**
+ * CargarArchivoCo.js
+ *
+ * Lógica de la vista de carga de constancia para el rol Coordinador: validación del periodo de carga vigente, control de vigencia del archivo y envío de la entrega.
+ */
+
 const params = new URLSearchParams(window.location.search);
 const idEvento = params.get('id');
 const idUsuarioTarget = params.get('idUsuarioTarget');
@@ -21,6 +27,10 @@ if (idEvento) {
     });
 }
 
+/**
+ * Convierte una fecha en formato ISO a un formato de fecha legible para mostrar en la interfaz.
+ * @param {*} iso
+ */
 function aFechaVisible(iso) {
     if (!iso) return '';
     const partes = iso.split('-');
@@ -28,16 +38,28 @@ function aFechaVisible(iso) {
     return partes[2] + '/' + partes[1] + '/' + partes[0].slice(2);
 }
 
+/**
+ * Devuelve el texto recibido con la primera letra en mayúscula.
+ * @param {*} texto
+ */
 function capitalizar(texto) {
     if (!texto) return '';
     return texto.charAt(0).toUpperCase() + texto.slice(1);
 }
 
+/**
+ * Muestra el formulario de carga/entrega, ocultando otros estados de la vista (cargando, error, etc.).
+ */
 function mostrarFormulario() {
     document.getElementById('formCargaArchivo').style.display = '';
     document.getElementById('constanciaCard').style.display = 'none';
 }
 
+/**
+ * Muestra en la vista los datos de la constancia ya entregada, indicando si se encuentra vencida.
+ * @param {*} c
+ * @param {*} estaVencido
+ */
 function mostrarConstancia(c, estaVencido) {
     document.getElementById('formCargaArchivo').style.display = 'none';
     const card = document.getElementById('constanciaCard');
@@ -66,6 +88,11 @@ function mostrarConstancia(c, estaVencido) {
 // ------------------------------------------------------------------
 // Validación de Periodos de Carga (lógica corregida)
 // ------------------------------------------------------------------
+/**
+ * Consulta al servidor si existe un periodo de carga vigente para la división indicada y determina si el formulario de entrega debe habilitarse.
+ * @param {*} idDivisionDocente
+ * @returns {Promise<void>}
+ */
 async function validarPeriodosCarga(idDivisionDocente) {
     try {
         const res = await fetch(contextPath + '/ListarPeriodosServlet?t=' + Date.now());
@@ -142,6 +169,11 @@ async function validarPeriodosCarga(idDivisionDocente) {
 }
 
 // Oculta el formulario de subida y muestra el bloque "Periodo deshabilitado"
+/**
+ * Deshabilita el formulario de entrega de constancia y muestra el mensaje indicado al usuario.
+ * @param {*} mensaje
+ * @param {*} titulo
+ */
 function deshabilitarFormularioSubida(mensaje, titulo) {
     // Ocultar el data-card de subida dentro del form
     const form = document.getElementById('formCargaArchivo');
@@ -161,6 +193,10 @@ function deshabilitarFormularioSubida(mensaje, titulo) {
 }
 
 // Paso 1: Cargar datos del evento y evaluar permisos
+/**
+ * Inicializa la página: valida el periodo de carga vigente, carga los datos del evento/constancia y configura los listeners del formulario.
+ * @returns {Promise<void>}
+ */
 async function inicializarPagina() {
     let idDivisionDocente = null;
 

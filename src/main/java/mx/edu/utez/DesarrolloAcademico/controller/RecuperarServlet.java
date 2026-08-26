@@ -13,12 +13,24 @@ import mx.edu.utez.DesarrolloAcademico.utils.EmailService;
 import java.io.IOException;
 import java.security.SecureRandom;
 
+/**
+ * Servlet controlador que atiende las peticiones HTTP relacionadas con 'Recuperar' dentro de la arquitectura MVC del proyecto.
+ * @author Gael Itzaya Velez Reyez
+ * @since 2026-07-16
+ */
 @WebServlet(name = "RecuperarServlet", urlPatterns = {"/recuperar"})
 public class RecuperarServlet extends HttpServlet {
 
     private UsuarioDao usuarioDao = new UsuarioDao();
     private EmailService emailService = new EmailService();
 
+    /**
+     * Maneja las peticiones HTTP POST recibidas por este servlet.
+     * @param request Objeto de la petición HTTP entrante.
+     * @param response Objeto de la respuesta HTTP a generar.
+     * @throws ServletException Si ocurre un error al procesar la petición dentro del servlet.
+     * @throws IOException Si ocurre un error de entrada/salida al leer o escribir la petición/respuesta.
+     */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String action = request.getParameter("action");
@@ -39,6 +51,13 @@ public class RecuperarServlet extends HttpServlet {
         }
     }
 
+    /**
+     * Método auxiliar de la clase.
+     * @param request Objeto de la petición HTTP entrante.
+     * @param response Objeto de la respuesta HTTP a generar.
+     * @throws ServletException Si ocurre un error al procesar la petición dentro del servlet.
+     * @throws IOException Si ocurre un error de entrada/salida al leer o escribir la petición/respuesta.
+     */
     private void solicitarCodigo(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String dato = request.getParameter("dato");
 
@@ -61,6 +80,13 @@ public class RecuperarServlet extends HttpServlet {
         request.getRequestDispatcher("recuperar-contra.jsp").forward(request, response);
     }
 
+    /**
+     * Verifica que la condición o dato indicado sea correcto.
+     * @param request Objeto de la petición HTTP entrante.
+     * @param response Objeto de la respuesta HTTP a generar.
+     * @throws ServletException Si ocurre un error al procesar la petición dentro del servlet.
+     * @throws IOException Si ocurre un error de entrada/salida al leer o escribir la petición/respuesta.
+     */
     private void verificarCodigo(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         // El nuevo JSP manda el código ensamblado en el campo 'codigoCompleto' (hidden)
         // pero mantenemos compatibilidad con el campo 'codigo' por si acaso
@@ -92,6 +118,13 @@ public class RecuperarServlet extends HttpServlet {
         }
     }
 
+    /**
+     * Actualiza la contraseña del usuario indicado en la base de datos.
+     * @param request Objeto de la petición HTTP entrante.
+     * @param response Objeto de la respuesta HTTP a generar.
+     * @throws ServletException Si ocurre un error al procesar la petición dentro del servlet.
+     * @throws IOException Si ocurre un error de entrada/salida al leer o escribir la petición/respuesta.
+     */
     private void cambiarPassword(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession();
         Integer idUsuario = (Integer) session.getAttribute("idUsuarioRecuperacion");
@@ -141,6 +174,11 @@ public class RecuperarServlet extends HttpServlet {
         }
     }
 
+    /**
+     * Genera un código aleatorio usado para la verificación/recuperación.
+     * @param longitud Parámetro `longitud`.
+     * @return Cadena de texto resultante.
+     */
     private String generarCodigo(int longitud) {
         String caracteres = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
         SecureRandom rnd = new SecureRandom();

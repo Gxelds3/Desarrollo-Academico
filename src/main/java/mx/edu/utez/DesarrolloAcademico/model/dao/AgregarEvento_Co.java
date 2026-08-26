@@ -12,8 +12,18 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Clase 'AgregarEvento_Co' del proyecto Desarrollo Académico.
+ * @author Carlos Apreza Gutierrez
+ * @since 2026-07-29
+ */
 public class AgregarEvento_Co {
 
+    /**
+     * Registra un nuevo registro en la base de datos con los datos recibidos.
+     * @param evento Objeto Evento con los datos a utilizar.
+     * @return Cadena de texto resultante.
+     */
     public String registrarEventoError(agregarEvento_co evento) {
         Connection con = null;
         PreparedStatement psEvento = null;
@@ -88,6 +98,11 @@ public class AgregarEvento_Co {
         }
     }
 
+    /**
+     * Registra un nuevo registro en la base de datos con los datos recibidos.
+     * @param evento Objeto Evento con los datos a utilizar.
+     * @return `true` si la operación fue exitosa o la condición se cumple; `false` en caso contrario.
+     */
     public boolean registrarEvento(agregarEvento_co evento) {
         boolean estado = false;
         Connection con = null;
@@ -165,6 +180,11 @@ public class AgregarEvento_Co {
         return estado;
     }
 
+    /**
+     * Consulta y devuelve la lista de registros solicitada.
+     * @param idDivision Identificador de la división académica.
+     * @return Lista con los registros obtenidos (vacía si no hay resultados).
+     */
     public List<agregarEvento_co> listarEventos1(Integer idDivision) {
         List<agregarEvento_co> eventos = new ArrayList<>();
 
@@ -215,6 +235,11 @@ public class AgregarEvento_Co {
         return eventos;
     }
 
+    /**
+     * Consulta y devuelve la lista de registros solicitada.
+     * @param idDivision Identificador de la división académica.
+     * @return Lista con los registros obtenidos (vacía si no hay resultados).
+     */
     public List<agregarEvento_co> listarEventos(Integer idDivision) {
         List<agregarEvento_co> eventos = new ArrayList<>();
 
@@ -264,6 +289,11 @@ public class AgregarEvento_Co {
         return eventos;
     }
 
+    /**
+     * Elimina de forma permanente el registro indicado de la base de datos.
+     * @param idEvento Identificador del evento.
+     * @return `true` si la operación fue exitosa o la condición se cumple; `false` en caso contrario.
+     */
     public boolean eliminarEvento(int idEvento) {
         boolean estado = false;
         Connection con = null;
@@ -305,6 +335,11 @@ public class AgregarEvento_Co {
         return estado;
     }
 
+    /**
+     * Obtiene y devuelve el dato solicitado.
+     * @param idDivision Identificador de la división académica.
+     * @return Cadena de texto resultante.
+     */
     public String obtenerFechaLimitePorDivision(int idDivision) {
         String query = "SELECT fecha_fin FROM periodo_carga " +
                 "WHERE id_division = ? AND activo = 1 " +
@@ -333,6 +368,11 @@ public class AgregarEvento_Co {
         return null;
     }
 
+    /**
+     * Obtiene y devuelve el dato solicitado.
+     * @param idEvento Identificador del evento.
+     * @return Resultado de tipo `agregarEvento_co`.
+     */
     public agregarEvento_co obtenerPorId(int idEvento) {
         String query = "SELECT id_evento, nombre, lugar, institucion, tipo_evento, descripcion, fecha_inicio, fecha_fin, modalidad, id_division, creado_por FROM evento WHERE id_evento = ?";
 
@@ -372,6 +412,11 @@ public class AgregarEvento_Co {
         return null;
     }
 
+    /**
+     * Actualiza en la base de datos el registro indicado con los nuevos datos recibidos.
+     * @param evento Objeto Evento con los datos a utilizar.
+     * @return `true` si la operación fue exitosa o la condición se cumple; `false` en caso contrario.
+     */
     public boolean actualizarEvento(agregarEvento_co evento) {
         boolean estado = false;
         Connection con = null;
@@ -424,6 +469,10 @@ public class AgregarEvento_Co {
         return estado;
     }
 
+    /**
+     * Consulta y devuelve la lista completa de registros de la entidad correspondiente.
+     * @return Lista con los registros obtenidos (vacía si no hay resultados).
+     */
     public List<agregarEvento_co> listarTodosLosEventos() {
         List<agregarEvento_co> eventos = new ArrayList<>();
         String query = "SELECT e.id_evento, e.nombre, e.lugar, e.institucion, e.tipo_evento, " +

@@ -1,3 +1,10 @@
+<%--
+  Vista: agregar_evento_de.jsp
+  Rol: Desarrollador
+  Descripción: Formulario para registrar un nuevo evento académico.
+  Incluye los fragmentos: sidebar_de.jsp
+  Scripts propios: assets/js/coordinador.js, assets/js/agregarEvento.js
+--%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!doctype html>
 <html lang="es">
@@ -12,6 +19,7 @@
 </head>
 <body>
 
+<%-- Fragmento incluido: sidebar_de.jsp --%>
 <jsp:include page="sidebar_de.jsp">
     <jsp:param name="active" value="gestion_eventos" />
 </jsp:include>
@@ -100,6 +108,7 @@
           </div>
 
           <div class="data-card p-0 mb-4" style="overflow: hidden;">
+                            <!-- Tabla de datos: se llena dinámicamente vía JS/fetch al servlet correspondiente -->
               <table class="table-custom mb-0">
                   <thead>
                   <tr>
@@ -142,6 +151,7 @@
                     <input type="text" class="form-control" id="inputBuscarDocente" placeholder="Escribe para buscar..." autocomplete="off">
                 </div>
                 <div style="max-height: 300px; overflow-y: auto;">
+                                        <!-- Tabla de datos: se llena dinámicamente vía JS/fetch al servlet correspondiente -->
                     <table class="table table-hover table-sm" id="tablaResultadosBusqueda">
                         <thead>
                         <tr>
